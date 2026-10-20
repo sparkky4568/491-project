@@ -1,0 +1,563 @@
+{
+  "schema_version": "0.1",
+  "session_id": "MOCK-REF-001",
+  "is_mock": true,
+  "provenance": "reference_corpus",
+  "source": "annomi",
+  "target_behavior": "walking more",
+  "aven_version": null,
+  "recorded_at": null,
+  "scorer": {
+    "run_id": "mock-run-2026-10-20-001",
+    "scored_at": "2026-10-20T18:00:00Z",
+    "coder_prompt_version": "coder-v0.1",
+    "globals_prompt_version": "globals-v0.1",
+    "model": "mock-model-v0",
+    "cost_usd": 0.11
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "speaker": "practitioner",
+      "text": "Thanks for coming in. What would you like us to focus on today?",
+      "node": null,
+      "start_sec": 2.0,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "Q",
+          "evidence_quote": "What would you like us to focus on today?",
+          "rationale": "Open question that lets the client choose the topic.",
+          "evidence_valid": true
+        },
+        {
+          "code": "SEEK",
+          "evidence_quote": "What would you like us to focus on",
+          "rationale": "Invites the client to set the agenda, sharing control of the session.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 2,
+      "speaker": "client",
+      "text": "My doctor keeps telling me I need to move more. I sit at a desk all day, and by the time I get home I'm wiped out.",
+      "node": null,
+      "start_sec": 8.4,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "sustain",
+      "client_evidence_quote": "by the time I get home I'm wiped out"
+    },
+    {
+      "turn": 3,
+      "speaker": "practitioner",
+      "text": "You're hearing it from your doctor, and at the same time your days leave you with not much left in the tank.",
+      "node": null,
+      "start_sec": 20.2,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "at the same time your days leave you with not much left in the tank",
+          "rationale": "Joins the doctor's advice with the client's exhaustion, adding meaning beyond the client's words.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 4,
+      "speaker": "client",
+      "text": "Exactly. I know walking would help. I used to walk all the time before this job.",
+      "node": null,
+      "start_sec": 30.0,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I know walking would help."
+    },
+    {
+      "turn": 5,
+      "speaker": "practitioner",
+      "text": "Walking used to be a regular part of your life. What did you like about it back then?",
+      "node": null,
+      "start_sec": 37.6,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "SR",
+          "evidence_quote": "Walking used to be a regular part of your life.",
+          "rationale": "Restates what the client said with little added meaning.",
+          "evidence_valid": true
+        },
+        {
+          "code": "Q",
+          "evidence_quote": "What did you like about it back then?",
+          "rationale": "Open question that draws out the client's own reasons.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 6,
+      "speaker": "client",
+      "text": "It cleared my head. I'd come back from a walk and actually feel like myself again.",
+      "node": null,
+      "start_sec": 45.9,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I'd come back from a walk and actually feel like myself again."
+    },
+    {
+      "turn": 7,
+      "speaker": "practitioner",
+      "text": "Walking was more than exercise for you. It was how you found your way back to yourself.",
+      "node": null,
+      "start_sec": 53.5,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "It was how you found your way back to yourself.",
+          "rationale": "Reflects the personal meaning walking had, beyond what the client said.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 8,
+      "speaker": "client",
+      "text": "Yeah. I miss that, honestly.",
+      "node": null,
+      "start_sec": 61.4,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I miss that"
+    },
+    {
+      "turn": 9,
+      "speaker": "practitioner",
+      "text": "Part of you really wants that feeling back.",
+      "node": null,
+      "start_sec": 64.7,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "Part of you really wants that feeling back.",
+          "rationale": "Reflects an unstated desire for change.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 10,
+      "speaker": "client",
+      "text": "I do. I just don't see where it fits. My mornings are chaos with the kids.",
+      "node": null,
+      "start_sec": 69.2,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "sustain",
+      "client_evidence_quote": "I just don't see where it fits."
+    },
+    {
+      "turn": 11,
+      "speaker": "practitioner",
+      "text": "You keep a demanding job and a busy family running, which takes real persistence. Where in your week might a walk fit, if anywhere?",
+      "node": null,
+      "start_sec": 76.8,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "AF",
+          "evidence_quote": "which takes real persistence",
+          "rationale": "Names a genuine strength of the client.",
+          "evidence_valid": true
+        },
+        {
+          "code": "Q",
+          "evidence_quote": "Where in your week might a walk fit, if anywhere?",
+          "rationale": "Open question that leaves room for the client to say no.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 12,
+      "speaker": "client",
+      "text": "Maybe lunch. We get an hour, and I usually just eat at my desk.",
+      "node": null,
+      "start_sec": 87.4,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "Maybe lunch."
+    },
+    {
+      "turn": 13,
+      "speaker": "practitioner",
+      "text": "Lunch is a window that's already there.",
+      "node": null,
+      "start_sec": 94.2,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "SR",
+          "evidence_quote": "Lunch is a window that's already there.",
+          "rationale": "Simple restatement of the client's idea.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 14,
+      "speaker": "client",
+      "text": "It is. Even twenty minutes would be something.",
+      "node": null,
+      "start_sec": 98.3,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "Even twenty minutes would be something."
+    },
+    {
+      "turn": 15,
+      "speaker": "practitioner",
+      "text": "Twenty minutes feels doable, and it sounds like it would really matter to you.",
+      "node": null,
+      "start_sec": 102.8,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "Twenty minutes feels doable, and it sounds like it would really matter to you.",
+          "rationale": "Reflects both ability and importance, going beyond the client's words.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 16,
+      "speaker": "client",
+      "text": "It would. I guess I worry what my coworkers would think if I'm the only one leaving.",
+      "node": null,
+      "start_sec": 109.5,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "sustain",
+      "client_evidence_quote": "I worry what my coworkers would think"
+    },
+    {
+      "turn": 17,
+      "speaker": "practitioner",
+      "text": "Being the one who walks out feels a bit exposed, and it's completely your call. What might make it easier?",
+      "node": null,
+      "start_sec": 117.5,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "Being the one who walks out feels a bit exposed",
+          "rationale": "Reflects the feeling underneath the coworker concern.",
+          "evidence_valid": true
+        },
+        {
+          "code": "EMPHASIZE",
+          "evidence_quote": "it's completely your call",
+          "rationale": "Explicitly affirms that the choice belongs to the client.",
+          "evidence_valid": true
+        },
+        {
+          "code": "Q",
+          "evidence_quote": "What might make it easier?",
+          "rationale": "Open question inviting the client's own solution.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 18,
+      "speaker": "client",
+      "text": "If I asked Dana to come with me, it wouldn't feel so strange. She's always complaining about sitting too.",
+      "node": null,
+      "start_sec": 126.6,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "If I asked Dana to come with me, it wouldn't feel so strange."
+    },
+    {
+      "turn": 19,
+      "speaker": "practitioner",
+      "text": "A walking partner would turn it into something you do together instead of something you sneak off to do.",
+      "node": null,
+      "start_sec": 135.3,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "turn it into something you do together instead of something you sneak off to do",
+          "rationale": "Reframes the client's idea in a way that adds meaning.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 20,
+      "speaker": "client",
+      "text": "Right. I think I'll ask her tomorrow.",
+      "node": null,
+      "start_sec": 144.0,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I think I'll ask her tomorrow."
+    },
+    {
+      "turn": 21,
+      "speaker": "practitioner",
+      "text": "You've gone from not seeing where walking fits to a plan to ask Dana tomorrow.",
+      "node": null,
+      "start_sec": 148.1,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "You've gone from not seeing where walking fits to a plan to ask Dana tomorrow.",
+          "rationale": "Summary that links the client's starting point to their plan.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 22,
+      "speaker": "client",
+      "text": "I'll text myself a reminder at noon so I don't talk myself out of it.",
+      "node": null,
+      "start_sec": 155.2,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I'll text myself a reminder at noon"
+    }
+  ],
+  "counts": {
+    "Q": 4,
+    "SR": 2,
+    "CR": 7,
+    "GI": 0,
+    "PERSUADE": 0,
+    "PERSUADE_WP": 0,
+    "AF": 1,
+    "SEEK": 1,
+    "EMPHASIZE": 1,
+    "CONFRONT": 0
+  },
+  "client_talk_counts": {
+    "change": 8,
+    "sustain": 3,
+    "neutral": 0
+  },
+  "measures": [
+    {
+      "id": "pct_complex_reflections",
+      "label": "% Complex Reflections",
+      "value": 0.7778,
+      "n": 9,
+      "formula": "CR / (SR + CR)",
+      "threshold": {
+        "op": ">=",
+        "value": 0.4,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    },
+    {
+      "id": "reflection_to_question",
+      "label": "Reflection-to-Question Ratio",
+      "value": 2.25,
+      "n": 13,
+      "formula": "(SR + CR) / Q",
+      "threshold": {
+        "op": ">=",
+        "value": 2.0,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    },
+    {
+      "id": "total_mia",
+      "label": "Total MI-Adherent",
+      "value": 3,
+      "n": 11,
+      "formula": "AF + SEEK + EMPHASIZE",
+      "threshold": null,
+      "status": "no_threshold"
+    },
+    {
+      "id": "total_mina",
+      "label": "Total MI Non-Adherent",
+      "value": 0,
+      "n": 11,
+      "formula": "PERSUADE + CONFRONT",
+      "threshold": {
+        "op": "==",
+        "value": 0,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    },
+    {
+      "id": "relational",
+      "label": "Relational",
+      "value": 5.0,
+      "n": 22,
+      "formula": "(partnership + empathy) / 2",
+      "threshold": {
+        "op": ">=",
+        "value": 4.0,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    },
+    {
+      "id": "technical",
+      "label": "Technical",
+      "value": 4.5,
+      "n": 22,
+      "formula": "(cultivating_change_talk + softening_sustain_talk) / 2",
+      "threshold": {
+        "op": ">=",
+        "value": 4.0,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    }
+  ],
+  "globals": [
+    {
+      "id": "cultivating_change_talk",
+      "score": 5,
+      "cited_turns": [
+        5,
+        9,
+        15,
+        21
+      ],
+      "rationale": "Consistently drew out and reinforced the client's own reasons, desire and plan for walking (for example T9 and T21)."
+    },
+    {
+      "id": "softening_sustain_talk",
+      "score": 4,
+      "cited_turns": [
+        3,
+        11,
+        17
+      ],
+      "rationale": "Met the time and coworker concerns with reflection and autonomy support instead of arguing, without dwelling on barriers."
+    },
+    {
+      "id": "partnership",
+      "score": 5,
+      "cited_turns": [
+        1,
+        17,
+        21
+      ],
+      "rationale": "Let the client set the focus and generate the solution; the plan to ask a coworker came from the client."
+    },
+    {
+      "id": "empathy",
+      "score": 5,
+      "cited_turns": [
+        3,
+        7,
+        17
+      ],
+      "rationale": "Complex reflections captured what walking means to the client and the discomfort of leaving the office."
+    }
+  ],
+  "flags": {
+    "longest_reflection_run": {
+      "length": 2,
+      "turns": [
+        7,
+        9
+      ],
+      "cap": 2,
+      "exceeds_cap": false
+    },
+    "windowed_rq": {
+      "window_size": 10,
+      "points": [
+        {
+          "end_turn": 10,
+          "rq": 2.0
+        },
+        {
+          "end_turn": 11,
+          "rq": 2.0
+        },
+        {
+          "end_turn": 12,
+          "rq": 2.0
+        },
+        {
+          "end_turn": 13,
+          "rq": 2.0
+        },
+        {
+          "end_turn": 14,
+          "rq": 2.0
+        },
+        {
+          "end_turn": 15,
+          "rq": 4.0
+        },
+        {
+          "end_turn": 16,
+          "rq": 4.0
+        },
+        {
+          "end_turn": 17,
+          "rq": 2.0
+        },
+        {
+          "end_turn": 18,
+          "rq": 2.0
+        },
+        {
+          "end_turn": 19,
+          "rq": 2.0
+        },
+        {
+          "end_turn": 20,
+          "rq": 2.0
+        },
+        {
+          "end_turn": 21,
+          "rq": 5.0
+        },
+        {
+          "end_turn": 22,
+          "rq": 5.0
+        }
+      ]
+    }
+  },
+  "issues": []
+}

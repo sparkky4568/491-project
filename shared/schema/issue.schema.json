@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "issue.schema.json",
+  "title": "Issue",
+  "description": "One row in the issue log. v0 draft; see docs/DATA_CONTRACT.md. Written by the pipeline, never by the frontend.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "issue_id", "session_id", "type", "title", "detail", "measure_id", "node", "turns",
+    "evidence_quote", "provenance", "aven_version", "coder_prompt_version", "model", "created_at"
+  ],
+  "properties": {
+    "issue_id": { "type": "string", "pattern": "^ISS-[0-9]{4,}$" },
+    "session_id": { "type": "string", "minLength": 1 },
+    "type": { "enum": ["measure_below_threshold", "table_c_flag", "table_d_behavior"] },
+    "title": { "type": "string", "minLength": 1 },
+    "detail": { "type": "string" },
+    "measure_id": { "type": ["string", "null"], "description": "Set for measure_below_threshold issues." },
+    "node": { "type": ["string", "null"], "description": "Aven flow node of the first turn in `turns`; null for corpus data." },
+    "turns": { "type": "array", "items": { "type": "integer", "minimum": 1 } },
+    "evidence_quote": { "type": ["string", "null"], "description": "Verbatim words from a turn, when the issue has a quotable source." },
+    "provenance": { "enum": ["real", "simulated", "reference_corpus", "internal_test"] },
+    "aven_version": { "type": ["string", "null"] },
+    "coder_prompt_version": { "type": "string" },
+    "model": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" }
+  }
+}

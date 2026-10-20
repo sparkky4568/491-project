@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "validation_report.schema.json",
+  "title": "ValidationReport",
+  "description": "Scorer-vs-human agreement report. v0, owned by Validation/QA (Joel) and expected to change. Extra fields are allowed while it settles.",
+  "type": "object",
+  "required": [
+    "schema_version", "is_mock", "run_id", "split", "n_sessions", "code_agreement", "measure_agreement",
+    "discriminant", "repeat_run", "contamination_check"
+  ],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "is_mock": { "type": "boolean" },
+    "run_id": { "type": "string" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "split": { "enum": ["dev", "heldout"] },
+    "n_sessions": { "type": "integer", "minimum": 0 },
+    "code_agreement": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "metric", "scorer_vs_human", "human_vs_human", "n"],
+        "properties": {
+          "code": { "enum": ["Q", "SR", "CR", "GI", "PERSUADE", "PERSUADE_WP", "AF", "SEEK", "EMPHASIZE", "CONFRONT"] },
+          "metric": { "type": "string", "examples": ["cohen_kappa"] },
+          "scorer_vs_human": { "type": ["number", "null"] },
+          "human_vs_human": { "type": ["number", "null"], "description": "Ceiling: how well two human coders agree." },
+          "n": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "measure_agreement": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["measure", "metric", "scorer_vs_human", "human_vs_human", "n"],
+        "properties": {
+          "measure": { "type": "string" },
+          "metric": { "type": "string", "examples": ["icc"] },
+          "scorer_vs_human": { "type": ["number", "null"] },
+          "human_vs_human": { "type": ["number", "null"] },
+          "n": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "discriminant": {
+      "type": "object",
+      "required": ["description", "high_mi_mean", "low_mi_mean", "p_value"],
+      "properties": {
+        "description": { "type": "string" },
+        "high_mi_mean": { "type": ["number", "null"] },
+        "low_mi_mean": { "type": ["number", "null"] },
+        "p_value": { "type": ["number", "null"] }
+      }
+    },
+    "repeat_run": {
+      "type": "object",
+      "required": ["n_runs", "agreement"],
+      "properties": {
+        "n_runs": { "type": "integer", "minimum": 0 },
+        "agreement": { "type": ["number", "null"] }
+      }
+    },
+    "contamination_check": {
+      "type": "object",
+      "required": ["status", "notes"],
+      "properties": {
+        "status": { "enum": ["not_run", "pass", "concern"] },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

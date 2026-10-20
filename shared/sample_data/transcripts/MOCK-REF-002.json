@@ -1,0 +1,152 @@
+{
+  "schema_version": "0.1",
+  "session_id": "MOCK-REF-002",
+  "is_mock": true,
+  "provenance": "reference_corpus",
+  "source": "casaa",
+  "target_behavior": "sleeping better",
+  "aven_version": null,
+  "recorded_at": null,
+  "turns": [
+    {
+      "turn": 1,
+      "speaker": "practitioner",
+      "text": "So you're here about your sleep. How many hours are you getting a night?",
+      "node": null,
+      "start_sec": 2.0
+    },
+    {
+      "turn": 2,
+      "speaker": "client",
+      "text": "Maybe five? It depends on the night.",
+      "node": null,
+      "start_sec": 8.8
+    },
+    {
+      "turn": 3,
+      "speaker": "practitioner",
+      "text": "Do you drink coffee after lunch?",
+      "node": null,
+      "start_sec": 12.9
+    },
+    {
+      "turn": 4,
+      "speaker": "client",
+      "text": "Usually one around three, yeah.",
+      "node": null,
+      "start_sec": 16.6
+    },
+    {
+      "turn": 5,
+      "speaker": "practitioner",
+      "text": "And do you look at your phone in bed?",
+      "node": null,
+      "start_sec": 19.9
+    },
+    {
+      "turn": 6,
+      "speaker": "client",
+      "text": "Sometimes. It helps me wind down.",
+      "node": null,
+      "start_sec": 24.8
+    },
+    {
+      "turn": 7,
+      "speaker": "practitioner",
+      "text": "Well, it doesn't. The blue light keeps your brain awake. You need to stop using your phone at night.",
+      "node": null,
+      "start_sec": 28.5
+    },
+    {
+      "turn": 8,
+      "speaker": "client",
+      "text": "I've heard that. It's just the only time I get to myself.",
+      "node": null,
+      "start_sec": 37.2
+    },
+    {
+      "turn": 9,
+      "speaker": "practitioner",
+      "text": "Your phone time is the only time that's yours.",
+      "node": null,
+      "start_sec": 43.2
+    },
+    {
+      "turn": 10,
+      "speaker": "client",
+      "text": "Pretty much. Once the kids are down, that hour is mine.",
+      "node": null,
+      "start_sec": 48.1
+    },
+    {
+      "turn": 11,
+      "speaker": "practitioner",
+      "text": "That hour is something you protect because nothing else in the day belongs to you. Are you exercising at all?",
+      "node": null,
+      "start_sec": 53.7
+    },
+    {
+      "turn": 12,
+      "speaker": "client",
+      "text": "Not really. I'm too tired.",
+      "node": null,
+      "start_sec": 62.8
+    },
+    {
+      "turn": 13,
+      "speaker": "practitioner",
+      "text": "Have you tried melatonin? Just take three milligrams before bed, that's what most people do.",
+      "node": null,
+      "start_sec": 66.1
+    },
+    {
+      "turn": 14,
+      "speaker": "client",
+      "text": "I don't really like taking pills.",
+      "node": null,
+      "start_sec": 73.3
+    },
+    {
+      "turn": 15,
+      "speaker": "practitioner",
+      "text": "It's a supplement, not really a medication, so it's pretty mild.",
+      "node": null,
+      "start_sec": 77.0
+    },
+    {
+      "turn": 16,
+      "speaker": "client",
+      "text": "Maybe. I don't know.",
+      "node": null,
+      "start_sec": 82.6
+    },
+    {
+      "turn": 17,
+      "speaker": "practitioner",
+      "text": "Okay. So less phone, no coffee after noon, and try the melatonin. Does that sound good?",
+      "node": null,
+      "start_sec": 85.6
+    },
+    {
+      "turn": 18,
+      "speaker": "client",
+      "text": "I guess I could try the coffee thing.",
+      "node": null,
+      "start_sec": 93.1
+    },
+    {
+      "turn": 19,
+      "speaker": "practitioner",
+      "text": "Cutting the afternoon coffee is something you could try. Anything else?",
+      "node": null,
+      "start_sec": 97.6
+    },
+    {
+      "turn": 20,
+      "speaker": "client",
+      "text": "No, I think that's it.",
+      "node": null,
+      "start_sec": 103.2
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "schema_version": "0.1",
+  "session_id": "MOCK-TEST-004",
+  "is_mock": true,
+  "provenance": "internal_test",
+  "source": "other",
+  "target_behavior": "managing stress",
+  "aven_version": null,
+  "recorded_at": "2026-10-14",
+  "turns": [
+    {
+      "turn": 1,
+      "speaker": "practitioner",
+      "text": "Hi there, can you hear me okay?",
+      "node": null,
+      "start_sec": 2.0
+    },
+    {
+      "turn": 2,
+      "speaker": "client",
+      "text": "Yep, you're a little quiet, but it's fine.",
+      "node": null,
+      "start_sec": 6.1
+    },
+    {
+      "turn": 3,
+      "speaker": "practitioner",
+      "text": "Let me turn the volume up. Is that better?",
+      "node": null,
+      "start_sec": 10.6
+    },
+    {
+      "turn": 4,
+      "speaker": "client",
+      "text": "Much better, thanks.",
+      "node": null,
+      "start_sec": 15.4
+    },
+    {
+      "turn": 5,
+      "speaker": "practitioner",
+      "text": "Great. What's been on your mind about stress lately?",
+      "node": null,
+      "start_sec": 18.0
+    },
+    {
+      "turn": 6,
+      "speaker": "client",
+      "text": "Work, mostly. I've been lying awake running through my to-do list.",
+      "node": null,
+      "start_sec": 22.8
+    },
+    {
+      "turn": 7,
+      "speaker": "practitioner",
+      "text": "Your to-do list follows you to bed.",
+      "node": null,
+      "start_sec": 28.5
+    },
+    {
+      "turn": 8,
+      "speaker": "client",
+      "text": "Every night. I'd really like to be able to switch off.",
+      "node": null,
+      "start_sec": 32.6
+    },
+    {
+      "turn": 9,
+      "speaker": "practitioner",
+      "text": "What has helped you switch off in the past?",
+      "node": null,
+      "start_sec": 38.2
+    },
+    {
+      "turn": 10,
+      "speaker": "client",
+      "text": "Writing things down helped, back when I did it. I stopped when things got busy.",
+      "node": null,
+      "start_sec": 43.1
+    },
+    {
+      "turn": 11,
+      "speaker": "practitioner",
+      "text": "Getting the list out of your head and onto paper gave your mind permission to rest.",
+      "node": null,
+      "start_sec": 50.2
+    },
+    {
+      "turn": 12,
+      "speaker": "client",
+      "text": "Huh, yeah. I could keep a notebook by the bed again.",
+      "node": null,
+      "start_sec": 57.8
+    },
+    {
+      "turn": 13,
+      "speaker": "practitioner",
+      "text": "That's a thoughtful idea, and you came up with it yourself.",
+      "node": null,
+      "start_sec": 63.4
+    },
+    {
+      "turn": 14,
+      "speaker": "client",
+      "text": "I'll try it tonight.",
+      "node": null,
+      "start_sec": 69.0
+    }
+  ]
+}

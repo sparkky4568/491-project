@@ -1,0 +1,180 @@
+{
+  "schema_version": "0.1",
+  "session_id": "MOCK-AVEN-003",
+  "is_mock": true,
+  "provenance": "simulated",
+  "source": "aven",
+  "target_behavior": "cutting back on soda",
+  "aven_version": "V17",
+  "recorded_at": "2026-10-05",
+  "turns": [
+    {
+      "turn": 1,
+      "speaker": "practitioner",
+      "text": "Hi, it's Aven. Last time you mentioned wanting to cut back on soda. How has that been sitting with you this week?",
+      "node": "engagement_picture",
+      "start_sec": 2.0
+    },
+    {
+      "turn": 2,
+      "speaker": "client",
+      "text": "Honestly, I've thought about it a lot. I'm drinking like four cans a day, and I feel kind of gross after.",
+      "node": "engagement_picture",
+      "start_sec": 11.9
+    },
+    {
+      "turn": 3,
+      "speaker": "practitioner",
+      "text": "Four cans a day is leaving you feeling worse, not better.",
+      "node": "engagement_picture",
+      "start_sec": 21.3
+    },
+    {
+      "turn": 4,
+      "speaker": "client",
+      "text": "Yeah. And my dad has diabetes, so it's always in the back of my mind.",
+      "node": "focus_values_bridge",
+      "start_sec": 27.0
+    },
+    {
+      "turn": 5,
+      "speaker": "practitioner",
+      "text": "Seeing what your dad goes through makes your own health feel close to home. What matters most to you about staying healthy?",
+      "node": "focus_values_bridge",
+      "start_sec": 34.1
+    },
+    {
+      "turn": 6,
+      "speaker": "client",
+      "text": "Being around for my kids. I want to be able to keep up with them.",
+      "node": "focus_values_bridge",
+      "start_sec": 44.0
+    },
+    {
+      "turn": 7,
+      "speaker": "practitioner",
+      "text": "Keeping up with your kids is what this is really about for you.",
+      "node": "evoke_change_talk",
+      "start_sec": 51.2
+    },
+    {
+      "turn": 8,
+      "speaker": "client",
+      "text": "It is. I don't want them growing up thinking soda with every meal is normal.",
+      "node": "evoke_change_talk",
+      "start_sec": 57.6
+    },
+    {
+      "turn": 9,
+      "speaker": "practitioner",
+      "text": "You want to show them something different.",
+      "node": "evoke_change_talk",
+      "start_sec": 64.7
+    },
+    {
+      "turn": 10,
+      "speaker": "client",
+      "text": "Right. And I know I can do it. I went a whole month without soda last spring.",
+      "node": "evoke_change_talk",
+      "start_sec": 68.8
+    },
+    {
+      "turn": 11,
+      "speaker": "practitioner",
+      "text": "You've already proven to yourself that you can go without it.",
+      "node": "evoke_change_talk",
+      "start_sec": 76.8
+    },
+    {
+      "turn": 12,
+      "speaker": "client",
+      "text": "Yeah, until work got crazy and the vending machine was right there.",
+      "node": "evoke_change_talk",
+      "start_sec": 82.4
+    },
+    {
+      "turn": 13,
+      "speaker": "practitioner",
+      "text": "Let me pull this together. Soda is leaving you feeling gross, your dad's diabetes keeps your health on your mind, and you want to keep up with your kids. You've done this before, and stress at work is what pulled you back. Did I get that right?",
+      "node": "evoke_summary",
+      "start_sec": 88.4
+    },
+    {
+      "turn": 14,
+      "speaker": "client",
+      "text": "Yeah, that's it exactly.",
+      "node": "evoke_summary",
+      "start_sec": 107.9
+    },
+    {
+      "turn": 15,
+      "speaker": "practitioner",
+      "text": "You've got a clear picture of why this matters, and it sounds like you're ready to think about a first step.",
+      "node": "plan_specifics",
+      "start_sec": 110.8
+    },
+    {
+      "turn": 16,
+      "speaker": "client",
+      "text": "Maybe I could swap the afternoon can for sparkling water. That's the one I grab out of habit.",
+      "node": "plan_specifics",
+      "start_sec": 120.3
+    },
+    {
+      "turn": 17,
+      "speaker": "practitioner",
+      "text": "The afternoon can is more habit than craving, so that's a smart place to start.",
+      "node": "plan_specifics",
+      "start_sec": 128.6
+    },
+    {
+      "turn": 18,
+      "speaker": "client",
+      "text": "I could keep a few cans of sparkling water in my desk drawer.",
+      "node": "plan_specifics",
+      "start_sec": 135.8
+    },
+    {
+      "turn": 19,
+      "speaker": "practitioner",
+      "text": "Having it within reach takes the vending machine out of the picture. What else would help on the stressful days?",
+      "node": "plan_specifics",
+      "start_sec": 142.2
+    },
+    {
+      "turn": 20,
+      "speaker": "client",
+      "text": "Maybe just reminding myself why I'm doing it. For my kids.",
+      "node": "plan_specifics",
+      "start_sec": 151.3
+    },
+    {
+      "turn": 21,
+      "speaker": "practitioner",
+      "text": "Keeping your kids in mind is your anchor on the hard days. On a scale from zero to ten, you're about an eight in confidence, so let's lock that in.",
+      "node": "plan_confirm",
+      "start_sec": 156.9
+    },
+    {
+      "turn": 22,
+      "speaker": "client",
+      "text": "Sure, an eight sounds about right.",
+      "node": "plan_confirm",
+      "start_sec": 169.9
+    },
+    {
+      "turn": 23,
+      "speaker": "practitioner",
+      "text": "Swapping the afternoon can is a plan built around your day. It's your plan, and you can change it any time. When would you like to check in on how it's going?",
+      "node": "plan_confirm",
+      "start_sec": 173.6
+    },
+    {
+      "turn": 24,
+      "speaker": "client",
+      "text": "Next Tuesday works.",
+      "node": "plan_confirm",
+      "start_sec": 187.3
+    }
+  ]
+}

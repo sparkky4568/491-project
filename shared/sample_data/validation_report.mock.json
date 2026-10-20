@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1",
+  "is_mock": true,
+  "run_id": "mock-validation-run-000",
+  "generated_at": "2026-10-20T19:00:00Z",
+  "split": "dev",
+  "n_sessions": 20,
+  "code_agreement": [
+    { "code": "Q", "metric": "cohen_kappa", "scorer_vs_human": 0.81, "human_vs_human": 0.86, "n": 412 },
+    { "code": "SR", "metric": "cohen_kappa", "scorer_vs_human": 0.52, "human_vs_human": 0.61, "n": 198 },
+    { "code": "CR", "metric": "cohen_kappa", "scorer_vs_human": 0.58, "human_vs_human": 0.66, "n": 251 },
+    { "code": "GI", "metric": "cohen_kappa", "scorer_vs_human": 0.63, "human_vs_human": 0.7, "n": 140 },
+    { "code": "PERSUADE", "metric": "cohen_kappa", "scorer_vs_human": 0.44, "human_vs_human": 0.55, "n": 37 },
+    { "code": "PERSUADE_WP", "metric": "cohen_kappa", "scorer_vs_human": 0.31, "human_vs_human": 0.48, "n": 12 },
+    { "code": "AF", "metric": "cohen_kappa", "scorer_vs_human": 0.49, "human_vs_human": 0.57, "n": 58 },
+    { "code": "SEEK", "metric": "cohen_kappa", "scorer_vs_human": 0.38, "human_vs_human": 0.5, "n": 41 },
+    { "code": "EMPHASIZE", "metric": "cohen_kappa", "scorer_vs_human": 0.42, "human_vs_human": 0.53, "n": 29 },
+    { "code": "CONFRONT", "metric": "cohen_kappa", "scorer_vs_human": 0.27, "human_vs_human": 0.45, "n": 9 }
+  ],
+  "measure_agreement": [
+    { "measure": "pct_complex_reflections", "metric": "icc", "scorer_vs_human": 0.7, "human_vs_human": 0.78, "n": 20 },
+    { "measure": "reflection_to_question", "metric": "icc", "scorer_vs_human": 0.74, "human_vs_human": 0.81, "n": 20 },
+    { "measure": "total_mia", "metric": "icc", "scorer_vs_human": 0.66, "human_vs_human": 0.72, "n": 20 },
+    { "measure": "total_mina", "metric": "icc", "scorer_vs_human": 0.71, "human_vs_human": 0.75, "n": 20 },
+    { "measure": "relational", "metric": "icc", "scorer_vs_human": 0.58, "human_vs_human": 0.69, "n": 20 },
+    { "measure": "technical", "metric": "icc", "scorer_vs_human": 0.55, "human_vs_human": 0.67, "n": 20 }
+  ],
+  "discriminant": {
+    "description": "Scorer separates high- vs low-quality MI",
+    "high_mi_mean": 4.1,
+    "low_mi_mean": 2.3,
+    "p_value": 0.001
+  },
+  "repeat_run": { "n_runs": 3, "agreement": 0.93 },
+  "contamination_check": {
+    "status": "not_run",
+    "notes": "Planned: check whether reference-corpus transcripts may be in the model's training data before trusting agreement on them."
+  }
+}

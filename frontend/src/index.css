@@ -1,0 +1,84 @@
+@import 'tailwindcss';
+
+/* Dark mode follows the .dark class on <html> (toggle in the header), not the OS setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-blue-600);
+    outline-offset: 2px;
+  }
+  .dark :focus-visible {
+    outline-color: var(--color-blue-300);
+  }
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Mock data banner: amber with diagonal stripes, so it can't be mistaken for a normal notice. */
+.mock-stripes {
+  background-color: var(--color-amber-100);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 14px,
+    color-mix(in oklab, var(--color-amber-300) 45%, transparent) 14px 28px
+  );
+}
+.dark .mock-stripes {
+  background-color: var(--color-amber-950);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 14px,
+    color-mix(in oklab, var(--color-amber-800) 45%, transparent) 14px 28px
+  );
+}
+
+/* Excluded turns: light hatching behind dimmed text. */
+.excluded-hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 8px,
+    color-mix(in oklab, var(--color-slate-300) 25%, transparent) 8px 9px
+  );
+}
+
+/* Flash a turn after jumping to it from a cited-turn link. */
+@keyframes turn-flash {
+  0%,
+  35% {
+    background-color: var(--flash-bg);
+    box-shadow: inset 0 0 0 2px var(--color-amber-500);
+  }
+  100% {
+    box-shadow: inset 0 0 0 2px transparent;
+  }
+}
+.turn-flash {
+  --flash-bg: var(--color-yellow-100);
+  animation: turn-flash 1.8s ease-out;
+}
+.dark .turn-flash {
+  --flash-bg: color-mix(in oklab, var(--color-amber-500) 25%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .turn-flash {
+    animation: none;
+    box-shadow: inset 0 0 0 2px var(--color-amber-500);
+  }
+}

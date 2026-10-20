@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "thresholds.schema.json",
+  "title": "Thresholds",
+  "description": "shared/config/thresholds.json. Owned by the sponsor; the console displays these and never edits them.",
+  "type": "object",
+  "required": ["_status"],
+  "properties": {
+    "_status": { "type": "string", "description": "Starts with PLACEHOLDER until the sponsor confirms." }
+  },
+  "additionalProperties": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["op", "value", "source"],
+    "properties": {
+      "op": { "enum": [">=", "<=", "==", ">", "<"] },
+      "value": { "type": "number" },
+      "source": { "type": "string" }
+    }
+  }
+}

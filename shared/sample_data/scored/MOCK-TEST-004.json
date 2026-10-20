@@ -1,0 +1,382 @@
+{
+  "schema_version": "0.1",
+  "session_id": "MOCK-TEST-004",
+  "is_mock": true,
+  "provenance": "internal_test",
+  "source": "other",
+  "target_behavior": "managing stress",
+  "aven_version": null,
+  "recorded_at": "2026-10-14",
+  "scorer": {
+    "run_id": "mock-run-2026-10-20-001",
+    "scored_at": "2026-10-20T18:03:02Z",
+    "coder_prompt_version": "coder-v0.1",
+    "globals_prompt_version": "globals-v0.1",
+    "model": "mock-model-v0",
+    "cost_usd": 0.05
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "speaker": "practitioner",
+      "text": "Hi there, can you hear me okay?",
+      "node": null,
+      "start_sec": 2.0,
+      "excluded": true,
+      "exclusion_reason": "pre-session small talk (placeholder exclusion rule)",
+      "codes": [
+        {
+          "code": "Q",
+          "evidence_quote": "can you hear me okay?",
+          "rationale": "Closed question (tech check).",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 2,
+      "speaker": "client",
+      "text": "Yep, you're a little quiet, but it's fine.",
+      "node": null,
+      "start_sec": 6.1,
+      "excluded": true,
+      "exclusion_reason": "pre-session small talk (placeholder exclusion rule)",
+      "client_talk": "neutral",
+      "client_evidence_quote": null
+    },
+    {
+      "turn": 3,
+      "speaker": "practitioner",
+      "text": "Let me turn the volume up. Is that better?",
+      "node": null,
+      "start_sec": 10.6,
+      "excluded": true,
+      "exclusion_reason": "pre-session small talk (placeholder exclusion rule)",
+      "codes": [
+        {
+          "code": "Q",
+          "evidence_quote": "Is that better?",
+          "rationale": "Closed question (tech check).",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 4,
+      "speaker": "client",
+      "text": "Much better, thanks.",
+      "node": null,
+      "start_sec": 15.4,
+      "excluded": true,
+      "exclusion_reason": "pre-session small talk (placeholder exclusion rule)",
+      "client_talk": "neutral",
+      "client_evidence_quote": null
+    },
+    {
+      "turn": 5,
+      "speaker": "practitioner",
+      "text": "Great. What's been on your mind about stress lately?",
+      "node": null,
+      "start_sec": 18.0,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "Q",
+          "evidence_quote": "What's been on your mind about stress lately?",
+          "rationale": "Open question that starts the session.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 6,
+      "speaker": "client",
+      "text": "Work, mostly. I've been lying awake running through my to-do list.",
+      "node": null,
+      "start_sec": 22.8,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "neutral",
+      "client_evidence_quote": null
+    },
+    {
+      "turn": 7,
+      "speaker": "practitioner",
+      "text": "Your to-do list follows you to bed.",
+      "node": null,
+      "start_sec": 28.5,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "SR",
+          "evidence_quote": "Your to-do list follows you to bed.",
+          "rationale": "Restates the client's experience.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 8,
+      "speaker": "client",
+      "text": "Every night. I'd really like to be able to switch off.",
+      "node": null,
+      "start_sec": 32.6,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I'd really like to be able to switch off."
+    },
+    {
+      "turn": 9,
+      "speaker": "practitioner",
+      "text": "What has helped you switch off in the past?",
+      "node": null,
+      "start_sec": 38.2,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "Q",
+          "evidence_quote": "What has helped you switch off in the past?",
+          "rationale": "Open question about past successes.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 10,
+      "speaker": "client",
+      "text": "Writing things down helped, back when I did it. I stopped when things got busy.",
+      "node": null,
+      "start_sec": 43.1,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "Writing things down helped"
+    },
+    {
+      "turn": 11,
+      "speaker": "practitioner",
+      "text": "Getting the list out of your head and onto paper gave your mind permission to rest.",
+      "node": null,
+      "start_sec": 50.2,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "putting the list on paper let your mind rest",
+          "rationale": "Reflects why writing helped, adding meaning beyond the client's words.",
+          "evidence_valid": false
+        }
+      ]
+    },
+    {
+      "turn": 12,
+      "speaker": "client",
+      "text": "Huh, yeah. I could keep a notebook by the bed again.",
+      "node": null,
+      "start_sec": 57.8,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I could keep a notebook by the bed again."
+    },
+    {
+      "turn": 13,
+      "speaker": "practitioner",
+      "text": "That's a thoughtful idea, and you came up with it yourself.",
+      "node": null,
+      "start_sec": 63.4,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "AF",
+          "evidence_quote": "That's a thoughtful idea, and you came up with it yourself.",
+          "rationale": "Affirms the client's own idea.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 14,
+      "speaker": "client",
+      "text": "I'll try it tonight.",
+      "node": null,
+      "start_sec": 69.0,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I'll try it tonight."
+    }
+  ],
+  "counts": {
+    "Q": 2,
+    "SR": 1,
+    "CR": 1,
+    "GI": 0,
+    "PERSUADE": 0,
+    "PERSUADE_WP": 0,
+    "AF": 1,
+    "SEEK": 0,
+    "EMPHASIZE": 0,
+    "CONFRONT": 0
+  },
+  "client_talk_counts": {
+    "change": 4,
+    "sustain": 0,
+    "neutral": 1
+  },
+  "measures": [
+    {
+      "id": "pct_complex_reflections",
+      "label": "% Complex Reflections",
+      "value": null,
+      "n": 2,
+      "formula": "CR / (SR + CR)",
+      "threshold": {
+        "op": ">=",
+        "value": 0.4,
+        "source": "placeholder"
+      },
+      "status": "insufficient_data"
+    },
+    {
+      "id": "reflection_to_question",
+      "label": "Reflection-to-Question Ratio",
+      "value": null,
+      "n": 4,
+      "formula": "(SR + CR) / Q",
+      "threshold": {
+        "op": ">=",
+        "value": 2.0,
+        "source": "placeholder"
+      },
+      "status": "insufficient_data"
+    },
+    {
+      "id": "total_mia",
+      "label": "Total MI-Adherent",
+      "value": 1,
+      "n": 5,
+      "formula": "AF + SEEK + EMPHASIZE",
+      "threshold": null,
+      "status": "no_threshold"
+    },
+    {
+      "id": "total_mina",
+      "label": "Total MI Non-Adherent",
+      "value": 0,
+      "n": 5,
+      "formula": "PERSUADE + CONFRONT",
+      "threshold": {
+        "op": "==",
+        "value": 0,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    },
+    {
+      "id": "relational",
+      "label": "Relational",
+      "value": 4.0,
+      "n": 10,
+      "formula": "(partnership + empathy) / 2",
+      "threshold": {
+        "op": ">=",
+        "value": 4.0,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    },
+    {
+      "id": "technical",
+      "label": "Technical",
+      "value": 4.0,
+      "n": 10,
+      "formula": "(cultivating_change_talk + softening_sustain_talk) / 2",
+      "threshold": {
+        "op": ">=",
+        "value": 4.0,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    }
+  ],
+  "globals": [
+    {
+      "id": "cultivating_change_talk",
+      "score": 4,
+      "cited_turns": [
+        9,
+        11
+      ],
+      "rationale": "Asked about past successes and reflected why writing helped, which led to the client's own plan."
+    },
+    {
+      "id": "softening_sustain_talk",
+      "score": 4,
+      "cited_turns": [
+        7
+      ],
+      "rationale": "Little sustain talk to soften; the practitioner did not argue or focus on barriers."
+    },
+    {
+      "id": "partnership",
+      "score": 4,
+      "cited_turns": [
+        9,
+        13
+      ],
+      "rationale": "The idea came from the client, and the practitioner credited them for it."
+    },
+    {
+      "id": "empathy",
+      "score": 4,
+      "cited_turns": [
+        7,
+        11
+      ],
+      "rationale": "Reflections tracked the client's experience of lying awake and what helped before."
+    }
+  ],
+  "flags": {
+    "longest_reflection_run": {
+      "length": 1,
+      "turns": [
+        7
+      ],
+      "cap": 2,
+      "exceeds_cap": false
+    },
+    "windowed_rq": {
+      "window_size": 10,
+      "points": [
+        {
+          "end_turn": 10,
+          "rq": 0.5
+        },
+        {
+          "end_turn": 11,
+          "rq": 1.0
+        },
+        {
+          "end_turn": 12,
+          "rq": 1.0
+        },
+        {
+          "end_turn": 13,
+          "rq": 1.0
+        },
+        {
+          "end_turn": 14,
+          "rq": 1.0
+        }
+      ]
+    }
+  },
+  "issues": []
+}

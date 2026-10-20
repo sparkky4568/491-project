@@ -1,0 +1,9 @@
+{
+  "_status": "PLACEHOLDER. The sponsor sets thresholds (expected Week 3). Never change these to improve agreement.",
+  "relational": { "op": ">=", "value": 4.0, "source": "Aven gate (Scorer Project Brief v3 §3A, per 10/9 briefing); confirm" },
+  "technical": { "op": ">=", "value": 4.0, "source": "Aven gate (Scorer Project Brief v3 §3A, per 10/9 briefing); confirm" },
+  "total_mina": { "op": "==", "value": 0, "source": "Aven gate (Scorer Project Brief v3 §3A, per 10/9 briefing); confirm" },
+  "pct_complex_reflections": { "op": ">=", "value": 0.4, "source": "PLACEHOLDER: MITI 4.2.1 'fair' level (good = 50%); sponsor to set" },
+  "reflection_to_question": { "op": ">=", "value": 2.0, "source": "2:1 from sponsor brief; scope notes it conflicts with the flow's two-reflection cap; confirm" },
+  "longest_reflection_run": { "op": "<=", "value": 2, "source": "Aven flow two-reflection design cap; confirm meaning with sponsor" }
+}

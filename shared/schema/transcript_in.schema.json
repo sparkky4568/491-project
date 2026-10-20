@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "transcript_in.schema.json",
+  "title": "TranscriptIn",
+  "description": "What the pipeline ingests. v0 draft; will adapt to the sponsor's canonical transcript format. See docs/DATA_CONTRACT.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "session_id", "is_mock", "provenance", "source", "target_behavior",
+    "aven_version", "recorded_at", "turns"
+  ],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "session_id": { "type": "string", "minLength": 1 },
+    "is_mock": { "type": "boolean", "description": "true for every invented file. The console shows a MOCK banner when true." },
+    "provenance": { "enum": ["real", "simulated", "reference_corpus", "internal_test"] },
+    "source": { "enum": ["aven", "annomi", "casaa", "other"] },
+    "target_behavior": { "type": "string" },
+    "aven_version": { "type": ["string", "null"], "description": "e.g. V17; null for corpus data." },
+    "recorded_at": { "type": ["string", "null"], "format": "date" },
+    "turns": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/turn" } }
+  },
+  "$defs": {
+    "turn": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["turn", "speaker", "text", "node", "start_sec"],
+      "properties": {
+        "turn": { "type": "integer", "minimum": 1 },
+        "speaker": { "enum": ["practitioner", "client"] },
+        "text": { "type": "string" },
+        "node": { "type": ["string", "null"], "description": "Aven conversation-flow node; null for corpus data." },
+        "start_sec": { "type": ["number", "null"], "minimum": 0 }
+      }
+    }
+  }
+}

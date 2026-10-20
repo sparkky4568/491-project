@@ -1,0 +1,166 @@
+{
+  "schema_version": "0.1",
+  "session_id": "MOCK-REF-001",
+  "is_mock": true,
+  "provenance": "reference_corpus",
+  "source": "annomi",
+  "target_behavior": "walking more",
+  "aven_version": null,
+  "recorded_at": null,
+  "turns": [
+    {
+      "turn": 1,
+      "speaker": "practitioner",
+      "text": "Thanks for coming in. What would you like us to focus on today?",
+      "node": null,
+      "start_sec": 2.0
+    },
+    {
+      "turn": 2,
+      "speaker": "client",
+      "text": "My doctor keeps telling me I need to move more. I sit at a desk all day, and by the time I get home I'm wiped out.",
+      "node": null,
+      "start_sec": 8.4
+    },
+    {
+      "turn": 3,
+      "speaker": "practitioner",
+      "text": "You're hearing it from your doctor, and at the same time your days leave you with not much left in the tank.",
+      "node": null,
+      "start_sec": 20.2
+    },
+    {
+      "turn": 4,
+      "speaker": "client",
+      "text": "Exactly. I know walking would help. I used to walk all the time before this job.",
+      "node": null,
+      "start_sec": 30.0
+    },
+    {
+      "turn": 5,
+      "speaker": "practitioner",
+      "text": "Walking used to be a regular part of your life. What did you like about it back then?",
+      "node": null,
+      "start_sec": 37.6
+    },
+    {
+      "turn": 6,
+      "speaker": "client",
+      "text": "It cleared my head. I'd come back from a walk and actually feel like myself again.",
+      "node": null,
+      "start_sec": 45.9
+    },
+    {
+      "turn": 7,
+      "speaker": "practitioner",
+      "text": "Walking was more than exercise for you. It was how you found your way back to yourself.",
+      "node": null,
+      "start_sec": 53.5
+    },
+    {
+      "turn": 8,
+      "speaker": "client",
+      "text": "Yeah. I miss that, honestly.",
+      "node": null,
+      "start_sec": 61.4
+    },
+    {
+      "turn": 9,
+      "speaker": "practitioner",
+      "text": "Part of you really wants that feeling back.",
+      "node": null,
+      "start_sec": 64.7
+    },
+    {
+      "turn": 10,
+      "speaker": "client",
+      "text": "I do. I just don't see where it fits. My mornings are chaos with the kids.",
+      "node": null,
+      "start_sec": 69.2
+    },
+    {
+      "turn": 11,
+      "speaker": "practitioner",
+      "text": "You keep a demanding job and a busy family running, which takes real persistence. Where in your week might a walk fit, if anywhere?",
+      "node": null,
+      "start_sec": 76.8
+    },
+    {
+      "turn": 12,
+      "speaker": "client",
+      "text": "Maybe lunch. We get an hour, and I usually just eat at my desk.",
+      "node": null,
+      "start_sec": 87.4
+    },
+    {
+      "turn": 13,
+      "speaker": "practitioner",
+      "text": "Lunch is a window that's already there.",
+      "node": null,
+      "start_sec": 94.2
+    },
+    {
+      "turn": 14,
+      "speaker": "client",
+      "text": "It is. Even twenty minutes would be something.",
+      "node": null,
+      "start_sec": 98.3
+    },
+    {
+      "turn": 15,
+      "speaker": "practitioner",
+      "text": "Twenty minutes feels doable, and it sounds like it would really matter to you.",
+      "node": null,
+      "start_sec": 102.8
+    },
+    {
+      "turn": 16,
+      "speaker": "client",
+      "text": "It would. I guess I worry what my coworkers would think if I'm the only one leaving.",
+      "node": null,
+      "start_sec": 109.5
+    },
+    {
+      "turn": 17,
+      "speaker": "practitioner",
+      "text": "Being the one who walks out feels a bit exposed, and it's completely your call. What might make it easier?",
+      "node": null,
+      "start_sec": 117.5
+    },
+    {
+      "turn": 18,
+      "speaker": "client",
+      "text": "If I asked Dana to come with me, it wouldn't feel so strange. She's always complaining about sitting too.",
+      "node": null,
+      "start_sec": 126.6
+    },
+    {
+      "turn": 19,
+      "speaker": "practitioner",
+      "text": "A walking partner would turn it into something you do together instead of something you sneak off to do.",
+      "node": null,
+      "start_sec": 135.3
+    },
+    {
+      "turn": 20,
+      "speaker": "client",
+      "text": "Right. I think I'll ask her tomorrow.",
+      "node": null,
+      "start_sec": 144.0
+    },
+    {
+      "turn": 21,
+      "speaker": "practitioner",
+      "text": "You've gone from not seeing where walking fits to a plan to ask Dana tomorrow.",
+      "node": null,
+      "start_sec": 148.1
+    },
+    {
+      "turn": 22,
+      "speaker": "client",
+      "text": "I'll text myself a reminder at noon so I don't talk myself out of it.",
+      "node": null,
+      "start_sec": 155.2
+    }
+  ]
+}

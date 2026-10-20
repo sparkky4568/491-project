@@ -1,0 +1,650 @@
+{
+  "schema_version": "0.1",
+  "session_id": "MOCK-AVEN-003",
+  "is_mock": true,
+  "provenance": "simulated",
+  "source": "aven",
+  "target_behavior": "cutting back on soda",
+  "aven_version": "V17",
+  "recorded_at": "2026-10-05",
+  "scorer": {
+    "run_id": "mock-run-2026-10-20-001",
+    "scored_at": "2026-10-20T18:02:31Z",
+    "coder_prompt_version": "coder-v0.1",
+    "globals_prompt_version": "globals-v0.1",
+    "model": "mock-model-v0",
+    "cost_usd": 0.14
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "speaker": "practitioner",
+      "text": "Hi, it's Aven. Last time you mentioned wanting to cut back on soda. How has that been sitting with you this week?",
+      "node": "engagement_picture",
+      "start_sec": 2.0,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "Q",
+          "evidence_quote": "How has that been sitting with you this week?",
+          "rationale": "Open question to re-engage the caller on their goal.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 2,
+      "speaker": "client",
+      "text": "Honestly, I've thought about it a lot. I'm drinking like four cans a day, and I feel kind of gross after.",
+      "node": "engagement_picture",
+      "start_sec": 11.9,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I feel kind of gross after"
+    },
+    {
+      "turn": 3,
+      "speaker": "practitioner",
+      "text": "Four cans a day is leaving you feeling worse, not better.",
+      "node": "engagement_picture",
+      "start_sec": 21.3,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "SR",
+          "evidence_quote": "Four cans a day is leaving you feeling worse, not better.",
+          "rationale": "Restates the caller's description with little added meaning.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 4,
+      "speaker": "client",
+      "text": "Yeah. And my dad has diabetes, so it's always in the back of my mind.",
+      "node": "focus_values_bridge",
+      "start_sec": 27.0,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "my dad has diabetes, so it's always in the back of my mind"
+    },
+    {
+      "turn": 5,
+      "speaker": "practitioner",
+      "text": "Seeing what your dad goes through makes your own health feel close to home. What matters most to you about staying healthy?",
+      "node": "focus_values_bridge",
+      "start_sec": 34.1,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "Seeing what your dad goes through makes your own health feel close to home.",
+          "rationale": "Adds meaning by linking the father's illness to the caller's own health.",
+          "evidence_valid": true
+        },
+        {
+          "code": "Q",
+          "evidence_quote": "What matters most to you about staying healthy?",
+          "rationale": "Open question bridging to the caller's values.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 6,
+      "speaker": "client",
+      "text": "Being around for my kids. I want to be able to keep up with them.",
+      "node": "focus_values_bridge",
+      "start_sec": 44.0,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I want to be able to keep up with them."
+    },
+    {
+      "turn": 7,
+      "speaker": "practitioner",
+      "text": "Keeping up with your kids is what this is really about for you.",
+      "node": "evoke_change_talk",
+      "start_sec": 51.2,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "Keeping up with your kids is what this is really about for you.",
+          "rationale": "Reflects the deeper value behind the goal.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 8,
+      "speaker": "client",
+      "text": "It is. I don't want them growing up thinking soda with every meal is normal.",
+      "node": "evoke_change_talk",
+      "start_sec": 57.6,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I don't want them growing up thinking soda with every meal is normal."
+    },
+    {
+      "turn": 9,
+      "speaker": "practitioner",
+      "text": "You want to show them something different.",
+      "node": "evoke_change_talk",
+      "start_sec": 64.7,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "SR",
+          "evidence_quote": "You want to show them something different.",
+          "rationale": "Restates the caller's point in slightly different words.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 10,
+      "speaker": "client",
+      "text": "Right. And I know I can do it. I went a whole month without soda last spring.",
+      "node": "evoke_change_talk",
+      "start_sec": 68.8,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I know I can do it."
+    },
+    {
+      "turn": 11,
+      "speaker": "practitioner",
+      "text": "You've already proven to yourself that you can go without it.",
+      "node": "evoke_change_talk",
+      "start_sec": 76.8,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "You've already proven to yourself that you can go without it.",
+          "rationale": "Reflects the caller's ability, framing the past month as evidence.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 12,
+      "speaker": "client",
+      "text": "Yeah, until work got crazy and the vending machine was right there.",
+      "node": "evoke_change_talk",
+      "start_sec": 82.4,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "sustain",
+      "client_evidence_quote": "until work got crazy and the vending machine was right there"
+    },
+    {
+      "turn": 13,
+      "speaker": "practitioner",
+      "text": "Let me pull this together. Soda is leaving you feeling gross, your dad's diabetes keeps your health on your mind, and you want to keep up with your kids. You've done this before, and stress at work is what pulled you back. Did I get that right?",
+      "node": "evoke_summary",
+      "start_sec": 88.4,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "You've done this before, and stress at work is what pulled you back.",
+          "rationale": "Collecting summary of the caller's reasons and the barrier, coded as a complex reflection.",
+          "evidence_valid": true
+        },
+        {
+          "code": "Q",
+          "evidence_quote": "Did I get that right?",
+          "rationale": "Closed question checking the summary.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 14,
+      "speaker": "client",
+      "text": "Yeah, that's it exactly.",
+      "node": "evoke_summary",
+      "start_sec": 107.9,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "neutral",
+      "client_evidence_quote": null
+    },
+    {
+      "turn": 15,
+      "speaker": "practitioner",
+      "text": "You've got a clear picture of why this matters, and it sounds like you're ready to think about a first step.",
+      "node": "plan_specifics",
+      "start_sec": 110.8,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "it sounds like you're ready to think about a first step",
+          "rationale": "Reflects readiness the caller implied but did not state.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 16,
+      "speaker": "client",
+      "text": "Maybe I could swap the afternoon can for sparkling water. That's the one I grab out of habit.",
+      "node": "plan_specifics",
+      "start_sec": 120.3,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "Maybe I could swap the afternoon can for sparkling water."
+    },
+    {
+      "turn": 17,
+      "speaker": "practitioner",
+      "text": "The afternoon can is more habit than craving, so that's a smart place to start.",
+      "node": "plan_specifics",
+      "start_sec": 128.6,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "The afternoon can is more habit than craving",
+          "rationale": "Reflects the caller's insight about habit, adding meaning.",
+          "evidence_valid": true
+        },
+        {
+          "code": "AF",
+          "evidence_quote": "that's a smart place to start",
+          "rationale": "Affirms the caller's choice of a first step.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 18,
+      "speaker": "client",
+      "text": "I could keep a few cans of sparkling water in my desk drawer.",
+      "node": "plan_specifics",
+      "start_sec": 135.8,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "I could keep a few cans of sparkling water in my desk drawer."
+    },
+    {
+      "turn": 19,
+      "speaker": "practitioner",
+      "text": "Having it within reach takes the vending machine out of the picture. What else would help on the stressful days?",
+      "node": "plan_specifics",
+      "start_sec": 142.2,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "Having it within reach takes the vending machine out of the picture.",
+          "rationale": "Connects the plan to the earlier barrier.",
+          "evidence_valid": true
+        },
+        {
+          "code": "Q",
+          "evidence_quote": "What else would help on the stressful days?",
+          "rationale": "Open question about coping with the known barrier.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 20,
+      "speaker": "client",
+      "text": "Maybe just reminding myself why I'm doing it. For my kids.",
+      "node": "plan_specifics",
+      "start_sec": 151.3,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "change",
+      "client_evidence_quote": "reminding myself why I'm doing it"
+    },
+    {
+      "turn": 21,
+      "speaker": "practitioner",
+      "text": "Keeping your kids in mind is your anchor on the hard days. On a scale from zero to ten, you're about an eight in confidence, so let's lock that in.",
+      "node": "plan_confirm",
+      "start_sec": 156.9,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "Keeping your kids in mind is your anchor on the hard days.",
+          "rationale": "Reflects the caller's motivation as a coping strategy.",
+          "evidence_valid": true
+        },
+        {
+          "code": "GI",
+          "evidence_quote": "On a scale from zero to ten, you're about an eight in confidence",
+          "rationale": "States a confidence rating the caller never gave; coded as giving information.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 22,
+      "speaker": "client",
+      "text": "Sure, an eight sounds about right.",
+      "node": "plan_confirm",
+      "start_sec": 169.9,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "neutral",
+      "client_evidence_quote": null
+    },
+    {
+      "turn": 23,
+      "speaker": "practitioner",
+      "text": "Swapping the afternoon can is a plan built around your day. It's your plan, and you can change it any time. When would you like to check in on how it's going?",
+      "node": "plan_confirm",
+      "start_sec": 173.6,
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "CR",
+          "evidence_quote": "Swapping the afternoon can is a plan built around your day.",
+          "rationale": "Restates the plan in terms of the caller's routine.",
+          "evidence_valid": true
+        },
+        {
+          "code": "EMPHASIZE",
+          "evidence_quote": "It's your plan, and you can change it any time.",
+          "rationale": "Emphasizes the caller's control over the plan.",
+          "evidence_valid": true
+        },
+        {
+          "code": "Q",
+          "evidence_quote": "When would you like to check in on how it's going?",
+          "rationale": "Question inviting the caller to set the follow-up.",
+          "evidence_valid": true
+        }
+      ]
+    },
+    {
+      "turn": 24,
+      "speaker": "client",
+      "text": "Next Tuesday works.",
+      "node": "plan_confirm",
+      "start_sec": 187.3,
+      "excluded": false,
+      "exclusion_reason": null,
+      "client_talk": "neutral",
+      "client_evidence_quote": null
+    }
+  ],
+  "counts": {
+    "Q": 5,
+    "SR": 2,
+    "CR": 9,
+    "GI": 1,
+    "PERSUADE": 0,
+    "PERSUADE_WP": 0,
+    "AF": 1,
+    "SEEK": 0,
+    "EMPHASIZE": 1,
+    "CONFRONT": 0
+  },
+  "client_talk_counts": {
+    "change": 8,
+    "sustain": 1,
+    "neutral": 3
+  },
+  "measures": [
+    {
+      "id": "pct_complex_reflections",
+      "label": "% Complex Reflections",
+      "value": 0.8182,
+      "n": 11,
+      "formula": "CR / (SR + CR)",
+      "threshold": {
+        "op": ">=",
+        "value": 0.4,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    },
+    {
+      "id": "reflection_to_question",
+      "label": "Reflection-to-Question Ratio",
+      "value": 2.2,
+      "n": 16,
+      "formula": "(SR + CR) / Q",
+      "threshold": {
+        "op": ">=",
+        "value": 2.0,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    },
+    {
+      "id": "total_mia",
+      "label": "Total MI-Adherent",
+      "value": 2,
+      "n": 12,
+      "formula": "AF + SEEK + EMPHASIZE",
+      "threshold": null,
+      "status": "no_threshold"
+    },
+    {
+      "id": "total_mina",
+      "label": "Total MI Non-Adherent",
+      "value": 0,
+      "n": 12,
+      "formula": "PERSUADE + CONFRONT",
+      "threshold": {
+        "op": "==",
+        "value": 0,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    },
+    {
+      "id": "relational",
+      "label": "Relational",
+      "value": 4.5,
+      "n": 24,
+      "formula": "(partnership + empathy) / 2",
+      "threshold": {
+        "op": ">=",
+        "value": 4.0,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    },
+    {
+      "id": "technical",
+      "label": "Technical",
+      "value": 4.0,
+      "n": 24,
+      "formula": "(cultivating_change_talk + softening_sustain_talk) / 2",
+      "threshold": {
+        "op": ">=",
+        "value": 4.0,
+        "source": "placeholder"
+      },
+      "status": "pass"
+    }
+  ],
+  "globals": [
+    {
+      "id": "cultivating_change_talk",
+      "score": 4,
+      "cited_turns": [
+        5,
+        7,
+        11,
+        15
+      ],
+      "rationale": "Steadily drew out the caller's reasons and ability; the evoke section stayed on change talk, though it ran three reflections without a question."
+    },
+    {
+      "id": "softening_sustain_talk",
+      "score": 4,
+      "cited_turns": [
+        13,
+        19
+      ],
+      "rationale": "Folded the work-stress barrier into the summary and later planned for it, without arguing."
+    },
+    {
+      "id": "partnership",
+      "score": 4,
+      "cited_turns": [
+        17,
+        21,
+        23
+      ],
+      "rationale": "The plan came from the caller's own ideas, but stating the confidence number for the caller (T21) undercuts shared decision-making."
+    },
+    {
+      "id": "empathy",
+      "score": 5,
+      "cited_turns": [
+        5,
+        7,
+        11
+      ],
+      "rationale": "Complex reflections captured the family meaning behind the goal and the caller's confidence from past success."
+    }
+  ],
+  "flags": {
+    "longest_reflection_run": {
+      "length": 3,
+      "turns": [
+        7,
+        9,
+        11
+      ],
+      "cap": 2,
+      "exceeds_cap": true
+    },
+    "windowed_rq": {
+      "window_size": 10,
+      "points": [
+        {
+          "end_turn": 10,
+          "rq": 2.0
+        },
+        {
+          "end_turn": 11,
+          "rq": 5.0
+        },
+        {
+          "end_turn": 12,
+          "rq": 5.0
+        },
+        {
+          "end_turn": 13,
+          "rq": 2.5
+        },
+        {
+          "end_turn": 14,
+          "rq": 2.5
+        },
+        {
+          "end_turn": 15,
+          "rq": 5.0
+        },
+        {
+          "end_turn": 16,
+          "rq": 5.0
+        },
+        {
+          "end_turn": 17,
+          "rq": 5.0
+        },
+        {
+          "end_turn": 18,
+          "rq": 5.0
+        },
+        {
+          "end_turn": 19,
+          "rq": 2.5
+        },
+        {
+          "end_turn": 20,
+          "rq": 2.5
+        },
+        {
+          "end_turn": 21,
+          "rq": 2.5
+        },
+        {
+          "end_turn": 22,
+          "rq": 2.5
+        },
+        {
+          "end_turn": 23,
+          "rq": 2.5
+        },
+        {
+          "end_turn": 24,
+          "rq": 2.5
+        }
+      ]
+    }
+  },
+  "issues": [
+    {
+      "issue_id": "ISS-0007",
+      "session_id": "MOCK-AVEN-003",
+      "type": "table_c_flag",
+      "title": "Reflection run exceeds design cap",
+      "detail": "3 reflections in a row; cap is 2",
+      "measure_id": null,
+      "node": "evoke_change_talk",
+      "turns": [
+        7,
+        9,
+        11
+      ],
+      "evidence_quote": "You've already proven to yourself that you can go without it.",
+      "provenance": "simulated",
+      "aven_version": "V17",
+      "coder_prompt_version": "coder-v0.1",
+      "model": "mock-model-v0",
+      "created_at": "2026-10-20T18:02:31Z"
+    },
+    {
+      "issue_id": "ISS-0008",
+      "session_id": "MOCK-AVEN-003",
+      "type": "table_d_behavior",
+      "title": "Answered the confidence ruler for the caller",
+      "detail": "Stated the caller's confidence as 8 out of 10 instead of asking for it. (Mock Table D entry; the sponsor's list is pending.)",
+      "measure_id": null,
+      "node": "plan_confirm",
+      "turns": [
+        21
+      ],
+      "evidence_quote": "you're about an eight in confidence",
+      "provenance": "simulated",
+      "aven_version": "V17",
+      "coder_prompt_version": "coder-v0.1",
+      "model": "mock-model-v0",
+      "created_at": "2026-10-20T18:02:31Z"
+    }
+  ]
+}

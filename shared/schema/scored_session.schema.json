@@ -1,0 +1,575 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "scored_session.schema.json",
+  "title": "ScoredSession",
+  "description": "What the pipeline writes and the review console reads. All TranscriptIn top-level fields plus scorer output. v0 draft; see docs/DATA_CONTRACT.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "session_id",
+    "is_mock",
+    "provenance",
+    "source",
+    "target_behavior",
+    "aven_version",
+    "recorded_at",
+    "scorer",
+    "turns",
+    "counts",
+    "client_talk_counts",
+    "measures",
+    "globals",
+    "flags",
+    "issues"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "is_mock": {
+      "type": "boolean"
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "source": {
+      "enum": [
+        "aven",
+        "annomi",
+        "casaa",
+        "other"
+      ]
+    },
+    "target_behavior": {
+      "type": "string"
+    },
+    "aven_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "recorded_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "scorer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "scored_at",
+        "coder_prompt_version",
+        "globals_prompt_version",
+        "model",
+        "cost_usd"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "scored_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "coder_prompt_version": {
+          "type": "string"
+        },
+        "globals_prompt_version": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string",
+          "description": "Exact pinned model id."
+        },
+        "cost_usd": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "turns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/practitioner_turn"
+          },
+          {
+            "$ref": "#/$defs/client_turn"
+          }
+        ]
+      }
+    },
+    "counts": {
+      "description": "Code counts over non-excluded practitioner turns. Computed by the pipeline, not the LLM.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Q",
+        "SR",
+        "CR",
+        "GI",
+        "PERSUADE",
+        "PERSUADE_WP",
+        "AF",
+        "SEEK",
+        "EMPHASIZE",
+        "CONFRONT"
+      ],
+      "properties": {
+        "Q": {
+          "$ref": "#/$defs/count"
+        },
+        "SR": {
+          "$ref": "#/$defs/count"
+        },
+        "CR": {
+          "$ref": "#/$defs/count"
+        },
+        "GI": {
+          "$ref": "#/$defs/count"
+        },
+        "PERSUADE": {
+          "$ref": "#/$defs/count"
+        },
+        "PERSUADE_WP": {
+          "$ref": "#/$defs/count"
+        },
+        "AF": {
+          "$ref": "#/$defs/count"
+        },
+        "SEEK": {
+          "$ref": "#/$defs/count"
+        },
+        "EMPHASIZE": {
+          "$ref": "#/$defs/count"
+        },
+        "CONFRONT": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "client_talk_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "change",
+        "sustain",
+        "neutral"
+      ],
+      "properties": {
+        "change": {
+          "$ref": "#/$defs/count"
+        },
+        "sustain": {
+          "$ref": "#/$defs/count"
+        },
+        "neutral": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "measures": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/measure"
+      }
+    },
+    "globals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/global_rating"
+      }
+    },
+    "flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "longest_reflection_run",
+        "windowed_rq"
+      ],
+      "properties": {
+        "longest_reflection_run": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "length",
+            "turns",
+            "cap",
+            "exceeds_cap"
+          ],
+          "properties": {
+            "length": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "turns": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "cap": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "exceeds_cap": {
+              "type": "boolean",
+              "description": "Computed by the pipeline so the console never compares numbers itself."
+            }
+          }
+        },
+        "windowed_rq": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "window_size",
+            "points"
+          ],
+          "properties": {
+            "window_size": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "end_turn",
+                  "rq"
+                ],
+                "properties": {
+                  "end_turn": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "rq": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "description": "null when the window has no questions."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "$ref": "issue.schema.json"
+      }
+    }
+  },
+  "$defs": {
+    "provenance": {
+      "enum": [
+        "real",
+        "simulated",
+        "reference_corpus",
+        "internal_test"
+      ]
+    },
+    "code": {
+      "enum": [
+        "Q",
+        "SR",
+        "CR",
+        "GI",
+        "PERSUADE",
+        "PERSUADE_WP",
+        "AF",
+        "SEEK",
+        "EMPHASIZE",
+        "CONFRONT"
+      ]
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "turn_number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "turn_text": {
+      "type": "string"
+    },
+    "turn_node": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "turn_start_sec": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "turn_excluded": {
+      "type": "boolean"
+    },
+    "turn_exclusion_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "practitioner_turn": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "turn",
+        "speaker",
+        "text",
+        "node",
+        "start_sec",
+        "excluded",
+        "exclusion_reason",
+        "codes"
+      ],
+      "properties": {
+        "turn": {
+          "$ref": "#/$defs/turn_number"
+        },
+        "speaker": {
+          "const": "practitioner"
+        },
+        "text": {
+          "$ref": "#/$defs/turn_text"
+        },
+        "node": {
+          "$ref": "#/$defs/turn_node"
+        },
+        "start_sec": {
+          "$ref": "#/$defs/turn_start_sec"
+        },
+        "excluded": {
+          "$ref": "#/$defs/turn_excluded"
+        },
+        "exclusion_reason": {
+          "$ref": "#/$defs/turn_exclusion_reason"
+        },
+        "codes": {
+          "description": "Zero, one or several MITI 4.2.1 behavior codes. Excluded turns may keep their Stage 1 codes; Stage 2 ignores them.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "evidence_quote",
+              "rationale",
+              "evidence_valid"
+            ],
+            "properties": {
+              "code": {
+                "$ref": "#/$defs/code"
+              },
+              "evidence_quote": {
+                "type": "string",
+                "description": "Exact words copied from the turn text."
+              },
+              "rationale": {
+                "type": "string"
+              },
+              "evidence_valid": {
+                "type": "boolean",
+                "description": "false when the quote was not found verbatim in the turn text."
+              }
+            }
+          }
+        }
+      }
+    },
+    "client_turn": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "turn",
+        "speaker",
+        "text",
+        "node",
+        "start_sec",
+        "excluded",
+        "exclusion_reason",
+        "client_talk",
+        "client_evidence_quote"
+      ],
+      "properties": {
+        "turn": {
+          "$ref": "#/$defs/turn_number"
+        },
+        "speaker": {
+          "const": "client"
+        },
+        "text": {
+          "$ref": "#/$defs/turn_text"
+        },
+        "node": {
+          "$ref": "#/$defs/turn_node"
+        },
+        "start_sec": {
+          "$ref": "#/$defs/turn_start_sec"
+        },
+        "excluded": {
+          "$ref": "#/$defs/turn_excluded"
+        },
+        "exclusion_reason": {
+          "$ref": "#/$defs/turn_exclusion_reason"
+        },
+        "client_talk": {
+          "enum": [
+            "change",
+            "sustain",
+            "neutral"
+          ]
+        },
+        "client_evidence_quote": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Verbatim words from the turn; may be null for neutral talk."
+        }
+      }
+    },
+    "measure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "value",
+        "n",
+        "formula",
+        "threshold",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "enum": [
+            "pct_complex_reflections",
+            "reflection_to_question",
+            "total_mia",
+            "total_mina",
+            "relational",
+            "technical"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "value": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "null when status is insufficient_data."
+        },
+        "n": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "formula": {
+          "type": "string"
+        },
+        "threshold": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "op",
+                "value",
+                "source"
+              ],
+              "properties": {
+                "op": {
+                  "enum": [
+                    ">=",
+                    "<=",
+                    "==",
+                    ">",
+                    "<"
+                  ]
+                },
+                "value": {
+                  "type": "number"
+                },
+                "source": {
+                  "type": "string",
+                  "description": "\"placeholder\" until the sponsor confirms thresholds."
+                }
+              }
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "fail",
+            "no_threshold",
+            "insufficient_data"
+          ]
+        }
+      }
+    },
+    "global_rating": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "score",
+        "cited_turns",
+        "rationale"
+      ],
+      "properties": {
+        "id": {
+          "enum": [
+            "cultivating_change_talk",
+            "softening_sustain_talk",
+            "partnership",
+            "empathy"
+          ]
+        },
+        "score": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "cited_turns": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
