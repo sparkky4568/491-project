@@ -84,12 +84,26 @@ export function ScorePage() {
           ref={box}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          aria-describedby="conversation-hint"
+          aria-describedby={usingRealScorer ? 'conversation-hint' : 'conversation-hint practice-warning'}
           placeholder={PLACEHOLDER}
           rows={10}
           spellCheck={false}
           className="mt-3 block w-full resize-y rounded-xl bg-navy-50 px-4 py-3 font-sans text-[15px] leading-7 text-navy-900 ring-1 ring-navy-200 placeholder:text-navy-400 focus:bg-white focus:ring-2 focus:ring-brand-400 focus:outline-none"
         />
+
+        {!usingRealScorer && (
+          <div
+            id="practice-warning"
+            className="mt-3 flex items-start gap-3 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-950 ring-1 ring-amber-300"
+          >
+            <Icon name="alert" className="mt-0.5 h-5 w-5 text-amber-700" />
+            <p>
+              <strong className="font-semibold">Heads up: these scores are placeholders for now.</strong> The real AI scorer isn't
+              connected yet, so the results come from simple keyword rules and can be wrong. Once the AI scorer is finished, this
+              same box will give accurate, refined scores. Nothing you paste is saved or sent anywhere.
+            </p>
+          </div>
+        )}
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button type="submit" className={`${primaryButton} px-6 text-base`} disabled={busy}>
@@ -132,16 +146,6 @@ export function ScorePage() {
           </div>
         )}
       </form>
-
-      {!usingRealScorer && (
-        <p className="mt-3 flex items-start gap-2 text-sm text-navy-500">
-          <Icon name="info" className="mt-0.5" />
-          <span>
-            Practice mode: scores come from simple keyword rules until the real AI scorer is connected. Nothing you paste leaves
-            your browser.
-          </span>
-        </p>
-      )}
 
       {error && (
         <div className="mt-6">
