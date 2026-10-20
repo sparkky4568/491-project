@@ -164,8 +164,8 @@ A list of Issue objects (below), one per problem found in this session.
   "issue_id": "ISS-0007",
   "session_id": "MOCK-AVEN-003",
   "type": "table_c_flag",
-  "title": "Reflection run exceeds design cap",
-  "detail": "3 reflections in a row; cap is 2",
+  "title": "Too many reflections in a row",
+  "detail": "The coach reflected 3 times in a row without asking anything. The flow allows 2.",
   "measure_id": null,
   "node": "evoke_change_talk",
   "turns": [7, 9, 11],
@@ -185,6 +185,8 @@ A list of Issue objects (below), one per problem found in this session.
 | `table_d_behavior`        | A prohibited behavior from the sponsor's Table D           | `null`       | where it happened                             | the verbatim words                  |
 
 `node` is the node of the first turn in `turns` (`null` for corpus data). Issue ids are unique across a run.
+
+The console shows `title` and `detail` word for word to people who don't know MITI, so write them in plain English with the numbers included. For example, "Asked far more than listened" / "0.43 reflections per question (3 reflections, 7 questions). Goal: 2 or more." rather than "R:Q below threshold".
 
 Table D is the sponsor's list of prohibited behaviors. We don't have it yet, so the mock entries are stand-ins ("gave medication advice", "answered the confidence ruler for the caller").
 
@@ -250,4 +252,4 @@ for p in pathlib.Path("shared/sample_data/scored").glob("*.json"):
 EOF
 ```
 
-Or drop the file onto the console's **Load results file** button: it names the first bad fields.
+Or open the file with the console's **Open results file** button: it names the first bad fields.

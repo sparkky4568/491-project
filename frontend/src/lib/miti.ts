@@ -1,113 +1,198 @@
-/** Display metadata for MITI 4.2.1 codes, measures and labels. No scoring logic lives here. */
+/**
+ * Plain-English names for everything the scorer outputs.
+ * Each entry keeps the official MITI 4.2.1 name too, so the sponsor can still match terms.
+ * Display text only: no scoring logic lives here.
+ */
 import type { ClientTalk, Code, IssueType, MeasureStatus, Provenance, Source } from './schema'
 
-export type CodeGroup = 'question' | 'reflection' | 'information' | 'adherent' | 'non_adherent'
+export type CodeGroup = 'question' | 'listening' | 'information' | 'supportive' | 'pushy'
 
-export const CODE_INFO: Record<Code, { name: string; group: CodeGroup }> = {
-  Q: { name: 'Question', group: 'question' },
-  SR: { name: 'Simple Reflection', group: 'reflection' },
-  CR: { name: 'Complex Reflection', group: 'reflection' },
-  GI: { name: 'Giving Information', group: 'information' },
-  PERSUADE: { name: 'Persuade (without permission)', group: 'non_adherent' },
-  PERSUADE_WP: { name: 'Persuade with Permission', group: 'information' },
-  AF: { name: 'Affirm', group: 'adherent' },
-  SEEK: { name: 'Seeking Collaboration', group: 'adherent' },
-  EMPHASIZE: { name: 'Emphasizing Autonomy', group: 'adherent' },
-  CONFRONT: { name: 'Confront', group: 'non_adherent' },
+export interface CodeInfo {
+  label: string
+  explain: string
+  miti: string
+  group: CodeGroup
 }
 
-/** One color family per code group. Chips always carry text, so color is never the only signal. */
-export const GROUP_INFO: Record<CodeGroup, { label: string; chip: string; swatch: string }> = {
-  question: {
-    label: 'Questions',
-    chip: 'border-sky-300 bg-sky-50 text-sky-900 dark:border-sky-700 dark:bg-sky-950 dark:text-sky-100',
-    swatch: 'bg-sky-500',
+export const CODE_INFO: Record<Code, CodeInfo> = {
+  Q: { label: 'Question', explain: 'The coach asks something.', miti: 'Question (Q)', group: 'question' },
+  SR: {
+    label: 'Repeats back',
+    explain: "The coach repeats what the person said, close to the person's own words.",
+    miti: 'Simple Reflection (SR)',
+    group: 'listening',
   },
-  reflection: {
-    label: 'Reflections',
-    chip: 'border-violet-300 bg-violet-50 text-violet-900 dark:border-violet-700 dark:bg-violet-950 dark:text-violet-100',
-    swatch: 'bg-violet-500',
+  CR: {
+    label: 'Reflects meaning',
+    explain: 'The coach reflects what the person said and adds meaning or feeling. Good coaching has lots of these.',
+    miti: 'Complex Reflection (CR)',
+    group: 'listening',
   },
-  information: {
-    label: 'Information',
-    chip: 'border-slate-300 bg-slate-100 text-slate-800 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100',
-    swatch: 'bg-slate-500',
+  GI: {
+    label: 'Gives information',
+    explain: 'The coach shares facts or information.',
+    miti: 'Giving Information (GI)',
+    group: 'information',
   },
-  adherent: {
-    label: 'MI-adherent',
-    chip: 'border-teal-300 bg-teal-50 text-teal-900 dark:border-teal-700 dark:bg-teal-950 dark:text-teal-100',
-    swatch: 'bg-teal-500',
+  PERSUADE: {
+    label: 'Pushes advice',
+    explain: 'The coach tells the person what to do, or tries to change their mind, without asking first.',
+    miti: 'Persuade (PERSUADE)',
+    group: 'pushy',
   },
-  non_adherent: {
-    label: 'MI non-adherent',
-    chip: 'border-red-800 bg-red-700 text-white font-semibold dark:border-red-300 dark:bg-red-600',
-    swatch: 'bg-red-700',
+  PERSUADE_WP: {
+    label: 'Advice with permission',
+    explain: 'The coach offers advice after asking whether the person wants it.',
+    miti: 'Persuade with Permission (PERSUADE_WP)',
+    group: 'information',
+  },
+  AF: {
+    label: 'Encourages',
+    explain: 'The coach points out a real strength or effort.',
+    miti: 'Affirm (AF)',
+    group: 'supportive',
+  },
+  SEEK: {
+    label: 'Invites input',
+    explain: 'The coach shares control, for example by asking what the person wants to talk about.',
+    miti: 'Seeking Collaboration (SEEK)',
+    group: 'supportive',
+  },
+  EMPHASIZE: {
+    label: 'Respects choice',
+    explain: 'The coach makes it clear the decision belongs to the person.',
+    miti: 'Emphasizing Autonomy (EMPHASIZE)',
+    group: 'supportive',
+  },
+  CONFRONT: {
+    label: 'Argues',
+    explain: 'The coach disagrees with, corrects or criticizes the person.',
+    miti: 'Confront (CONFRONT)',
+    group: 'pushy',
   },
 }
 
-export const CODE_GROUP_ORDER: CodeGroup[] = ['question', 'reflection', 'information', 'adherent', 'non_adherent']
+/** One color family per kind of behavior. Tags always carry words, so color is never the only signal. */
+export const GROUP_STYLE: Record<CodeGroup, { label: string; tag: string; dot: string }> = {
+  question: { label: 'Questions', tag: 'bg-sky-50 text-sky-900 ring-sky-200', dot: 'bg-sky-500' },
+  listening: { label: 'Listening', tag: 'bg-violet-50 text-violet-900 ring-violet-200', dot: 'bg-violet-500' },
+  information: { label: 'Information', tag: 'bg-slate-100 text-slate-800 ring-slate-200', dot: 'bg-slate-400' },
+  supportive: { label: 'Supportive', tag: 'bg-teal-50 text-teal-900 ring-teal-200', dot: 'bg-teal-500' },
+  pushy: { label: 'Pushy', tag: 'bg-red-600 text-white ring-red-700', dot: 'bg-red-600' },
+}
 
-export const isNonAdherent = (code: Code) => CODE_INFO[code].group === 'non_adherent'
-
-export const CLIENT_TALK_INFO: Record<ClientTalk, { label: string; className: string }> = {
+export const CLIENT_TALK_INFO: Record<ClientTalk, { label: string; explain: string; miti: string }> = {
   change: {
-    label: 'Change talk',
-    className:
-      'border-emerald-300 bg-emerald-50 text-emerald-900 dark:border-emerald-700 dark:bg-emerald-950 dark:text-emerald-100',
+    label: 'Wants to change',
+    explain: 'The person gives a reason, wish or plan to change.',
+    miti: 'Change talk',
   },
   sustain: {
-    label: 'Sustain talk',
-    className: 'border-orange-300 bg-orange-50 text-orange-900 dark:border-orange-700 dark:bg-orange-950 dark:text-orange-100',
+    label: 'Holding back',
+    explain: 'The person gives a reason to keep things the way they are.',
+    miti: 'Sustain talk',
   },
-  neutral: {
-    label: 'Neutral',
-    className: 'border-slate-300 bg-white text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300',
+  neutral: { label: 'Neutral', explain: 'Neither for nor against change.', miti: 'Neutral' },
+}
+
+export interface MeasureCopy {
+  label: string
+  explain: string
+  /** How to show the value, e.g. "82%", "2.2 per question", "4.5 / 5". */
+  unit: 'percent' | 'perQuestion' | 'count' | 'outOf5'
+  miti: string
+}
+
+export const MEASURE_COPY: Record<string, MeasureCopy> = {
+  pct_complex_reflections: {
+    label: 'Reflections that add meaning',
+    explain: "Of the coach's reflections, the share that add meaning instead of just repeating back.",
+    unit: 'percent',
+    miti: '% Complex Reflections = CR / (SR + CR)',
+  },
+  reflection_to_question: {
+    label: 'Listening vs. asking',
+    explain: 'Reflections for every question asked. Good coaching listens more than it asks.',
+    unit: 'perQuestion',
+    miti: 'Reflection-to-Question ratio = (SR + CR) / Q',
+  },
+  total_mia: {
+    label: 'Supportive moments',
+    explain: "Times the coach encouraged, invited input or respected the person's choice.",
+    unit: 'count',
+    miti: 'Total MI-Adherent = AF + SEEK + EMPHASIZE',
+  },
+  total_mina: {
+    label: 'Pushy moments',
+    explain: 'Times the coach pushed advice or argued. This should be zero.',
+    unit: 'count',
+    miti: 'Total MI Non-Adherent = PERSUADE + CONFRONT',
+  },
+  relational: {
+    label: 'Relationship',
+    explain: 'How well the coach partnered with the person and showed understanding.',
+    unit: 'outOf5',
+    miti: 'Relational = (Partnership + Empathy) / 2',
+  },
+  technical: {
+    label: 'Technique',
+    explain: 'How well the coach drew out reasons to change and eased resistance.',
+    unit: 'outOf5',
+    miti: 'Technical = (Cultivating Change Talk + Softening Sustain Talk) / 2',
   },
 }
 
-export const GLOBAL_LABELS: Record<string, string> = {
-  cultivating_change_talk: 'Cultivating Change Talk',
-  softening_sustain_talk: 'Softening Sustain Talk',
-  partnership: 'Partnership',
-  empathy: 'Empathy',
+/** The order key scores appear in. Relationship and Technique come from the overall ratings. */
+export const KEY_MEASURES = [
+  'pct_complex_reflections',
+  'reflection_to_question',
+  'total_mina',
+  'total_mia',
+  'relational',
+  'technical',
+]
+
+export const GLOBAL_COPY: Record<string, { label: string; miti: string }> = {
+  cultivating_change_talk: { label: 'Draws out reasons to change', miti: 'Cultivating Change Talk' },
+  softening_sustain_talk: { label: 'Eases resistance', miti: 'Softening Sustain Talk' },
+  partnership: { label: 'Works as a partner', miti: 'Partnership' },
+  empathy: { label: 'Shows understanding', miti: 'Empathy' },
 }
 
-/** Measures derived from the global ratings. They are shown next to the globals. */
-export const GLOBAL_DERIVED_MEASURES = ['relational', 'technical']
-
-export const MEASURE_LABELS: Record<string, string> = {
-  pct_complex_reflections: '% Complex Reflections',
-  reflection_to_question: 'Reflection-to-Question Ratio',
-  total_mia: 'Total MI-Adherent',
-  total_mina: 'Total MI Non-Adherent',
-  relational: 'Relational',
-  technical: 'Technical',
-  longest_reflection_run: 'Longest reflection run',
+export const STATUS_COPY: Record<MeasureStatus, string> = {
+  pass: 'Goal met',
+  fail: 'Goal missed',
+  no_threshold: 'No goal set',
+  insufficient_data: 'Not enough data',
 }
 
-export const PROVENANCE_LABELS: Record<Provenance, string> = {
-  real: 'Real',
-  simulated: 'Simulated',
-  reference_corpus: 'Reference corpus',
-  internal_test: 'Internal test',
+export const ISSUE_TYPE_COPY: Record<IssueType, { label: string; explain: string }> = {
+  measure_below_threshold: { label: 'Missed a goal', explain: 'A score fell short of its goal.' },
+  table_c_flag: { label: 'Flow rule', explain: "Broke one of the sponsor's conversation-flow rules (Table C)." },
+  table_d_behavior: { label: 'Not allowed', explain: 'Did something the coach must never do (Table D).' },
 }
 
-export const SOURCE_LABELS: Record<Source, string> = {
+export const PROVENANCE_COPY: Record<Provenance, string> = {
+  real: 'Real call',
+  simulated: 'Simulated call',
+  reference_corpus: 'Example conversation',
+  internal_test: 'Team test',
+}
+
+export const SOURCE_COPY: Record<Source, string> = {
   aven: 'Aven',
-  annomi: 'AnnoMI',
-  casaa: 'CASAA',
+  annomi: 'AnnoMI-style',
+  casaa: 'CASAA-style',
   other: 'Other',
 }
 
-export const ISSUE_TYPE_LABELS: Record<IssueType, string> = {
-  measure_below_threshold: 'Measure below threshold',
-  table_c_flag: 'Table C flag',
-  table_d_behavior: 'Table D behavior',
+/** "evoke_change_talk" → "Evoke change talk" */
+export function nodeLabel(node: string): string {
+  const words = node.replace(/_/g, ' ')
+  return words.charAt(0).toUpperCase() + words.slice(1)
 }
 
-export const STATUS_LABELS: Record<MeasureStatus, string> = {
-  pass: 'Pass',
-  fail: 'Fail',
-  no_threshold: 'No threshold',
-  insufficient_data: 'Insufficient data',
+/** "cutting back on soda" → "Cutting back on soda" */
+export function topicLabel(topic: string): string {
+  return topic ? topic.charAt(0).toUpperCase() + topic.slice(1) : 'Untitled conversation'
 }

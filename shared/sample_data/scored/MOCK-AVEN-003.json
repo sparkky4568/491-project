@@ -612,8 +612,8 @@
       "issue_id": "ISS-0007",
       "session_id": "MOCK-AVEN-003",
       "type": "table_c_flag",
-      "title": "Reflection run exceeds design cap",
-      "detail": "3 reflections in a row; cap is 2",
+      "title": "Too many reflections in a row",
+      "detail": "The coach reflected 3 times in a row without asking anything. The flow allows 2.",
       "measure_id": null,
       "node": "evoke_change_talk",
       "turns": [
@@ -632,8 +632,8 @@
       "issue_id": "ISS-0008",
       "session_id": "MOCK-AVEN-003",
       "type": "table_d_behavior",
-      "title": "Answered the confidence ruler for the caller",
-      "detail": "Stated the caller's confidence as 8 out of 10 instead of asking for it. (Mock Table D entry; the sponsor's list is pending.)",
+      "title": "Answered the confidence question for the caller",
+      "detail": "Said the caller was \"about an eight\" instead of asking them. (Example rule: the sponsor's real list is still coming.)",
       "measure_id": null,
       "node": "plan_confirm",
       "turns": [

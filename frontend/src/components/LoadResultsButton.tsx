@@ -2,11 +2,11 @@ import { useRef, useState } from 'react'
 import { addLoadedSessions } from '../lib/data'
 import { parseResultsFile, type LoadResult } from '../lib/loadFile'
 import { Icon } from './Icon'
-import { buttonClass } from './ui'
+import { secondaryButton } from './ui'
 
 /**
- * "Load results file": pick one or more ScoredSession JSON files from disk.
- * Each file is validated with Zod; valid sessions join the list for this tab.
+ * "Open results file": view a teammate's pipeline output (one ScoredSession, or an array).
+ * The file is checked against the data contract and kept in this browser tab only.
  */
 export function LoadResultsButton({ existingIds }: { existingIds: ReadonlySet<string> }) {
   const input = useRef<HTMLInputElement>(null)
@@ -15,17 +15,18 @@ export function LoadResultsButton({ existingIds }: { existingIds: ReadonlySet<st
   async function onFiles(files: FileList | null) {
     if (!files || files.length === 0) return
     const parsed = await Promise.all([...files].map(parseResultsFile))
-    const withReplaced = parsed.map((r) => {
-      const replaced = r.ok ? r.sessions.filter((s) => existingIds.has(s.session_id)).map((s) => s.session_id) : []
-      if (r.ok) addLoadedSessions(r.sessions)
-      return { ...r, replaced }
-    })
-    setResults(withReplaced)
+    setResults(
+      parsed.map((r) => {
+        const replaced = r.ok ? r.sessions.filter((s) => existingIds.has(s.session_id)).map((s) => s.session_id) : []
+        if (r.ok) addLoadedSessions(r.sessions)
+        return { ...r, replaced }
+      }),
+    )
     if (input.current) input.current.value = ''
   }
 
   return (
-    <div className="flex flex-col items-start gap-2">
+    <>
       <input
         ref={input}
         type="file"
@@ -34,31 +35,35 @@ export function LoadResultsButton({ existingIds }: { existingIds: ReadonlySet<st
         hidden
         onChange={(e) => void onFiles(e.target.files)}
       />
-      <button type="button" className={buttonClass} onClick={() => input.current?.click()}>
+      <button
+        type="button"
+        className={secondaryButton}
+        onClick={() => input.current?.click()}
+        title="View pipeline output from your computer. Nothing is uploaded."
+      >
         <Icon name="upload" />
-        Load results file
+        Open results file
       </button>
       {results.length > 0 && (
-        <div className="w-full space-y-2" aria-live="polite">
+        <div className="basis-full space-y-2" aria-live="polite">
           {results.map((r) =>
             r.ok ? (
               <p
                 key={r.fileName}
                 role="status"
-                className="rounded-md border border-green-300 bg-green-50 px-3 py-2 text-sm text-green-950 dark:border-green-800 dark:bg-green-950 dark:text-green-100"
+                className="rounded-xl bg-green-50 px-4 py-2.5 text-sm text-green-900 ring-1 ring-green-200"
               >
-                <strong>{r.fileName}</strong>: loaded {r.sessions.length} session{r.sessions.length === 1 ? '' : 's'} (
-                {r.sessions.map((s) => s.session_id).join(', ')})
-                {r.replaced.length > 0 && <> and replaced the earlier copy of {r.replaced.join(', ')}</>}.
+                Opened <strong>{r.fileName}</strong>: {r.sessions.length} conversation{r.sessions.length === 1 ? '' : 's'}
+                {r.replaced.length > 0 && <> (replaced {r.replaced.join(', ')})</>}. It stays in this tab only.
               </p>
             ) : (
               <div
                 key={r.fileName}
                 role="alert"
-                className="rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-950 dark:border-red-800 dark:bg-red-950 dark:text-red-100"
+                className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-950 ring-1 ring-red-200"
               >
                 <p>
-                  <strong>{r.fileName}</strong>: {r.message}
+                  <strong>{r.fileName}</strong> couldn't be opened. {r.message}
                 </p>
                 {r.details.length > 0 && (
                   <ul className="mt-1 list-disc space-y-0.5 pl-5 font-mono text-xs">
@@ -72,6 +77,6 @@ export function LoadResultsButton({ existingIds }: { existingIds: ReadonlySet<st
           )}
         </div>
       )}
-    </div>
+    </>
   )
 }

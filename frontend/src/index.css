@@ -1,84 +1,78 @@
 @import 'tailwindcss';
 
-/* Dark mode follows the .dark class on <html> (toggle in the header), not the OS setting. */
-@custom-variant dark (&:where(.dark, .dark *));
-
 @theme {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'DM Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* Deep navy for text and headings */
+  --color-navy-50: #f3f7fb;
+  --color-navy-100: #e4edf6;
+  --color-navy-200: #c9d8e8;
+  --color-navy-300: #9db5ce;
+  --color-navy-400: #6d8aa8;
+  --color-navy-500: #4c6886;
+  --color-navy-600: #38526e;
+  --color-navy-700: #284059;
+  --color-navy-800: #1b3149;
+  --color-navy-900: #102f4d;
+  --color-navy-950: #0b1d31;
+
+  /* Warm orange accent */
+  --color-brand-50: #fff6ed;
+  --color-brand-100: #ffe8d1;
+  --color-brand-200: #ffd0a3;
+  --color-brand-300: #fdb06b;
+  --color-brand-400: #f99a3e;
+  --color-brand-500: #f28a24;
+  --color-brand-600: #dc7213;
+  --color-brand-700: #b3570c;
+  --color-brand-800: #8c440f;
 }
 
 @layer base {
-  html {
-    color-scheme: light;
-  }
-  html.dark {
-    color-scheme: dark;
-  }
   body {
-    @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+    @apply bg-navy-50 font-sans text-navy-900 antialiased;
+    background-image: linear-gradient(180deg, #dbe9f5 0px, #eaf2f9 280px, var(--color-navy-50) 620px);
+    background-repeat: no-repeat;
   }
   :focus-visible {
-    outline: 2px solid var(--color-blue-600);
+    outline: 2px solid var(--color-brand-600);
     outline-offset: 2px;
   }
-  .dark :focus-visible {
-    outline-color: var(--color-blue-300);
-  }
   button:not(:disabled),
-  [role='button']:not(:disabled) {
+  summary {
     cursor: pointer;
   }
+  summary::-webkit-details-marker {
+    display: none;
+  }
 }
 
-/* Mock data banner: amber with diagonal stripes, so it can't be mistaken for a normal notice. */
-.mock-stripes {
-  background-color: var(--color-amber-100);
-  background-image: repeating-linear-gradient(
-    135deg,
-    transparent 0 14px,
-    color-mix(in oklab, var(--color-amber-300) 45%, transparent) 14px 28px
-  );
-}
-.dark .mock-stripes {
-  background-color: var(--color-amber-950);
-  background-image: repeating-linear-gradient(
-    135deg,
-    transparent 0 14px,
-    color-mix(in oklab, var(--color-amber-800) 45%, transparent) 14px 28px
-  );
-}
-
-/* Excluded turns: light hatching behind dimmed text. */
-.excluded-hatch {
+/* Excluded (not scored) messages: light hatching. */
+.not-scored {
   background-image: repeating-linear-gradient(
     135deg,
     transparent 0 8px,
-    color-mix(in oklab, var(--color-slate-300) 25%, transparent) 8px 9px
+    color-mix(in oklab, var(--color-navy-200) 35%, transparent) 8px 9px
   );
 }
 
-/* Flash a turn after jumping to it from a cited-turn link. */
+/* Flash a message after jumping to it. */
 @keyframes turn-flash {
   0%,
   35% {
-    background-color: var(--flash-bg);
-    box-shadow: inset 0 0 0 2px var(--color-amber-500);
+    box-shadow: 0 0 0 3px var(--color-brand-400);
   }
   100% {
-    box-shadow: inset 0 0 0 2px transparent;
+    box-shadow: 0 0 0 3px transparent;
   }
 }
 .turn-flash {
-  --flash-bg: var(--color-yellow-100);
   animation: turn-flash 1.8s ease-out;
-}
-.dark .turn-flash {
-  --flash-bg: color-mix(in oklab, var(--color-amber-500) 25%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {
   .turn-flash {
     animation: none;
-    box-shadow: inset 0 0 0 2px var(--color-amber-500);
+    box-shadow: 0 0 0 3px var(--color-brand-400);
   }
 }

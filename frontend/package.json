@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "AVEN Scorer \u00b7 Review Console: reads the pipeline's JSON output (mock files for now).",
+  "description": "AVEN Scorer · Review Console: reads the pipeline's JSON output (mock files for now).",
   "engines": {
     "node": ">=20.19"
   },
@@ -16,6 +16,7 @@
     "format:check": "prettier --check src vite.config.ts"
   },
   "dependencies": {
+    "@fontsource-variable/dm-sans": "^5.3.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router": "^7.18.4",

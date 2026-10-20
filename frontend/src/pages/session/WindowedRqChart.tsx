@@ -1,6 +1,5 @@
 import { useContext } from 'react'
 import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { useIsDark } from '../../components/Layout'
 import { TurnNavContext } from './turnNav'
 
 interface Point {
@@ -8,32 +7,21 @@ interface Point {
   rq: number | null
 }
 
-/** Single-series line of the pipeline's windowed R:Q, with the session threshold as a dashed reference. */
-export function WindowedRqChart({
-  points,
-  windowSize,
-  threshold,
-}: {
-  points: Point[]
-  windowSize: number
-  threshold: number | null
-}) {
-  const dark = useIsDark()
-  const focusTurn = useContext(TurnNavContext)
-  const colors = dark
-    ? { line: '#cbd5e1', grid: '#1e293b', axis: '#94a3b8', ref: '#fbbf24', surface: '#0f172a' }
-    : { line: '#334155', grid: '#e2e8f0', axis: '#64748b', ref: '#b45309', surface: '#ffffff' }
+const COLORS = { line: '#102f4d', grid: '#e4edf6', axis: '#4c6886', goal: '#b3570c', surface: '#ffffff' }
 
+/** "Listening vs. asking" over the course of the call, as computed by the pipeline. */
+export function WindowedRqChart({ points, windowSize, goal }: { points: Point[]; windowSize: number; goal: number | null }) {
+  const focusTurn = useContext(TurnNavContext)
   return (
     <div
-      className="mt-2 h-44 w-full"
+      className="h-52 w-full"
       role="img"
-      aria-label={`Line chart of windowed R:Q at ${points.length} points. Use "Show as table" for the values.`}
+      aria-label={`Line chart with ${points.length} points. Use "Show the numbers" for the values.`}
     >
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={points}
-          margin={{ top: 12, right: 12, bottom: 0, left: -18 }}
+          margin={{ top: 16, right: 16, bottom: 0, left: -14 }}
           onClick={(state) => {
             const index = Number(state?.activeTooltipIndex)
             const point = Number.isInteger(index) ? points[index] : undefined
@@ -41,41 +29,36 @@ export function WindowedRqChart({
           }}
           style={{ cursor: 'pointer' }}
         >
-          <CartesianGrid vertical={false} stroke={colors.grid} />
+          <CartesianGrid vertical={false} stroke={COLORS.grid} />
           <XAxis
             dataKey="end_turn"
-            tick={{ fontSize: 11, fill: colors.axis }}
+            tick={{ fontSize: 12, fill: COLORS.axis }}
             tickLine={false}
-            axisLine={{ stroke: colors.grid }}
-            tickFormatter={(t: number) => `T${t}`}
+            axisLine={{ stroke: COLORS.grid }}
+            tickFormatter={(t: number) => `#${t}`}
             interval="preserveStartEnd"
           />
-          <YAxis tick={{ fontSize: 11, fill: colors.axis }} tickLine={false} axisLine={false} domain={[0, 'auto']} width={44} />
-          {threshold !== null && (
+          <YAxis tick={{ fontSize: 12, fill: COLORS.axis }} tickLine={false} axisLine={false} domain={[0, 'auto']} width={44} />
+          {goal !== null && (
             <ReferenceLine
-              y={threshold}
-              stroke={colors.ref}
+              y={goal}
+              stroke={COLORS.goal}
               strokeDasharray="5 4"
-              label={{
-                value: `threshold ${threshold} (placeholder)`,
-                position: 'insideTopRight',
-                fontSize: 10,
-                fill: colors.axis,
-              }}
+              label={{ value: `goal ${goal}*`, position: 'insideTopRight', fontSize: 11, fill: COLORS.goal }}
             />
           )}
           <Tooltip
-            cursor={{ stroke: colors.grid }}
+            cursor={{ stroke: COLORS.grid }}
             content={({ active, payload }) => {
               const point = payload?.[0]?.payload as Point | undefined
               if (!active || !point) return null
               return (
-                <div className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs shadow-md dark:border-slate-700 dark:bg-slate-900">
-                  <div className="font-medium">
-                    Turns {Math.max(1, point.end_turn - windowSize + 1)}–{point.end_turn}
+                <div className="rounded-xl bg-white px-3 py-2 text-xs shadow-lg ring-1 ring-navy-900/10">
+                  <div className="font-semibold text-navy-900">
+                    Messages {Math.max(1, point.end_turn - windowSize + 1)}–{point.end_turn}
                   </div>
-                  <div className="tabular-nums">
-                    {point.rq === null ? 'No questions in window' : `R:Q ${point.rq.toFixed(2)}`}
+                  <div className="text-navy-600">
+                    {point.rq === null ? 'No questions in this stretch' : `${point.rq.toFixed(2)} reflections per question`}
                   </div>
                 </div>
               )
@@ -84,12 +67,10 @@ export function WindowedRqChart({
           <Line
             type="linear"
             dataKey="rq"
-            stroke={colors.line}
+            stroke={COLORS.line}
             strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            dot={{ r: 4, fill: colors.line, stroke: colors.surface, strokeWidth: 2 }}
-            activeDot={{ r: 6, fill: colors.line, stroke: colors.surface, strokeWidth: 2 }}
+            dot={{ r: 4, fill: COLORS.line, stroke: COLORS.surface, strokeWidth: 2 }}
+            activeDot={{ r: 6, fill: COLORS.goal, stroke: COLORS.surface, strokeWidth: 2 }}
             connectNulls={false}
             isAnimationActive={false}
           />

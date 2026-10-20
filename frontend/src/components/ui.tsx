@@ -1,217 +1,192 @@
-/** Small presentational building blocks shared by every page. */
+/** Shared building blocks: cards, pills, buttons and page headers. */
 import type { ReactNode } from 'react'
-import { ISSUE_TYPE_LABELS, PROVENANCE_LABELS, STATUS_LABELS } from '../lib/miti'
+import { ISSUE_TYPE_COPY, PROVENANCE_COPY, STATUS_COPY } from '../lib/miti'
 import type { IssueType, MeasureStatus, Provenance } from '../lib/schema'
 import { Icon, type IconName } from './Icon'
 
-// ----------------------------------------------------------------- Tooltip
+export const primaryButton =
+  'inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-navy-950 shadow-[0_6px_16px_-6px_rgba(242,138,36,0.7)] transition hover:bg-brand-400'
 
-/**
- * Visual tooltip on hover and keyboard focus. It is aria-hidden, so put the same
- * information in the trigger's accessible name (aria-label or sr-only text).
- */
-export function Tooltip({
-  text,
-  children,
-  align = 'center',
-  hidden = false,
-}: {
-  text: string
-  children: ReactNode
-  align?: 'center' | 'start' | 'end'
-  hidden?: boolean
-}) {
-  const position = { center: 'left-1/2 -translate-x-1/2', start: 'left-0', end: 'right-0' }[align]
+export const secondaryButton =
+  'inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-navy-900 ring-1 ring-navy-200 transition hover:bg-navy-50 disabled:opacity-50'
+
+export const textLink =
+  'font-semibold text-brand-700 underline decoration-brand-300 underline-offset-4 hover:decoration-brand-600'
+
+export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <span className="group/tip relative inline-flex">
+    <div
+      className={`rounded-2xl bg-white shadow-[0_1px_2px_rgba(16,47,77,0.05),0_12px_32px_-16px_rgba(16,47,77,0.18)] ring-1 ring-navy-900/5 ${className}`}
+    >
       {children}
-      {!hidden && (
-        <span
-          aria-hidden="true"
-          className={`pointer-events-none absolute bottom-full z-40 mb-1.5 hidden w-max max-w-64 rounded-md bg-slate-900 px-2 py-1 text-xs leading-snug font-normal whitespace-normal text-white shadow-lg group-focus-within/tip:block group-hover/tip:block dark:bg-slate-100 dark:text-slate-900 ${position}`}
-        >
-          {text}
-        </span>
-      )}
-    </span>
-  )
-}
-
-// ------------------------------------------------------------------- Badges
-
-const PROVENANCE_STYLES: Record<Provenance, string> = {
-  real: 'border-slate-900 bg-slate-900 text-white dark:border-white dark:bg-white dark:text-slate-900',
-  simulated: 'border-indigo-300 bg-indigo-50 text-indigo-900 dark:border-indigo-700 dark:bg-indigo-950 dark:text-indigo-100',
-  reference_corpus: 'border-stone-300 bg-stone-100 text-stone-800 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100',
-  internal_test:
-    'border-dashed border-amber-500 bg-amber-50 text-amber-900 dark:border-amber-500 dark:bg-amber-950 dark:text-amber-100',
-}
-
-export function ProvenanceBadge({ provenance }: { provenance: Provenance }) {
-  return (
-    <span
-      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap ${PROVENANCE_STYLES[provenance]}`}
-    >
-      <span className="sr-only">Provenance: </span>
-      {PROVENANCE_LABELS[provenance]}
-    </span>
-  )
-}
-
-export function MockTag() {
-  return (
-    <span className="inline-flex items-center rounded border border-amber-600 bg-amber-100 px-1.5 py-px text-[11px] font-bold tracking-wide text-amber-950 dark:border-amber-400 dark:bg-amber-900 dark:text-amber-50">
-      MOCK
-    </span>
-  )
-}
-
-const STATUS_STYLES: Record<MeasureStatus, { className: string; icon: IconName }> = {
-  pass: {
-    className: 'border-green-300 bg-green-50 text-green-900 dark:border-green-700 dark:bg-green-950 dark:text-green-100',
-    icon: 'check',
-  },
-  fail: { className: 'border-red-300 bg-red-50 text-red-900 dark:border-red-700 dark:bg-red-950 dark:text-red-100', icon: 'x' },
-  no_threshold: {
-    className: 'border-slate-300 bg-white text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300',
-    icon: 'minus',
-  },
-  insufficient_data: {
-    className: 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100',
-    icon: 'dots',
-  },
-}
-
-export function StatusBadge({ status, label }: { status: MeasureStatus; label?: string }) {
-  const style = STATUS_STYLES[status]
-  return (
-    <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap ${style.className}`}
-    >
-      <Icon name={style.icon} className="h-3.5 w-3.5" />
-      {label ?? STATUS_LABELS[status]}
-    </span>
-  )
-}
-
-/** Compact pass/fail mark for table cells: icon + sr-only word. */
-export function StatusMark({ status }: { status: MeasureStatus }) {
-  const color = {
-    pass: 'text-green-700 dark:text-green-400',
-    fail: 'text-red-700 dark:text-red-400',
-    no_threshold: 'text-slate-500',
-    insufficient_data: 'text-amber-700 dark:text-amber-400',
-  }[status]
-  return (
-    <span className={color}>
-      <Icon name={STATUS_STYLES[status].icon} className="h-3.5 w-3.5" />
-      <span className="sr-only">{STATUS_LABELS[status]}</span>
-    </span>
-  )
-}
-
-const ISSUE_TYPE_ICONS: Record<IssueType, IconName> = {
-  measure_below_threshold: 'gauge',
-  table_c_flag: 'flag',
-  table_d_behavior: 'ban',
-}
-
-export function IssueTypeBadge({ type }: { type: IssueType }) {
-  const tone =
-    type === 'table_d_behavior'
-      ? 'border-red-300 bg-red-50 text-red-900 dark:border-red-700 dark:bg-red-950 dark:text-red-100'
-      : 'border-slate-300 bg-white text-slate-800 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200'
-  return (
-    <span
-      className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-xs font-medium whitespace-nowrap ${tone}`}
-    >
-      <Icon name={ISSUE_TYPE_ICONS[type]} className="h-3.5 w-3.5" />
-      {ISSUE_TYPE_LABELS[type]}
-    </span>
-  )
-}
-
-export function PlaceholderTag() {
-  return (
-    <span className="inline-flex items-center rounded border border-dashed border-amber-600 px-1 text-[10px] font-semibold tracking-wide text-amber-800 uppercase dark:border-amber-400 dark:text-amber-200">
-      placeholder
-    </span>
-  )
-}
-
-// ---------------------------------------------------------- Notes and lines
-
-export function AdvisoryNote() {
-  return (
-    <p className="flex items-start gap-2 rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-xs leading-relaxed text-sky-950 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-100">
-      <Icon name="info" className="mt-px h-4 w-4" />
-      <span>
-        <strong>Advisory only.</strong> Global ratings (and Relational / Technical) aren't validated against expert coders yet.
-        Don't base decisions on them.
-      </span>
-    </p>
-  )
-}
-
-/** "How was this produced": prompt version + model, shown under every score and issue. */
-export function ProvenanceLine({ items }: { items: Array<[label: string, value: string]> }) {
-  return (
-    <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 border-t border-slate-200 pt-2 text-xs text-slate-600 dark:border-slate-800 dark:text-slate-400">
-      {items.map(([label, value]) => (
-        <span key={label}>
-          {label} <code className="font-mono text-slate-800 dark:text-slate-200">{value}</code>
-        </span>
-      ))}
-    </p>
-  )
-}
-
-// ------------------------------------------------------------------- Panels
-
-export function Panel({
-  id,
-  title,
-  description,
-  children,
-}: {
-  id: string
-  title: ReactNode
-  description?: ReactNode
-  children: ReactNode
-}) {
-  return (
-    <section
-      id={id}
-      aria-labelledby={`${id}-title`}
-      className="scroll-mt-16 rounded-lg border border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900"
-    >
-      <header className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-        <h2 id={`${id}-title`} className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-          {title}
-        </h2>
-        {description && <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">{description}</p>}
-      </header>
-      <div className="px-4 py-3">{children}</div>
-    </section>
-  )
-}
-
-export function PageContainer({ children }: { children: ReactNode }) {
-  return <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6">{children}</div>
-}
-
-export function PageTitle({ title, children }: { title: ReactNode; children?: ReactNode }) {
-  return (
-    <div className="mb-5">
-      <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">{title}</h1>
-      {children && <div className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-slate-400">{children}</div>}
     </div>
   )
 }
 
+export function PageContainer({ children, narrow = false }: { children: ReactNode; narrow?: boolean }) {
+  return <div className={`mx-auto w-full px-4 pb-16 sm:px-6 ${narrow ? 'max-w-4xl' : 'max-w-6xl'}`}>{children}</div>
+}
+
+/** Big Alvera-style headline: navy text with one phrase in orange. */
+export function PageHero({
+  eyebrow,
+  title,
+  accent,
+  children,
+}: {
+  eyebrow: string
+  title: string
+  accent?: string
+  children?: ReactNode
+}) {
+  return (
+    <header className="pt-10 pb-8 sm:pt-14">
+      <Eyebrow>{eyebrow}</Eyebrow>
+      <h1 className="mt-3 max-w-4xl text-4xl leading-[1.05] font-extrabold tracking-[-0.035em] text-navy-900 sm:text-6xl">
+        {title} {accent && <span className="text-brand-700">{accent}</span>}
+      </h1>
+      {children && <div className="mt-4 max-w-2xl text-lg leading-relaxed text-navy-600">{children}</div>}
+    </header>
+  )
+}
+
+export function Eyebrow({ children }: { children: ReactNode }) {
+  return (
+    <p className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold tracking-[0.12em] text-brand-700 uppercase ring-1 ring-navy-900/5">
+      <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+      {children}
+    </p>
+  )
+}
+
+export function SectionTitle({ children, hint }: { children: ReactNode; hint?: ReactNode }) {
+  return (
+    <div className="mb-3">
+      <h2 className="text-xl font-bold tracking-tight text-navy-900">{children}</h2>
+      {hint && <p className="mt-0.5 text-sm text-navy-500">{hint}</p>}
+    </div>
+  )
+}
+
+// ------------------------------------------------------------------- Pills
+
+export function Pill({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap ${className}`}
+    >
+      {children}
+    </span>
+  )
+}
+
+export function ProvenancePill({ provenance }: { provenance: Provenance }) {
+  const tone = provenance === 'real' ? 'bg-navy-900 text-white' : 'bg-navy-100 text-navy-800'
+  return (
+    <Pill className={tone}>
+      <span className="sr-only">Source type: </span>
+      {PROVENANCE_COPY[provenance]}
+    </Pill>
+  )
+}
+
+export function DemoPill() {
+  return <Pill className="bg-brand-100 text-brand-800">Demo data</Pill>
+}
+
+const STATUS_STYLE: Record<MeasureStatus, { className: string; icon: IconName }> = {
+  pass: { className: 'bg-green-50 text-green-800 ring-1 ring-green-200', icon: 'check' },
+  fail: { className: 'bg-red-50 text-red-800 ring-1 ring-red-200', icon: 'x' },
+  no_threshold: { className: 'bg-navy-50 text-navy-600 ring-1 ring-navy-200', icon: 'minus' },
+  insufficient_data: { className: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200', icon: 'dots' },
+}
+
+export function StatusPill({ status, label }: { status: MeasureStatus; label?: string }) {
+  const style = STATUS_STYLE[status]
+  return (
+    <Pill className={style.className}>
+      <Icon name={style.icon} className="h-3.5 w-3.5" />
+      {label ?? STATUS_COPY[status]}
+    </Pill>
+  )
+}
+
+const ISSUE_ICONS: Record<IssueType, IconName> = {
+  measure_below_threshold: 'target',
+  table_c_flag: 'flag',
+  table_d_behavior: 'ban',
+}
+
+export function IssueTypePill({ type }: { type: IssueType }) {
+  const tone =
+    type === 'table_d_behavior'
+      ? 'bg-red-50 text-red-800 ring-1 ring-red-200'
+      : 'bg-brand-50 text-brand-800 ring-1 ring-brand-200'
+  return (
+    <Pill className={tone}>
+      <Icon name={ISSUE_ICONS[type]} className="h-3.5 w-3.5" />
+      {ISSUE_TYPE_COPY[type].label}
+    </Pill>
+  )
+}
+
+// ------------------------------------------------------------------ Controls
+
+/** A row of pill buttons where one is selected. */
+export function Segmented<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string
+  options: Array<{ value: T; label: string; count?: number }>
+  value: T
+  onChange: (value: T) => void
+}) {
+  return (
+    <div role="group" aria-label={label} className="inline-flex flex-wrap gap-1 rounded-2xl bg-white p-1 ring-1 ring-navy-900/5">
+      {options.map((o) => {
+        const active = o.value === value
+        return (
+          <button
+            key={o.value}
+            type="button"
+            aria-pressed={active}
+            onClick={() => onChange(o.value)}
+            className={`rounded-xl px-3.5 py-1.5 text-sm font-semibold transition ${
+              active ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50 hover:text-navy-900'
+            }`}
+          >
+            {o.label}
+            {o.count !== undefined && (
+              <span className={`ml-1.5 tabular-nums ${active ? 'text-navy-200' : 'text-navy-500'}`}>{o.count}</span>
+            )}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+/** Click-to-open explanation, used instead of on-screen jargon. */
+export function Explainer({ summary = 'What is this?', children }: { summary?: string; children: ReactNode }) {
+  return (
+    <details className="group mt-2 text-sm">
+      <summary className="inline-flex items-center gap-1 font-semibold text-navy-500 hover:text-navy-900">
+        <Icon name="chevronDown" className="h-4 w-4 transition group-open:rotate-180" />
+        {summary}
+      </summary>
+      <div className="mt-2 space-y-1.5 leading-relaxed text-navy-600">{children}</div>
+    </details>
+  )
+}
+
+// ---------------------------------------------------------------- States
+
 export function Loading({ what }: { what: string }) {
   return (
-    <p role="status" className="py-12 text-center text-sm text-slate-600 dark:text-slate-400">
+    <p role="status" className="py-16 text-center text-navy-500">
       Loading {what}…
     </p>
   )
@@ -219,12 +194,9 @@ export function Loading({ what }: { what: string }) {
 
 export function ErrorPanel({ title, message, details = [] }: { title: string; message: string; details?: string[] }) {
   return (
-    <div
-      role="alert"
-      className="rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-950 dark:border-red-800 dark:bg-red-950 dark:text-red-100"
-    >
+    <div role="alert" className="rounded-2xl bg-red-50 p-5 text-red-950 ring-1 ring-red-200">
       <p className="flex items-center gap-2 font-semibold">
-        <Icon name="alert" /> <span className="min-w-0">{title}</span>
+        <Icon name="alert" /> <span>{title}</span>
       </p>
       <p className="mt-1">{message}</p>
       {details.length > 0 && (
@@ -235,39 +207,5 @@ export function ErrorPanel({ title, message, details = [] }: { title: string; me
         </ul>
       )}
     </div>
-  )
-}
-
-export const selectClass =
-  'rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100'
-
-export const buttonClass =
-  'inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800'
-
-export const linkClass =
-  'text-blue-700 underline decoration-blue-700/30 underline-offset-2 hover:decoration-blue-700 dark:text-blue-300 dark:decoration-blue-300/40'
-
-/** Labeled <select> with an "Any" option, used by the list pages' filter bars. */
-export function FilterSelect({
-  label,
-  value,
-  onChange,
-  children,
-  anyLabel = 'Any',
-}: {
-  label: string
-  value: string
-  onChange: (v: string) => void
-  children: ReactNode
-  anyLabel?: string
-}) {
-  return (
-    <label className="flex flex-col gap-1 text-xs font-medium text-slate-700 dark:text-slate-300">
-      {label}
-      <select className={selectClass} value={value} onChange={(e) => onChange(e.target.value)}>
-        <option value="">{anyLabel}</option>
-        {children}
-      </select>
-    </label>
   )
 }

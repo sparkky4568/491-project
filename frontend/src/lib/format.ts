@@ -1,8 +1,6 @@
 /** Display formatting only. Values come from the pipeline; nothing here recomputes them. */
 import type { Threshold } from './schema'
 
-const OP_SYMBOLS: Record<Threshold['op'], string> = { '>=': '≥', '<=': '≤', '==': '=', '>': '>', '<': '<' }
-
 export function formatMeasureValue(id: string, value: number | null): string {
   if (value === null) return '—'
   switch (id) {
@@ -18,8 +16,23 @@ export function formatMeasureValue(id: string, value: number | null): string {
   }
 }
 
-export function formatThreshold(id: string, threshold: Pick<Threshold, 'op' | 'value'>): string {
-  return `${OP_SYMBOLS[threshold.op]} ${formatMeasureValue(id, threshold.value)}`
+/** A goal in plain words: "40% or more", "2 or more", "none". */
+export function formatGoal(id: string, threshold: Pick<Threshold, 'op' | 'value'>): string {
+  // Goals read better without trailing zeros: "2 or more", not "2.00 or more".
+  const value =
+    id === 'pct_complex_reflections' ? formatMeasureValue(id, threshold.value) : String(Number(threshold.value.toFixed(2)))
+  switch (threshold.op) {
+    case '>=':
+      return `${value} or more`
+    case '<=':
+      return `${value} or fewer`
+    case '>':
+      return `more than ${value}`
+    case '<':
+      return `under ${value}`
+    case '==':
+      return threshold.value === 0 ? 'none' : `exactly ${value}`
+  }
 }
 
 export function formatSeconds(sec: number | null): string {

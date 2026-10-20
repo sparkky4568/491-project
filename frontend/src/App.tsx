@@ -1,22 +1,22 @@
 import { BrowserRouter, Link, Route, Routes } from 'react-router'
 import { Layout } from './components/Layout'
-import { PageContainer, linkClass } from './components/ui'
-import { AboutPage } from './pages/AboutPage'
-import { IssuesPage } from './pages/IssuesPage'
-import { SessionReviewRoute } from './pages/SessionReviewPage'
-import { SessionsPage } from './pages/SessionsPage'
-import { ValidationPage } from './pages/ValidationPage'
+import { PageContainer, textLink } from './components/ui'
+import { AccuracyPage } from './pages/AccuracyPage'
+import { ConversationRoute } from './pages/ConversationPage'
+import { ConversationsPage } from './pages/ConversationsPage'
+import { HowItWorksPage } from './pages/HowItWorksPage'
+import { ProblemsPage } from './pages/ProblemsPage'
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route index element={<SessionsPage />} />
-          <Route path="sessions/:id" element={<SessionReviewRoute />} />
-          <Route path="issues" element={<IssuesPage />} />
-          <Route path="validation" element={<ValidationPage />} />
-          <Route path="about" element={<AboutPage />} />
+          <Route index element={<ConversationsPage />} />
+          <Route path="sessions/:id" element={<ConversationRoute />} />
+          <Route path="issues" element={<ProblemsPage />} />
+          <Route path="validation" element={<AccuracyPage />} />
+          <Route path="about" element={<HowItWorksPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
@@ -26,11 +26,11 @@ export function App() {
 
 function NotFound() {
   return (
-    <PageContainer>
-      <h1 className="text-xl font-semibold">Page not found</h1>
-      <p className="mt-2 text-sm">
-        <Link to="/" className={linkClass}>
-          Back to sessions
+    <PageContainer narrow>
+      <h1 className="pt-16 text-4xl font-extrabold tracking-tight">Page not found</h1>
+      <p className="mt-3">
+        <Link to="/" className={textLink}>
+          Back to all conversations
         </Link>
       </p>
     </PageContainer>

@@ -530,8 +530,8 @@
       "issue_id": "ISS-0001",
       "session_id": "MOCK-REF-002",
       "type": "measure_below_threshold",
-      "title": "% complex reflections below threshold",
-      "detail": "33% complex (1 of 3 reflections); placeholder threshold is ≥ 40%.",
+      "title": "Too few reflections add meaning",
+      "detail": "33% of the coach's reflections added meaning (1 of 3). Goal: 40% or more.",
       "measure_id": "pct_complex_reflections",
       "node": null,
       "turns": [
@@ -550,8 +550,8 @@
       "issue_id": "ISS-0002",
       "session_id": "MOCK-REF-002",
       "type": "measure_below_threshold",
-      "title": "Reflection-to-question ratio below threshold",
-      "detail": "0.43 (3 reflections : 7 questions); placeholder threshold is ≥ 2.0.",
+      "title": "Asked far more than listened",
+      "detail": "0.43 reflections per question (3 reflections, 7 questions). Goal: 2 or more.",
       "measure_id": "reflection_to_question",
       "node": null,
       "turns": [
@@ -575,8 +575,8 @@
       "issue_id": "ISS-0003",
       "session_id": "MOCK-REF-002",
       "type": "measure_below_threshold",
-      "title": "MI non-adherent behavior present",
-      "detail": "4 MI non-adherent codes (3 Persuade, 1 Confront); placeholder threshold is = 0.",
+      "title": "Coach pushed advice or argued",
+      "detail": "4 pushy moments (3 pushing advice, 1 arguing). Goal: none.",
       "measure_id": "total_mina",
       "node": null,
       "turns": [
@@ -595,8 +595,8 @@
       "issue_id": "ISS-0004",
       "session_id": "MOCK-REF-002",
       "type": "measure_below_threshold",
-      "title": "Relational score below threshold",
-      "detail": "2.0 = (partnership 2 + empathy 2) / 2; placeholder threshold is ≥ 4.0. Advisory until the scorer is validated.",
+      "title": "Low relationship score",
+      "detail": "2.0 out of 5 (partnership 2, empathy 2). Goal: 4 or more.",
       "measure_id": "relational",
       "node": null,
       "turns": [
@@ -617,8 +617,8 @@
       "issue_id": "ISS-0005",
       "session_id": "MOCK-REF-002",
       "type": "measure_below_threshold",
-      "title": "Technical score below threshold",
-      "detail": "1.5 = (cultivating change talk 2 + softening sustain talk 1) / 2; placeholder threshold is ≥ 4.0. Advisory until the scorer is validated.",
+      "title": "Low technique score",
+      "detail": "1.5 out of 5 (drawing out reasons 2, easing resistance 1). Goal: 4 or more.",
       "measure_id": "technical",
       "node": null,
       "turns": [
@@ -640,7 +640,7 @@
       "session_id": "MOCK-REF-002",
       "type": "table_d_behavior",
       "title": "Gave medication advice",
-      "detail": "Recommended a specific melatonin dose without being asked. (Mock Table D entry; the sponsor's list is pending.)",
+      "detail": "Recommended a specific melatonin dose. (Example rule: the sponsor's real list is still coming.)",
       "measure_id": null,
       "node": null,
       "turns": [

@@ -57,19 +57,24 @@ Other commands, all run from `frontend/`:
 | `npm run preview`| Serve the production build locally              |
 | `npm run format` | Format the code with Prettier                   |
 
-The console has five pages:
+The site uses plain English throughout; the official MITI terms appear only where you ask for them (click a tag, or "What is this?"). It has four sections:
 
-- **Sessions** (`/`): every scored session, with filters, sorting and cost totals.
-- **Session review** (`/sessions/:id`): the transcript turn by turn, with code chips. Click a chip to highlight its evidence quote and see the rationale.
-- **Issue log** (`/issues`): every issue across sessions, with filters and CSV export.
-- **Validation** (`/validation`): a placeholder until real validation runs.
-- **About** (`/about`): the pipeline diagram, the project rules and the current thresholds.
+- **Conversations** (`/`): one card per conversation, with a one-line verdict ("2 problems found").
+- **A conversation** (`/sessions/:id`) has three tabs:
+  - **Overview:** the verdict, each problem with a "Show me" link, the key scores against their goals, and the overall ratings.
+  - **Conversation:** the transcript as a chat. Each message carries tags like "Reflects meaning" or "Pushes advice". Click a tag to highlight the exact words and see why it was given.
+  - **Details:** counts, flow checks, the R:Q chart and exactly how the conversation was scored (model, prompts, run, cost).
+- **Problems** (`/issues`): every problem across conversations, with a type filter and a spreadsheet (CSV) download that has every field.
+- **Accuracy** (`/validation`): "not checked yet", plus a preview of the validation report layout.
+- **How it works** (`/about`): the pipeline in six steps, the ground rules, a glossary of every tag, and the current goals.
+
+Plain-English names and explanations for every code, measure and rating live in one file, `frontend/src/lib/miti.ts`.
 
 ## Look at real pipeline output
 
 There are two ways, and neither needs code changes:
 
-1. **Load a file (works today).** On the Sessions page, click **Load results file** and pick a `ScoredSession` JSON file, or an array of them. The console validates the file against the data contract. If something is wrong, it names the bad field (for example `turns[2].codes[0].code (turn 3): Invalid option…`). Valid sessions join the list for this browser tab only. Nothing is uploaded, and reloading the page clears them. Only load de-identified output.
+1. **Load a file (works today).** On the Conversations page, click **Open results file** and pick a `ScoredSession` JSON file, or an array of them. The console validates the file against the data contract. If something is wrong, it names the bad field (for example `turns[2].codes[0].code (turn 3): Invalid option…`). Valid sessions join the list for this browser tab only. Nothing is uploaded, and reloading the page clears them. Only load de-identified output.
 2. **Point it at an API (later).** Copy `.env.example` to `.env` at the repo root, set `VITE_API_URL=http://localhost:8000` (or wherever the Python API runs), and restart `npm run dev`. All data goes through one module, `frontend/src/lib/data.ts`. Its header lists the endpoints the console expects.
 
 ## Deploy on Vercel
@@ -87,7 +92,7 @@ A Root Directory of `./` (the repo root) also works, using the root `vercel.json
 
 Things to know:
 
-- **Anyone with the link can open it**, unless you turn on protection under **Settings → Deployment Protection**. The site only ever shows invented mock data; never deploy real output. "Load results file" still runs entirely in the viewer's browser, and nothing is uploaded to Vercel.
+- **Anyone with the link can open it**, unless you turn on protection under **Settings → Deployment Protection**. The site only ever shows invented mock data; never deploy real output. "Open results file" still runs entirely in the viewer's browser, and nothing is uploaded to Vercel.
 - **API later.** When the Python API exists, add `VITE_API_URL` under **Settings → Environment Variables** and redeploy. The security policy only allows `https://` API URLs.
 - **From the command line instead:** run `npx vercel` from the repo root for a preview, or `npx vercel --prod` for production. The CLI uses the project's Root Directory setting.
 
