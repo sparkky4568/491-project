@@ -74,18 +74,22 @@ There are two ways, and neither needs code changes:
 
 ## Deploy on Vercel
 
-`vercel.json` at the repo root has everything Vercel needs. It builds `frontend/` (which reads `shared/` next to it), serves `frontend/dist`, sends every page URL to the app so deep links and refreshes work, and adds security headers that keep the site out of search engines.
+The hosting setup is already in the repo. It builds the console, sends every page URL to the app so deep links and refreshes work, and adds security headers that keep the site out of search engines.
 
 1. On [vercel.com](https://vercel.com), choose **Add New → Project** and import this GitHub repo.
-2. **Leave Root Directory as `./`** (the repo root). Don't set it to `frontend`, or Vercel won't read `vercel.json`. The framework preset, build command and output directory are already set in `vercel.json`; don't override them.
+2. Set **Root Directory** to `frontend`. The framework preset (Vite), commands and output folder come from `frontend/vercel.json`, so leave the build settings alone.
 3. Click **Deploy**. You get a production URL, and every other branch you push gets its own preview URL, which is handy for reviewing pull requests.
 4. Under **Settings → Git**, make sure the production branch is `main`.
+
+The console reads `shared/`, which sits outside `frontend/`. Vercel allows this by default ("Include files outside the root directory in the Build Step", under **Settings → Build and Deployment → Root Directory**). If that option is off, the build stops with a message saying so.
+
+A Root Directory of `./` (the repo root) also works, using the root `vercel.json`. The two `vercel.json` files carry the same `rewrites` and `headers`, so if you change one, change the other.
 
 Things to know:
 
 - **Anyone with the link can open it**, unless you turn on protection under **Settings → Deployment Protection**. The site only ever shows invented mock data; never deploy real output. "Load results file" still runs entirely in the viewer's browser, and nothing is uploaded to Vercel.
 - **API later.** When the Python API exists, add `VITE_API_URL` under **Settings → Environment Variables** and redeploy. The security policy only allows `https://` API URLs.
-- **From the command line instead:** run `npx vercel` from the repo root for a preview, or `npx vercel --prod` for production.
+- **From the command line instead:** run `npx vercel` from the repo root for a preview, or `npx vercel --prod` for production. The CLI uses the project's Root Directory setting.
 
 ## The rules (from our signed scope)
 
