@@ -1,6 +1,9 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { Icon } from './Icon'
 
+/** Alex's how-to guide (a claude.ai doc). People need access to it there, via the doc's Share button. */
+const GUIDE_URL = 'https://claude.ai/artifact/ApSMt4WjaMBGZEoxzYjg6H'
+
 /**
  * Call useDemoNotice(true) whenever practice or made-up (is_mock) scores are on screen.
  * The layout then shows the notice bar at the top. Never remove it while such scores are visible.
@@ -45,6 +48,16 @@ export function Layout({ children }: { children: ReactNode }) {
             <span className="text-lg font-extrabold tracking-tight text-navy-900">
               AVEN <span className="text-brand-700">Scorer</span>
             </span>
+          </a>
+          <a
+            href={GUIDE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-navy-900 ring-1 ring-navy-200 transition hover:bg-navy-50"
+          >
+            <Icon name="info" />
+            How to use this
+            <span className="sr-only">(opens the team guide in a new tab)</span>
           </a>
         </header>
       </div>
