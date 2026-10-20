@@ -42,3 +42,6 @@ Thumbs.db
 !.vscode/extensions.json
 *.swp
 *.log
+
+# --- Vercel CLI (project link, local env pulls) ------------------------------
+.vercel/

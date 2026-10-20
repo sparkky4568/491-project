@@ -23,6 +23,7 @@ Project manager: Suyash (JSX).
 ```
 aven-scorer/
 ├── README.md, CONTRIBUTING.md, .gitignore, .env.example
+├── vercel.json                hosting config for the review console
 ├── docs/
 │   ├── DATA_CONTRACT.md       JSON shapes, written for humans
 │   ├── TEAM_PLAN.md           team plan
@@ -70,6 +71,21 @@ There are two ways, and neither needs code changes:
 
 1. **Load a file (works today).** On the Sessions page, click **Load results file** and pick a `ScoredSession` JSON file, or an array of them. The console validates the file against the data contract. If something is wrong, it names the bad field (for example `turns[2].codes[0].code (turn 3): Invalid option…`). Valid sessions join the list for this browser tab only. Nothing is uploaded, and reloading the page clears them. Only load de-identified output.
 2. **Point it at an API (later).** Copy `.env.example` to `.env` at the repo root, set `VITE_API_URL=http://localhost:8000` (or wherever the Python API runs), and restart `npm run dev`. All data goes through one module, `frontend/src/lib/data.ts`. Its header lists the endpoints the console expects.
+
+## Deploy on Vercel
+
+`vercel.json` at the repo root has everything Vercel needs. It builds `frontend/` (which reads `shared/` next to it), serves `frontend/dist`, sends every page URL to the app so deep links and refreshes work, and adds security headers that keep the site out of search engines.
+
+1. On [vercel.com](https://vercel.com), choose **Add New → Project** and import this GitHub repo.
+2. **Leave Root Directory as `./`** (the repo root). Don't set it to `frontend`, or Vercel won't read `vercel.json`. The framework preset, build command and output directory are already set in `vercel.json`; don't override them.
+3. Click **Deploy**. You get a production URL, and every other branch you push gets its own preview URL, which is handy for reviewing pull requests.
+4. Under **Settings → Git**, make sure the production branch is `main`.
+
+Things to know:
+
+- **Anyone with the link can open it**, unless you turn on protection under **Settings → Deployment Protection**. The site only ever shows invented mock data; never deploy real output. "Load results file" still runs entirely in the viewer's browser, and nothing is uploaded to Vercel.
+- **API later.** When the Python API exists, add `VITE_API_URL` under **Settings → Environment Variables** and redeploy. The security policy only allows `https://` API URLs.
+- **From the command line instead:** run `npx vercel` from the repo root for a preview, or `npx vercel --prod` for production.
 
 ## The rules (from our signed scope)
 

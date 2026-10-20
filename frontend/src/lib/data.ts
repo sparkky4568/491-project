@@ -18,7 +18,8 @@
  * │     GET {VITE_API_URL}/issues              → Issue[]                    │
  * │     GET {VITE_API_URL}/validation-report   → ValidationReport           │
  * │     GET {VITE_API_URL}/thresholds          → thresholds.json contents   │
- * │   Restart `npm run dev` after editing .env.                             │
+ * │   Restart `npm run dev` after editing .env. On Vercel, set it under     │
+ * │   Settings → Environment Variables and redeploy (https URLs only).      │
  * └─────────────────────────────────────────────────────────────────────────┘
  *
  * In both modes every payload is checked with the Zod schemas in schema.ts,
