@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode } from 'react'
 
-/** Opens the Conversation tab, scrolls to a message and highlights it. Provided by ConversationPage. */
+/** Scrolls to a message and highlights it. Provided by the results view in ScorePage. */
 export const TurnNavContext = createContext<(turn: number) => void>(() => {})
 
 export function TurnLink({ turn, children, className }: { turn: number; children?: ReactNode; className?: string }) {
@@ -8,7 +8,8 @@ export function TurnLink({ turn, children, className }: { turn: number; children
   return (
     <a
       href={`#turn-${turn}`}
-      aria-label={`Go to message ${turn}`}
+      // Bare "#7" links get a spoken name; links with their own text ("Show me") keep it.
+      aria-label={children ? undefined : `Go to message ${turn}`}
       className={
         className ??
         'inline-flex h-7 min-w-7 items-center justify-center rounded-lg bg-navy-50 px-2 text-xs font-semibold text-navy-800 ring-1 ring-navy-200 hover:bg-brand-50 hover:ring-brand-300'
@@ -20,6 +21,7 @@ export function TurnLink({ turn, children, className }: { turn: number; children
       }}
     >
       {children ?? `#${turn}`}
+      {children && <span className="sr-only"> (message {turn})</span>}
     </a>
   )
 }

@@ -172,6 +172,13 @@ export const ISSUE_TYPE_COPY: Record<IssueType, { label: string; explain: string
   table_d_behavior: { label: 'Not allowed', explain: 'Did something the coach must never do (Table D).' },
 }
 
+/**
+ * Problems about the whole conversation (a ratio or an overall rating) aren't tied to one moment,
+ * so they don't get a "Show me" link or a marker on individual messages.
+ */
+export const isMomentProblem = (issue: { type: IssueType; measure_id: string | null }) =>
+  issue.type !== 'measure_below_threshold' || issue.measure_id === 'total_mina'
+
 export const PROVENANCE_COPY: Record<Provenance, string> = {
   real: 'Real call',
   simulated: 'Simulated call',

@@ -54,5 +54,3 @@ export function formatTimestamp(iso: string): string {
   const match = /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})(?::\d{2}(?:\.\d+)?)?Z$/.exec(iso)
   return match ? `${match[1]} ${match[2]} UTC` : iso
 }
-
-export const formatScore = (value: number | null, digits = 2) => (value === null ? '—' : value.toFixed(digits))

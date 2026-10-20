@@ -1,7 +1,7 @@
 /** Shared building blocks: cards, pills, buttons and page headers. */
 import type { ReactNode } from 'react'
-import { ISSUE_TYPE_COPY, PROVENANCE_COPY, STATUS_COPY } from '../lib/miti'
-import type { IssueType, MeasureStatus, Provenance } from '../lib/schema'
+import { ISSUE_TYPE_COPY, STATUS_COPY } from '../lib/miti'
+import type { IssueType, MeasureStatus } from '../lib/schema'
 import { Icon, type IconName } from './Icon'
 
 export const primaryButton =
@@ -43,7 +43,7 @@ export function PageHero({
     <header className="pt-10 pb-8 sm:pt-14">
       <Eyebrow>{eyebrow}</Eyebrow>
       <h1 className="mt-3 max-w-4xl text-4xl leading-[1.05] font-extrabold tracking-[-0.035em] text-navy-900 sm:text-6xl">
-        {title} {accent && <span className="text-brand-700">{accent}</span>}
+        {title} {accent && <span className="block text-brand-700">{accent}</span>}
       </h1>
       {children && <div className="mt-4 max-w-2xl text-lg leading-relaxed text-navy-600">{children}</div>}
     </header>
@@ -78,20 +78,6 @@ export function Pill({ children, className = '' }: { children: ReactNode; classN
       {children}
     </span>
   )
-}
-
-export function ProvenancePill({ provenance }: { provenance: Provenance }) {
-  const tone = provenance === 'real' ? 'bg-navy-900 text-white' : 'bg-navy-100 text-navy-800'
-  return (
-    <Pill className={tone}>
-      <span className="sr-only">Source type: </span>
-      {PROVENANCE_COPY[provenance]}
-    </Pill>
-  )
-}
-
-export function DemoPill() {
-  return <Pill className="bg-brand-100 text-brand-800">Demo data</Pill>
 }
 
 const STATUS_STYLE: Record<MeasureStatus, { className: string; icon: IconName }> = {
@@ -132,43 +118,6 @@ export function IssueTypePill({ type }: { type: IssueType }) {
 
 // ------------------------------------------------------------------ Controls
 
-/** A row of pill buttons where one is selected. */
-export function Segmented<T extends string>({
-  label,
-  options,
-  value,
-  onChange,
-}: {
-  label: string
-  options: Array<{ value: T; label: string; count?: number }>
-  value: T
-  onChange: (value: T) => void
-}) {
-  return (
-    <div role="group" aria-label={label} className="inline-flex flex-wrap gap-1 rounded-2xl bg-white p-1 ring-1 ring-navy-900/5">
-      {options.map((o) => {
-        const active = o.value === value
-        return (
-          <button
-            key={o.value}
-            type="button"
-            aria-pressed={active}
-            onClick={() => onChange(o.value)}
-            className={`rounded-xl px-3.5 py-1.5 text-sm font-semibold transition ${
-              active ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50 hover:text-navy-900'
-            }`}
-          >
-            {o.label}
-            {o.count !== undefined && (
-              <span className={`ml-1.5 tabular-nums ${active ? 'text-navy-200' : 'text-navy-500'}`}>{o.count}</span>
-            )}
-          </button>
-        )
-      })}
-    </div>
-  )
-}
-
 /** Click-to-open explanation, used instead of on-screen jargon. */
 export function Explainer({ summary = 'What is this?', children }: { summary?: string; children: ReactNode }) {
   return (
@@ -183,14 +132,6 @@ export function Explainer({ summary = 'What is this?', children }: { summary?: s
 }
 
 // ---------------------------------------------------------------- States
-
-export function Loading({ what }: { what: string }) {
-  return (
-    <p role="status" className="py-16 text-center text-navy-500">
-      Loading {what}…
-    </p>
-  )
-}
 
 export function ErrorPanel({ title, message, details = [] }: { title: string; message: string; details?: string[] }) {
   return (

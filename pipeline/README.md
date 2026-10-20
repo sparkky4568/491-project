@@ -10,7 +10,7 @@ Ingest, exclusions, metrics, flags and the issue log. This is Stage 2 of the sco
 - `shared/config/thresholds.json` (read-only; the sponsor sets these)
 
 **Writes**
-- `ScoredSession` JSON, one per session (see [`docs/DATA_CONTRACT.md`](../docs/DATA_CONTRACT.md#scoredsession)), into `output/` (gitignored). The review console reads these.
+- `ScoredSession` JSON, one per session (see [`docs/DATA_CONTRACT.md`](../docs/DATA_CONTRACT.md#scoredsession)), into `output/` (gitignored). The scorer page shows these; it will call the pipeline through `POST /score` (see the data contract).
 
 **Responsibilities**
 - Check each evidence quote verbatim against the turn text and set `evidence_valid`.

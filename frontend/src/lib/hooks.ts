@@ -1,5 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
-import { DataError, getDataVersion, subscribe } from './data'
+import { DataError } from './data'
 
 export type AsyncState<T> = { status: 'loading' } | { status: 'error'; error: DataError } | { status: 'ready'; data: T }
 
@@ -24,9 +24,6 @@ export function useAsync<T>(load: () => Promise<T>, deps: ReadonlyArray<unknown>
   }, deps)
   return state
 }
-
-/** Changes whenever sessions are loaded from (or cleared from) disk. Use it as a useAsync dep. */
-export const useDataVersion = () => useSyncExternalStore(subscribe, getDataVersion)
 
 export function usePrefersReducedMotion(): boolean {
   return useSyncExternalStore(

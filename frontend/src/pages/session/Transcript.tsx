@@ -59,9 +59,12 @@ export function Transcript({ turns, filter, onFilter, problemsByTurn, open, onTo
   return (
     <div>
       <div className="mb-5 flex flex-wrap items-center gap-x-5 gap-y-3">
-        <label className="flex items-center gap-2 text-sm font-semibold text-navy-700">
-          Show
+        <div className="flex items-center gap-2">
+          <label htmlFor="message-filter" className="text-sm font-semibold text-navy-700">
+            Show
+          </label>
           <select
+            id="message-filter"
             value={filter}
             onChange={(e) => onFilter(e.target.value as TurnFilter)}
             className="max-w-[16rem] rounded-xl bg-white px-3 py-2 text-sm font-medium text-navy-900 ring-1 ring-navy-200"
@@ -86,7 +89,7 @@ export function Transcript({ turns, filter, onFilter, problemsByTurn, open, onTo
               ))}
             </optgroup>
           </select>
-        </label>
+        </div>
         {filter !== 'all' && (
           <button
             type="button"

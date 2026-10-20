@@ -1,50 +1,44 @@
+import type { ReactNode } from 'react'
 import { Icon } from '../../components/Icon'
 import { Card, Explainer, IssueTypePill, SectionTitle, StatusPill, textLink } from '../../components/ui'
 import { formatGoal, formatMeasureValue } from '../../lib/format'
-import { GLOBAL_COPY, ISSUE_TYPE_COPY, KEY_MEASURES, MEASURE_COPY } from '../../lib/miti'
+import { GLOBAL_COPY, KEY_MEASURES, MEASURE_COPY, isMomentProblem } from '../../lib/miti'
 import type { Measure, ScoredSession, ThresholdConfig } from '../../lib/schema'
 import { TurnLink, TurnLinks } from './turnNav'
 
-/** The summary tab: verdict, problems, key scores and overall ratings. */
-export function Overview({ session, thresholds }: { session: ScoredSession; thresholds: ThresholdConfig | null }) {
+/** The key scores, each against its goal. */
+export function KeyScores({ session, thresholds }: { session: ScoredSession; thresholds: ThresholdConfig | null }) {
   const measures = KEY_MEASURES.map((id) => session.measures.find((m) => m.id === id)).filter((m): m is Measure => !!m)
   const goalsArePlaceholders = thresholds?.isPlaceholder !== false
   return (
-    <div className="space-y-10">
-      <Verdict session={session} />
-      {session.issues.length > 0 && <Problems session={session} />}
-
-      <section aria-labelledby="scores-title">
-        <SectionTitle hint="Calculated by the scoring pipeline from the coded conversation.">
-          <span id="scores-title">Key scores</span>
-        </SectionTitle>
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {measures.map((m) => (
-            <li key={m.id}>
-              <ScoreTile measure={m} placeholder={goalsArePlaceholders} />
-            </li>
-          ))}
-        </ul>
-        {goalsArePlaceholders && (
-          <p className="mt-3 text-sm text-navy-500">* Goals are placeholders until the sponsor confirms them.</p>
-        )}
-      </section>
-
-      <OverallRatings session={session} />
-    </div>
+    <section aria-labelledby="scores-title">
+      <SectionTitle>
+        <span id="scores-title">Scores</span>
+      </SectionTitle>
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {measures.map((m) => (
+          <li key={m.id}>
+            <ScoreTile measure={m} placeholder={goalsArePlaceholders} />
+          </li>
+        ))}
+      </ul>
+      {goalsArePlaceholders && (
+        <p className="mt-3 text-sm text-navy-500">* Goals are placeholders until the sponsor confirms them.</p>
+      )}
+    </section>
   )
 }
 
-function Verdict({ session }: { session: ScoredSession }) {
+export function Verdict({ session, action }: { session: ScoredSession; action?: ReactNode }) {
   const n = session.issues.length
   return (
-    <Card className="flex items-center gap-5 p-6 sm:p-8">
+    <Card className="flex flex-wrap items-center gap-5 p-6 sm:p-8">
       <span
         className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${n === 0 ? 'bg-green-100 text-green-700' : 'bg-brand-100 text-brand-700'}`}
       >
         <Icon name={n === 0 ? 'check' : 'alert'} className="h-7 w-7" />
       </span>
-      <div>
+      <div className="min-w-0 flex-1">
         <p className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
           {n === 0 ? 'No problems found' : `${n} problem${n === 1 ? '' : 's'} found`}
         </p>
@@ -54,11 +48,12 @@ function Verdict({ session }: { session: ScoredSession }) {
             : 'Each one is listed below. Click "Show me" to jump to that moment in the conversation.'}
         </p>
       </div>
+      {action}
     </Card>
   )
 }
 
-function Problems({ session }: { session: ScoredSession }) {
+export function Problems({ session }: { session: ScoredSession }) {
   return (
     <section aria-labelledby="problems-title">
       <SectionTitle>
@@ -77,7 +72,7 @@ function Problems({ session }: { session: ScoredSession }) {
                     <p className="mt-2 border-l-2 border-brand-300 pl-3 text-navy-700 italic">“{issue.evidence_quote}”</p>
                   )}
                 </div>
-                {issue.turns.length > 0 && (
+                {isMomentProblem(issue) && issue.turns.length > 0 && (
                   <TurnLink
                     turn={issue.turns[0]}
                     className={`${textLink} inline-flex items-center gap-1 text-sm whitespace-nowrap`}
@@ -86,9 +81,6 @@ function Problems({ session }: { session: ScoredSession }) {
                   </TurnLink>
                 )}
               </div>
-              <p className="mt-3 text-xs text-navy-500">
-                {ISSUE_TYPE_COPY[issue.type].explain} · {issue.issue_id}
-              </p>
             </Card>
           </li>
         ))}
@@ -138,10 +130,10 @@ function ScoreTile({ measure, placeholder }: { measure: Measure; placeholder: bo
   )
 }
 
-function OverallRatings({ session }: { session: ScoredSession }) {
+export function OverallRatings({ session }: { session: ScoredSession }) {
   return (
     <section aria-labelledby="ratings-title">
-      <SectionTitle hint="A separate AI pass rates the whole conversation from 1 to 5 and points to the messages behind each rating.">
+      <SectionTitle hint="The whole conversation rated from 1 to 5, with the messages behind each rating.">
         <span id="ratings-title">Overall impressions</span>
       </SectionTitle>
       <p className="mb-3 flex items-start gap-2 rounded-xl bg-sky-50 px-4 py-3 text-sm text-sky-950 ring-1 ring-sky-200">

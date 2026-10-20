@@ -1,6 +1,5 @@
 import { useState, type ReactNode } from 'react'
 import { Card, SectionTitle, StatusPill } from '../../components/ui'
-import { isLoadedFromFile } from '../../lib/data'
 import { formatCost, formatTimestamp } from '../../lib/format'
 import { CLIENT_TALK_INFO, CODE_INFO, GROUP_STYLE, PROVENANCE_COPY, SOURCE_COPY } from '../../lib/miti'
 import { CODES, type ScoredSession } from '../../lib/schema'
@@ -121,8 +120,7 @@ export function Details({ session }: { session: ScoredSession }) {
             </Row>
             <Row label="Type">
               {PROVENANCE_COPY[session.provenance]}
-              {session.is_mock && ' (made-up demo data)'}
-              {isLoadedFromFile(session.session_id) && ' · opened from a file'}
+              {session.is_mock && ' (practice score)'}
             </Row>
             <Row label="Source">{SOURCE_COPY[session.source]}</Row>
             <Row label="Aven version">{session.aven_version ?? '—'}</Row>

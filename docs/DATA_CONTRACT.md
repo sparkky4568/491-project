@@ -2,12 +2,12 @@
 
 > **v0 draft. AI + Backend own this. If you change a field, bump `schema_version` and update the JSON Schema and the sample data in the same PR.**
 
-This file describes the JSON that moves between the pipeline, the scorer, validation and the review console. It exists so all five of us can work in parallel. Ethan (AI) and Ricardo (Backend) own the final version; it is their timeline task, "design coding and evidence schema".
+This file describes the JSON that moves between the pipeline, the scorer, validation and the scorer page. It exists so all five of us can work in parallel. Ethan (AI) and Ricardo (Backend) own the final version; it is their timeline task, "design coding and evidence schema".
 
 | Shape            | What it is                                     | JSON Schema                                  | Frontend (TS types + Zod) | Sample                                      |
 | ---------------- | ---------------------------------------------- | -------------------------------------------- | ------------------------- | ------------------------------------------- |
 | TranscriptIn     | What the pipeline ingests                      | `shared/schema/transcript_in.schema.json`    | `frontend/src/lib/schema.ts` | `shared/sample_data/transcripts/*.json`  |
-| ScoredSession    | What the pipeline writes; the console reads it | `shared/schema/scored_session.schema.json`   | same                      | `shared/sample_data/scored/*.json`          |
+| ScoredSession    | What the pipeline writes; the scorer page reads it | `shared/schema/scored_session.schema.json`   | same                      | `shared/sample_data/scored/*.json`          |
 | Issue            | One row in the issue log                       | `shared/schema/issue.schema.json`            | same                      | inside each scored session's `issues`       |
 | ValidationReport | Scorer-vs-human agreement                      | `shared/schema/validation_report.schema.json`| same                      | `shared/sample_data/validation_report.mock.json` |
 | Thresholds       | Sponsor's pass/fail rules                      | `shared/schema/thresholds.schema.json`       | same                      | `shared/config/thresholds.json`             |
@@ -17,10 +17,10 @@ This file describes the JSON that moves between the pipeline, the scorer, valida
 - **Turns are numbered from 1** in conversation order. `turn` is the id everything else points at (`cited_turns`, `issue.turns`, flags).
 - **`null`, not missing.** Every field in a shape is always present. Use `null` when there's no value (for example `node` and `aven_version` for corpus data).
 - **Timestamps** are ISO 8601 in UTC (`2026-10-20T18:00:00Z`). Dates are `YYYY-MM-DD`.
-- **`is_mock: true`** on every invented file. The console shows a "MOCK DATA — not real scores" banner whenever one is on screen. Never set it to `false` on invented data.
+- **`is_mock: true`** on every invented file. The scorer page shows a "Practice score" bar whenever mock or practice scores are on screen. Never set it to `false` on invented data.
 - **`provenance`** is one of `real`, `simulated`, `reference_corpus` or `internal_test`. **`source`** is one of `aven`, `annomi`, `casaa` or `other`.
 - **No real member data or PHI** in any file in this repo. All sample text is invented.
-- The JSON Schemas are strict (`additionalProperties: false`) so typos fail fast. The console's Zod schemas are a little looser: they ignore unknown fields and accept unknown measure or global ids, so newer pipeline output still opens.
+- The JSON Schemas are strict (`additionalProperties: false`) so typos fail fast. The scorer page's Zod schemas are a little looser: they ignore unknown fields and accept unknown measure or global ids, so newer pipeline output still opens.
 
 ## TranscriptIn
 
@@ -80,7 +80,7 @@ Every turn has `turn, speaker, text, node, start_sec` (as in TranscriptIn) plus 
 { "code": "CR", "evidence_quote": "exact words copied from text", "rationale": "one sentence", "evidence_valid": true }
 ```
 
-`evidence_valid` is `false` when the quote can't be found verbatim in the turn text. The pipeline checks this, not the LLM. The console shows a warning on that chip.
+`evidence_valid` is `false` when the quote can't be found verbatim in the turn text. The pipeline checks this, not the LLM. The scorer page shows a warning on that tag.
 
 **Client turns** add `client_talk` (`change`, `sustain` or `neutral`) and `client_evidence_quote` (verbatim words, or `null`, usually for neutral talk).
 
@@ -150,7 +150,7 @@ The ids are `cultivating_change_talk`, `softening_sustain_talk`, `partnership` a
 }
 ```
 
-- `exceeds_cap` was added in v0 so the console never compares numbers itself.
+- `exceeds_cap` was added in v0 so the page never compares numbers itself.
 - `windowed_rq.points[].rq` is `null` when the window has no questions.
 
 ### `issues[]`
@@ -186,7 +186,7 @@ A list of Issue objects (below), one per problem found in this session.
 
 `node` is the node of the first turn in `turns` (`null` for corpus data). Issue ids are unique across a run.
 
-The console shows `title` and `detail` word for word to people who don't know MITI, so write them in plain English with the numbers included. For example, "Asked far more than listened" / "0.43 reflections per question (3 reflections, 7 questions). Goal: 2 or more." rather than "R:Q below threshold".
+The scorer page shows `title` and `detail` word for word to people who don't know MITI, so write them in plain English with the numbers included. For example, "Asked far more than listened" / "0.43 reflections per question (3 reflections, 7 questions). Goal: 2 or more." rather than "R:Q below threshold".
 
 Table D is the sponsor's list of prohibited behaviors. We don't have it yet, so the mock entries are stand-ins ("gave medication advice", "answered the confidence ruler for the caller").
 
@@ -211,7 +211,7 @@ Owned by Joel (Validation/QA). It's v0 and will change; the JSON Schema allows e
 
 ## thresholds.json
 
-`shared/config/thresholds.json` holds `_status` plus one `{ op, value, source }` entry per measure or flag. The sponsor sets these (expected Week 3); until then everything is a placeholder. **Never change a threshold to improve agreement.** The console displays thresholds and never edits them.
+`shared/config/thresholds.json` holds `_status` plus one `{ op, value, source }` entry per measure or flag. The sponsor sets these (expected Week 3); until then everything is a placeholder. **Never change a threshold to improve agreement.** The scorer page displays thresholds and never edits them.
 
 ## Placeholder rules used in the mock data
 
@@ -230,8 +230,8 @@ The mock fixtures were built with these rules. They're our best guess, not the s
 
 - **Scorer → pipeline hand-off.** The format of Stage 1 output (codes, client tags, globals) before Stage 2 runs. For now, aim for the `codes`, `client_talk` and `globals` fields above.
 - **Human coder annotations** for validation (Joel).
-- **API endpoints.** When we add a Python API, the console expects these (see `frontend/src/lib/data.ts`):
-  `GET /sessions` → `ScoredSession[]`, `GET /sessions/{id}` → `ScoredSession`, `GET /issues` → `Issue[]`, `GET /validation-report` → `ValidationReport`, `GET /thresholds` → thresholds.json.
+- **Scorer web service.** When the Python scorer runs as a service, the scorer page expects these (see `frontend/src/lib/data.ts`):
+  `POST /score` with a `TranscriptIn` body → `ScoredSession`, and `GET /thresholds` → thresholds.json. Until then, the page uses a keyword-rule practice scorer (`frontend/src/lib/demoScorer.ts`) that follows the placeholder rules above and marks its output `is_mock: true`.
 
 ## Checking a file against the schemas
 
@@ -252,4 +252,4 @@ for p in pathlib.Path("shared/sample_data/scored").glob("*.json"):
 EOF
 ```
 
-Or open the file with the console's **Open results file** button: it names the first bad fields.
+Or paste the JSON into the scorer page's box and click **Score it**: if it doesn't match, the error names the first bad fields.

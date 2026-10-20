@@ -5,7 +5,7 @@ All four conversations are **invented** for demo and testing. No text comes from
 Each session exists twice, with the same file name:
 
 - `transcripts/` holds the unscored **TranscriptIn**, the pipeline's input.
-- `scored/` holds the **ScoredSession**, the pipeline's expected output and what the console shows.
+- `scored/` holds the **ScoredSession**, the pipeline's expected output, hand-scored.
 
 The numbers are internally consistent: `counts` match the codes on non-excluded turns, `measures` match `counts` and `globals`, and `issues` match the measures and flags. That makes these files usable as test fixtures. The rules they follow are under "Placeholder rules used in the mock data" in `docs/DATA_CONTRACT.md`.
 
