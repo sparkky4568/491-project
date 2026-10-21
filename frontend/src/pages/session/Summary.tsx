@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Icon } from '../../components/Icon'
 import { Card, Explainer, IssueTypePill, SectionTitle, StatusPill, textLink } from '../../components/ui'
 import { formatGoal, formatMeasureValue } from '../../lib/format'
+import { MEASURE_TIER, TIER_COPY, failsSession, gateResult } from '../../lib/gate'
 import { GLOBAL_COPY, KEY_MEASURES, MEASURE_COPY, isMomentProblem } from '../../lib/miti'
 import type { Measure, ScoredSession, ThresholdConfig } from '../../lib/schema'
 import { TurnLink, TurnLinks } from './turnNav'
@@ -23,29 +24,35 @@ export function KeyScores({ session, thresholds }: { session: ScoredSession; thr
         ))}
       </ul>
       {goalsArePlaceholders && (
-        <p className="mt-3 text-sm text-navy-500">* Goals are placeholders until the sponsor confirms them.</p>
+        <p className="mt-3 text-sm text-navy-500">* Thresholds are placeholders until the sponsor confirms them.</p>
       )}
     </section>
   )
 }
 
 export function Verdict({ session, action }: { session: ScoredSession; action?: ReactNode }) {
-  const n = session.issues.length
+  const { result, failing, advisory } = gateResult(session)
+  const pass = result === 'pass'
+  const plural = (k: number, word: string) => `${k} ${word}${k === 1 ? '' : 's'}`
   return (
     <Card className="flex flex-wrap items-center gap-5 p-6 sm:p-8">
       <span
-        className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${n === 0 ? 'bg-green-100 text-green-700' : 'bg-brand-100 text-brand-700'}`}
+        className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${pass ? 'bg-green-100 text-green-700' : 'bg-brand-100 text-brand-700'}`}
       >
-        <Icon name={n === 0 ? 'check' : 'alert'} className="h-7 w-7" />
+        <Icon name={pass ? 'check' : 'alert'} className="h-7 w-7" />
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
-          {n === 0 ? 'No problems found' : `${n} problem${n === 1 ? '' : 's'} found`}
+          {pass ? 'Pass' : 'Fail'}
+          {advisory.length > 0 && (
+            <span className="ml-2 text-lg font-semibold text-navy-500">+ {plural(advisory.length, 'advisory note')}</span>
+          )}
         </p>
         <p className="mt-1 text-navy-600">
-          {n === 0
-            ? 'Nothing in this conversation missed a goal or broke a rule.'
-            : 'Each one is listed below. Click "Show me" to jump to that moment in the conversation.'}
+          {pass
+            ? 'Every gating measure meets its threshold, with no reflection balance flags or prohibited behaviors.'
+            : `${plural(failing.length, 'issue')} fail${failing.length === 1 ? 's' : ''} this session. Each one is listed below; click "Show me" to jump to that moment.`}
+          {advisory.length > 0 && ' Advisory notes are reported but do not change pass or fail yet.'}
         </p>
       </div>
       {action}
@@ -65,7 +72,12 @@ export function Problems({ session }: { session: ScoredSession }) {
             <Card className="p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <IssueTypePill type={issue.type} />
+                  <span className="flex flex-wrap items-center gap-2">
+                    <IssueTypePill type={issue.type} />
+                    <span className="text-xs font-semibold text-navy-500">
+                      {failsSession(issue) ? 'Fails the session' : 'Advisory'}
+                    </span>
+                  </span>
                   <p className="mt-2 text-lg font-semibold text-navy-900">{issue.title}</p>
                   <p className="mt-0.5 text-navy-600">{issue.detail}</p>
                   {issue.evidence_quote && (
@@ -100,6 +112,7 @@ const N_LABEL: Record<string, string> = {
 
 function ScoreTile({ measure, placeholder }: { measure: Measure; placeholder: boolean }) {
   const copy = MEASURE_COPY[measure.id]
+  const tier = MEASURE_TIER[measure.id]
   const value = formatMeasureValue(measure.id, measure.value)
   const suffix =
     measure.value === null ? '' : copy?.unit === 'outOf5' ? ' / 5' : copy?.unit === 'perQuestion' ? ' per question' : ''
@@ -114,11 +127,15 @@ function ScoreTile({ measure, placeholder }: { measure: Measure; placeholder: bo
         <span className="text-base font-semibold text-navy-500">{suffix}</span>
       </p>
       <p className="mt-1 text-sm text-navy-500">
-        {measure.threshold ? `Goal: ${formatGoal(measure.id, measure.threshold)}${placeholder ? '*' : ''}` : 'No goal set'}
+        {measure.threshold
+          ? `Threshold: ${formatGoal(measure.id, measure.threshold)}${placeholder ? '*' : ''}`
+          : 'Threshold pending (sponsor)'}
       </p>
+      {tier && <p className="mt-1 text-xs font-semibold text-navy-500">{TIER_COPY[tier].label}</p>}
       <div className="mt-auto">
         <Explainer>
           {copy && <p>{copy.explain}</p>}
+          {tier && <p>{TIER_COPY[tier].explain}</p>}
           <p>
             Based on {measure.n} {N_LABEL[measure.id] ?? 'items'}.
             {measure.status === 'insufficient_data' && ' That is too few to give a reliable number.'}
@@ -138,7 +155,10 @@ export function OverallRatings({ session }: { session: ScoredSession }) {
       </SectionTitle>
       <p className="mb-3 flex items-start gap-2 rounded-xl bg-sky-50 px-4 py-3 text-sm text-sky-950 ring-1 ring-sky-200">
         <Icon name="info" className="mt-0.5" />
-        <span>These ratings haven't been checked against expert reviewers yet, so treat them as a rough guide.</span>
+        <span>
+          Advisory (tier C). MITI global ratings, rated in a separate pass. They do not change pass or fail until they are
+          validated against expert coders.
+        </span>
       </p>
       {session.globals.length === 0 ? (
         <Card className="p-6 text-navy-500">No overall ratings for this conversation.</Card>

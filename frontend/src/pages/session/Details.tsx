@@ -49,7 +49,9 @@ export function Details({ session }: { session: ScoredSession }) {
       </section>
 
       <section>
-        <SectionTitle hint="Rules from the sponsor about how the conversation should flow (Table C).">Flow checks</SectionTitle>
+        <SectionTitle hint="Table C flags (not part of MITI). They catch over-following and interrogation that the session-wide ratio can hide. A breach fails the session.">
+          Reflection balance flags
+        </SectionTitle>
         <div className="grid items-start gap-4 lg:grid-cols-[1fr_1.6fr]">
           <Card className="p-5">
             <div className="flex items-start justify-between gap-2">
@@ -57,7 +59,10 @@ export function Details({ session }: { session: ScoredSession }) {
               <StatusPill status={run.exceeds_cap ? 'fail' : 'pass'} label={run.exceeds_cap ? 'Too many' : 'OK'} />
             </div>
             <p className="mt-3 text-4xl font-extrabold text-navy-900">{run.length}</p>
-            <p className="mt-1 text-sm text-navy-500">Most in a row without a question. Allowed: {run.cap}*</p>
+            <p className="mt-1 text-sm text-navy-500">
+              Longest run of reflections with no question in between. Design cap: {run.cap}*. {run.cap + 1} or more fails the
+              session.
+            </p>
             <div className="mt-4">
               <TurnLinks turns={run.turns} />
             </div>
@@ -106,7 +111,10 @@ export function Details({ session }: { session: ScoredSession }) {
             )}
           </Card>
         </div>
-        <p className="mt-3 text-sm text-navy-500">* Limits are placeholders until the sponsor confirms them.</p>
+        <p className="mt-3 text-sm text-navy-500">
+          * Limits are placeholders until the sponsor confirms them. The window threshold for listening vs. asking is still
+          pending from the sponsor.
+        </p>
       </section>
 
       <section>

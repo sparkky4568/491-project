@@ -10,6 +10,7 @@
  */
 import type { Code, CodeAssignment, GlobalRating, Issue, Measure, ScoredSession, ThresholdConfig, TranscriptIn } from './schema'
 import { CODES } from './schema'
+import { formatGoal } from './format'
 
 // ------------------------------------------------------------ Word patterns
 
@@ -276,11 +277,16 @@ export function demoScore(transcript: TranscriptIn, thresholds: ThresholdConfig)
     })
   const failed = (id: string) => measures.find((m) => m.id === id)?.status === 'fail'
   const pct = (v: number) => `${Math.round(v * 100)}%`
+  // Read the threshold from thresholds.json so the text never disagrees with the score tiles.
+  const threshold = (id: string) => {
+    const t = measures.find((m) => m.id === id)?.threshold
+    return t ? ` Threshold: ${formatGoal(id, t)}.` : ''
+  }
   if (failed('pct_complex_reflections'))
     issue(
       'measure_below_threshold',
       'Too few reflections add meaning',
-      `${pct(counts.CR / R)} of the coach's reflections added meaning (${counts.CR} of ${R}). Goal: 40% or more.`,
+      `${pct(counts.CR / R)} of the coach's reflections added meaning (${counts.CR} of ${R}).${threshold('pct_complex_reflections')}`,
       'pct_complex_reflections',
       turnsWith(['SR', 'CR']),
       null,
@@ -289,7 +295,7 @@ export function demoScore(transcript: TranscriptIn, thresholds: ThresholdConfig)
     issue(
       'measure_below_threshold',
       'Asked far more than listened',
-      `${(R / Q).toFixed(2)} reflections per question (${R} reflections, ${Q} questions). Goal: 2 or more.`,
+      `${(R / Q).toFixed(2)} reflections per question (${R} reflections, ${Q} questions).${threshold('reflection_to_question')}`,
       'reflection_to_question',
       turnsWith(['SR', 'CR', 'Q']),
       null,
@@ -299,7 +305,7 @@ export function demoScore(transcript: TranscriptIn, thresholds: ThresholdConfig)
     issue(
       'measure_below_threshold',
       'Coach pushed advice or argued',
-      `${mina} pushy moment${mina === 1 ? '' : 's'} (${counts.PERSUADE} pushing advice, ${counts.CONFRONT} arguing). Goal: none.`,
+      `${mina} pushy moment${mina === 1 ? '' : 's'} (${counts.PERSUADE} pushing advice, ${counts.CONFRONT} arguing).${threshold('total_mina')}`,
       'total_mina',
       turnsWith(['PERSUADE', 'CONFRONT']),
       first?.evidence_quote ?? null,
@@ -309,7 +315,7 @@ export function demoScore(transcript: TranscriptIn, thresholds: ThresholdConfig)
     issue(
       'measure_below_threshold',
       'Low relationship score',
-      `${((g.partnership + g.empathy) / 2).toFixed(1)} out of 5. Goal: 4 or more.`,
+      `${((g.partnership + g.empathy) / 2).toFixed(1)} out of 5.${threshold('relational')}`,
       'relational',
       [],
       null,
@@ -318,7 +324,7 @@ export function demoScore(transcript: TranscriptIn, thresholds: ThresholdConfig)
     issue(
       'measure_below_threshold',
       'Low technique score',
-      `${((g.cultivating_change_talk + g.softening_sustain_talk) / 2).toFixed(1)} out of 5. Goal: 4 or more.`,
+      `${((g.cultivating_change_talk + g.softening_sustain_talk) / 2).toFixed(1)} out of 5.${threshold('technical')}`,
       'technical',
       [],
       null,
@@ -327,13 +333,13 @@ export function demoScore(transcript: TranscriptIn, thresholds: ThresholdConfig)
     issue(
       'table_c_flag',
       'Too many reflections in a row',
-      `The coach reflected ${best.length} times in a row without asking anything. The flow allows ${cap}.`,
+      `The coach reflected ${best.length} times in a row without asking anything. The design cap is ${cap}, so ${cap + 1} or more fails the session.`,
       null,
       best,
       null,
     )
   const notAllowed: Array<[RegExp, string, string]> = [
-    [MEDICATION, 'Gave medication advice', 'Recommended a medication or dose.'],
+    [MEDICATION, 'Clinical advice', 'Named or recommended a medication or dose.'],
     [CONFIDENCE_FOR_THEM, 'Answered the confidence question for the person', 'Stated their confidence number instead of asking.'],
   ]
   for (const [pattern, title, detail] of notAllowed) {

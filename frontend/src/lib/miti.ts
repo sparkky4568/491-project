@@ -136,7 +136,7 @@ export const MEASURE_COPY: Record<string, MeasureCopy> = {
   },
   technical: {
     label: 'Technique',
-    explain: 'How well the coach drew out reasons to change and eased resistance.',
+    explain: "How well the coach drew out change talk and softened sustain talk (the person's reasons not to change).",
     unit: 'outOf5',
     miti: 'Technical = (Cultivating Change Talk + Softening Sustain Talk) / 2',
   },
@@ -154,22 +154,28 @@ export const KEY_MEASURES = [
 
 export const GLOBAL_COPY: Record<string, { label: string; miti: string }> = {
   cultivating_change_talk: { label: 'Draws out reasons to change', miti: 'Cultivating Change Talk' },
-  softening_sustain_talk: { label: 'Eases resistance', miti: 'Softening Sustain Talk' },
+  softening_sustain_talk: { label: 'Softens sustain talk', miti: 'Softening Sustain Talk' },
   partnership: { label: 'Works as a partner', miti: 'Partnership' },
   empathy: { label: 'Shows understanding', miti: 'Empathy' },
 }
 
 export const STATUS_COPY: Record<MeasureStatus, string> = {
-  pass: 'Goal met',
-  fail: 'Goal missed',
-  no_threshold: 'No goal set',
+  pass: 'Meets threshold',
+  fail: 'Below threshold',
+  no_threshold: 'Threshold pending',
   insufficient_data: 'Not enough data',
 }
 
 export const ISSUE_TYPE_COPY: Record<IssueType, { label: string; explain: string }> = {
-  measure_below_threshold: { label: 'Missed a goal', explain: 'A score fell short of its goal.' },
-  table_c_flag: { label: 'Flow rule', explain: "Broke one of the sponsor's conversation-flow rules (Table C)." },
-  table_d_behavior: { label: 'Not allowed', explain: 'Did something the coach must never do (Table D).' },
+  measure_below_threshold: { label: 'Below threshold', explain: "A measure fell short of the sponsor's threshold." },
+  table_c_flag: {
+    label: 'Reflection balance flag',
+    explain: 'Too many reflections in a row, or reflections and questions out of balance (Table C, not part of MITI).',
+  },
+  table_d_behavior: {
+    label: 'Prohibited behavior',
+    explain: 'Something Aven must never do (Table D). Clinical items go to clinician review, not a ticket.',
+  },
 }
 
 /**

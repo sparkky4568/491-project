@@ -1,9 +1,9 @@
 {
   "_status": "PLACEHOLDER. The sponsor sets thresholds (expected Week 3). Never change these to improve agreement.",
-  "relational": { "op": ">=", "value": 4.0, "source": "Aven gate (Scorer Project Brief v3 §3A, per 10/9 briefing); confirm" },
-  "technical": { "op": ">=", "value": 4.0, "source": "Aven gate (Scorer Project Brief v3 §3A, per 10/9 briefing); confirm" },
-  "total_mina": { "op": "==", "value": 0, "source": "Aven gate (Scorer Project Brief v3 §3A, per 10/9 briefing); confirm" },
-  "pct_complex_reflections": { "op": ">=", "value": 0.4, "source": "PLACEHOLDER: MITI 4.2.1 'fair' level (good = 50%); sponsor to set" },
-  "reflection_to_question": { "op": ">=", "value": 2.0, "source": "2:1 from sponsor brief; scope notes it conflicts with the flow's two-reflection cap; confirm" },
-  "longest_reflection_run": { "op": "<=", "value": 2, "source": "Aven flow two-reflection design cap; confirm meaning with sponsor" }
+  "relational": { "op": ">=", "value": 4.0, "source": "MITI 4.2.1 good (fair 3.5); brief v3.2 Table B. Tier C, advisory until validated" },
+  "technical": { "op": ">=", "value": 4.0, "source": "MITI 4.2.1 good (fair 3); brief v3.2 Table B. Tier C, advisory until validated" },
+  "total_mina": { "op": "==", "value": 0, "source": "Sponsor's zero (MITI sets no threshold); brief v3.2 Table B. Tier B, advisory until validated" },
+  "pct_complex_reflections": { "op": ">=", "value": 0.5, "source": "Gate 50% = MITI 4.2.1 good (fair 40%); brief v3.2 Table B. Tier A" },
+  "reflection_to_question": { "op": ">=", "value": 2.0, "source": "Gate 2:1 = MITI 4.2.1 good (fair 1:1); brief v3.2 Table B. Tier A. Brief notes it may conflict with the flow's two-reflection cap; confirm" },
+  "longest_reflection_run": { "op": "<=", "value": 2, "source": "Design cap of two; three or more fails the session (brief v3.2 Table C)" }
 }
