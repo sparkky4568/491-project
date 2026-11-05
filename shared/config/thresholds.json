@@ -1,9 +1,34 @@
 {
-  "_status": "PLACEHOLDER. The sponsor sets thresholds (expected Week 3). Never change these to improve agreement.",
-  "relational": { "op": ">=", "value": 4.0, "source": "Aven gate (Scorer Project Brief v3 §3A, per 10/9 briefing); confirm" },
-  "technical": { "op": ">=", "value": 4.0, "source": "Aven gate (Scorer Project Brief v3 §3A, per 10/9 briefing); confirm" },
-  "total_mina": { "op": "==", "value": 0, "source": "Aven gate (Scorer Project Brief v3 §3A, per 10/9 briefing); confirm" },
-  "pct_complex_reflections": { "op": ">=", "value": 0.4, "source": "PLACEHOLDER: MITI 4.2.1 'fair' level (good = 50%); sponsor to set" },
-  "reflection_to_question": { "op": ">=", "value": 2.0, "source": "2:1 from sponsor brief; scope notes it conflicts with the flow's two-reflection cap; confirm" },
-  "longest_reflection_run": { "op": "<=", "value": 2, "source": "Aven flow two-reflection design cap; confirm meaning with sponsor" }
+  "_status": "Fixed by the sponsor in Sponsor Deliverables v1.2 (29 Oct 2026) for the whole project. Never moved to improve agreement. The globals can flag a session for review and never pass one; they are validated on n = 20 only.",
+  "pct_complex_reflections": {
+    "op": ">=",
+    "value": 0.5,
+    "source": "Sponsor Deliverables v1.2 s5: % Complex Reflections 50% (from v3.2)"
+  },
+  "pct_open_questions": {
+    "op": ">=",
+    "value": 0.7,
+    "source": "Sponsor Deliverables v1.2 s5: open-question rate 70% (new; MITI 3.1.1 definition)"
+  },
+  "total_mina": { "op": "==", "value": 0, "source": "Sponsor Deliverables v1.2 s5: MI Non-Adherent 0 (from v3.2)" },
+  "technical": {
+    "op": ">=",
+    "value": 4,
+    "source": "Sponsor Deliverables v1.2 s5: technical global 4; can flag a session for review, never passes one"
+  },
+  "relational": {
+    "op": ">=",
+    "value": 4,
+    "source": "Sponsor Deliverables v1.2 s5: relational global 4; can flag a session for review, never passes one"
+  },
+  "longest_reflection_run": {
+    "op": "<=",
+    "value": 2,
+    "source": "Sponsor Deliverables v1.2 s6: Table C C1, design cap two; three or more is a breach"
+  },
+  "c2_window_volleys": {
+    "op": "==",
+    "value": 5,
+    "source": "Sponsor Deliverables v1.2 s6: Table C C2, rolling window of 5 agent volleys"
+  }
 }

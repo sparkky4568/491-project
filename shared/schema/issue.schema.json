@@ -1,28 +1,65 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "issue.schema.json",
-  "title": "Issue",
-  "description": "One row in the issue log. v0 draft; see docs/DATA_CONTRACT.md. Written by the pipeline, never by the frontend.",
+  "title": "IssueLogEntry",
+  "description": "One issue-log entry: exactly the sponsor's 16 columns, in this order (Sponsor Deliverables v1.2 s10). Records what the scorer found, never what to change: there is no severity, ranking, owner, fix or recommendation field (Scope Letter Amendment 1 s1). Written by the pipeline, never by the frontend. The file keeps its old name; the concept is an issue-log entry. See docs/DATA_CONTRACT.md.",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "issue_id", "session_id", "type", "title", "detail", "measure_id", "node", "turns",
-    "evidence_quote", "provenance", "aven_version", "coder_prompt_version", "model", "created_at"
+    "entry_id",
+    "run_id",
+    "session_id",
+    "provenance",
+    "aven_version",
+    "scorer_prompt_version",
+    "scorer_model",
+    "entry_type",
+    "item",
+    "observed",
+    "threshold",
+    "scoreability",
+    "turn_start",
+    "turn_end",
+    "node_active",
+    "evidence"
   ],
   "properties": {
-    "issue_id": { "type": "string", "pattern": "^ISS-[0-9]{4,}$" },
+    "entry_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "run_id plus a five-digit sequence, e.g. run-mock-2026-11-05-00001."
+    },
+    "run_id": { "type": "string", "minLength": 1, "description": "One per scoring run." },
     "session_id": { "type": "string", "minLength": 1 },
-    "type": { "enum": ["measure_below_threshold", "table_c_flag", "table_d_behavior"] },
-    "title": { "type": "string", "minLength": 1 },
-    "detail": { "type": "string" },
-    "measure_id": { "type": ["string", "null"], "description": "Set for measure_below_threshold issues." },
-    "node": { "type": ["string", "null"], "description": "Aven flow node of the first turn in `turns`; null for corpus data." },
-    "turns": { "type": "array", "items": { "type": "integer", "minimum": 1 } },
-    "evidence_quote": { "type": ["string", "null"], "description": "Verbatim words from a turn, when the issue has a quotable source." },
     "provenance": { "enum": ["real", "simulated", "reference_corpus", "internal_test"] },
-    "aven_version": { "type": ["string", "null"] },
-    "coder_prompt_version": { "type": "string" },
-    "model": { "type": "string" },
-    "created_at": { "type": "string", "format": "date-time" }
+    "aven_version": { "type": ["string", "null"], "description": "As supplied with the transcript; null for corpora." },
+    "scorer_prompt_version": {
+      "type": "string",
+      "description": "Every prompt version, sorted by name and ;-joined, e.g. globals=globals-v0.2;prohibited=prohibited-v0.2;volley_coder=volley-coder-v0.5."
+    },
+    "scorer_model": { "type": "string", "description": "Exact model id(s), ;-joined." },
+    "entry_type": { "enum": ["MEASURE", "TABLE_C", "TABLE_D"] },
+    "item": {
+      "type": "string",
+      "minLength": 1,
+      "description": "MEASURE: the issue-log item name, as the Python scorer writes it (pct_complex_reflections, pct_open_questions, technical_global, relational_global, mi_non_adherent). TABLE_C: C1_reflection_run, C2_window_no_questions or C2_window_no_reflections. TABLE_D: the Table D code."
+    },
+    "observed": { "type": ["string", "null"], "description": "The value found, as text; null for TABLE_D." },
+    "threshold": { "type": ["string", "null"], "description": "The threshold it breached, as text; null for TABLE_D." },
+    "scoreability": {
+      "enum": ["full", "counts_only", "outside_instrument"],
+      "description": "not_scoreable sessions never produce an entry."
+    },
+    "turn_start": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Raw transcript turn, inclusive. An entry without turn numbers is not accepted."
+    },
+    "turn_end": { "type": "integer", "minimum": 1 },
+    "node_active": {
+      "type": ["string", "null"],
+      "description": "Nodes live across the span, first-seen order, ;-joined; null for corpora."
+    },
+    "evidence": { "type": "string", "description": "The agent words, quoted verbatim." }
   }
 }

@@ -30,7 +30,7 @@ export function Layout({ children }: { children: ReactNode }) {
 
       {demo && (
         <div role="note" aria-label="Practice score notice" className="sticky top-0 z-40 bg-navy-900 text-white">
-          <p className="mx-auto flex max-w-4xl items-center justify-center gap-2 px-4 py-2 text-center text-xs sm:text-sm">
+          <p className="mx-auto flex max-w-5xl items-center justify-center gap-2 px-4 py-2 text-center text-xs sm:text-sm">
             <Icon name="alert" className="h-4 w-4 text-brand-400" />
             <span>
               <strong className="font-semibold text-brand-300">Practice score.</strong> Not from the real AI scorer yet.
@@ -40,7 +40,7 @@ export function Layout({ children }: { children: ReactNode }) {
       )}
 
       <div className="px-3 pt-3 sm:px-6 sm:pt-5">
-        <header className="mx-auto flex max-w-4xl items-center rounded-2xl bg-white/75 px-4 py-3 shadow-[0_8px_30px_-12px_rgba(16,47,77,0.25)] ring-1 ring-navy-900/5 backdrop-blur sm:px-5">
+        <header className="mx-auto flex max-w-5xl items-center rounded-2xl bg-white/75 px-4 py-3 shadow-[0_8px_30px_-12px_rgba(16,47,77,0.25)] ring-1 ring-navy-900/5 backdrop-blur sm:px-5">
           <a href="/" className="flex items-center gap-2.5">
             <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-900 text-brand-400">
               <Icon name="chat" className="h-4.5 w-4.5" />
@@ -67,7 +67,7 @@ export function Layout({ children }: { children: ReactNode }) {
       </main>
 
       <footer className="border-t border-navy-900/5">
-        <p className="mx-auto max-w-4xl px-4 py-6 text-sm text-navy-500 sm:px-6">
+        <p className="mx-auto max-w-5xl px-4 py-6 text-sm text-navy-500 sm:px-6">
           AVEN Scorer · student capstone prototype. Don't paste real member data.
         </p>
       </footer>

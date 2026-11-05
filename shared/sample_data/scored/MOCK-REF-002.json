@@ -1,657 +1,1112 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "session_id": "MOCK-REF-002",
   "is_mock": true,
   "provenance": "reference_corpus",
   "source": "casaa",
-  "target_behavior": "sleeping better",
   "aven_version": null,
-  "recorded_at": null,
+  "channel": "voice",
+  "duration_sec": 284,
+  "change_goal": {
+    "text": "stop drinking coffee after lunch",
+    "state": "behavior"
+  },
+  "target_behavior": "sleeping better",
   "scorer": {
-    "run_id": "mock-run-2026-10-20-001",
-    "scored_at": "2026-10-20T18:01:14Z",
-    "coder_prompt_version": "coder-v0.1",
-    "globals_prompt_version": "globals-v0.1",
+    "run_id": "run-mock-2026-11-05",
+    "scored_at": "2026-11-05T15:00:00Z",
+    "prompt_versions": {
+      "globals": "globals-v0.2",
+      "prohibited": "prohibited-v0.2",
+      "volley_coder": "volley-coder-v0.5"
+    },
     "model": "mock-model-v0",
     "cost_usd": 0.09
+  },
+  "scoreability": {
+    "state": "counts_only",
+    "reason": "284 s (4 min 44 s), under 10 minutes. Counts, count-based scores and the relational globals; no technical globals.",
+    "agent_volleys": 11
   },
   "turns": [
     {
       "turn": 1,
-      "speaker": "practitioner",
+      "speaker": "agent",
       "text": "So you're here about your sleep. How many hours are you getting a night?",
+      "start_ms": 0,
+      "end_ms": 4752,
       "node": null,
-      "start_sec": 2.0,
-      "excluded": false,
-      "exclusion_reason": null,
-      "codes": [
-        {
-          "code": "Q",
-          "evidence_quote": "How many hours are you getting a night?",
-          "rationale": "Closed question asking for a number.",
-          "evidence_valid": true
-        }
-      ]
+      "volley": 1,
+      "back_channel": false
     },
     {
       "turn": 2,
-      "speaker": "client",
+      "speaker": "caller",
       "text": "Maybe five? It depends on the night.",
+      "start_ms": 9913,
+      "end_ms": 12289,
       "node": null,
-      "start_sec": 8.8,
-      "excluded": false,
-      "exclusion_reason": null,
-      "client_talk": "neutral",
-      "client_evidence_quote": null
+      "volley": 2,
+      "back_channel": false
     },
     {
       "turn": 3,
-      "speaker": "practitioner",
+      "speaker": "agent",
       "text": "Do you drink coffee after lunch?",
+      "start_ms": 25192,
+      "end_ms": 27304,
       "node": null,
-      "start_sec": 12.9,
+      "volley": 3,
+      "back_channel": false
+    },
+    {
+      "turn": 4,
+      "speaker": "caller",
+      "text": "Usually one around three, yeah.",
+      "start_ms": 37626,
+      "end_ms": 39672,
+      "node": null,
+      "volley": 4,
+      "back_channel": false
+    },
+    {
+      "turn": 5,
+      "speaker": "agent",
+      "text": "Are you napping during the day?",
+      "start_ms": 49994,
+      "end_ms": 52040,
+      "node": null,
+      "volley": 5,
+      "back_channel": false
+    },
+    {
+      "turn": 6,
+      "speaker": "caller",
+      "text": "Sometimes on weekends, if I can.",
+      "start_ms": 64942,
+      "end_ms": 67054,
+      "node": null,
+      "volley": 6,
+      "back_channel": false
+    },
+    {
+      "turn": 7,
+      "speaker": "agent",
+      "text": "And do you look at your phone in bed?",
+      "start_ms": 74795,
+      "end_ms": 77237,
+      "node": null,
+      "volley": 7,
+      "back_channel": false
+    },
+    {
+      "turn": 8,
+      "speaker": "caller",
+      "text": "Sometimes. It helps me wind down.",
+      "start_ms": 92720,
+      "end_ms": 94898,
+      "node": null,
+      "volley": 8,
+      "back_channel": false
+    },
+    {
+      "turn": 9,
+      "speaker": "agent",
+      "text": "Well, it doesn't. The blue light keeps your brain awake. You need to stop using your phone at night.",
+      "start_ms": 102640,
+      "end_ms": 109240,
+      "node": null,
+      "volley": 9,
+      "back_channel": false
+    },
+    {
+      "turn": 10,
+      "speaker": "caller",
+      "text": "I've heard that. It's just the only time I get to myself.",
+      "start_ms": 114401,
+      "end_ms": 118163,
+      "node": null,
+      "volley": 10,
+      "back_channel": false
+    },
+    {
+      "turn": 11,
+      "speaker": "agent",
+      "text": "Your phone time is the only time that's yours.",
+      "start_ms": 131065,
+      "end_ms": 134102,
+      "node": null,
+      "volley": 11,
+      "back_channel": false
+    },
+    {
+      "turn": 12,
+      "speaker": "caller",
+      "text": "Pretty much. Once the kids are down, that hour is mine.",
+      "start_ms": 152165,
+      "end_ms": 155795,
+      "node": null,
+      "volley": 12,
+      "back_channel": false
+    },
+    {
+      "turn": 13,
+      "speaker": "agent",
+      "text": "That hour is something you protect because nothing else in the day belongs to you.",
+      "start_ms": 171278,
+      "end_ms": 176690,
+      "node": null,
+      "volley": 13,
+      "back_channel": false
+    },
+    {
+      "turn": 14,
+      "speaker": "caller",
+      "text": "Yeah, I guess so. But I'm still exhausted every morning.",
+      "start_ms": 179270,
+      "end_ms": 182966,
+      "node": null,
+      "volley": 14,
+      "back_channel": false
+    },
+    {
+      "turn": 15,
+      "speaker": "agent",
+      "text": "You should try melatonin. Just take three milligrams before bed, that's what most people do.",
+      "start_ms": 188128,
+      "end_ms": 194200,
+      "node": null,
+      "volley": 15,
+      "back_channel": false
+    },
+    {
+      "turn": 16,
+      "speaker": "caller",
+      "text": "I don't really like taking pills.",
+      "start_ms": 209682,
+      "end_ms": 211860,
+      "node": null,
+      "volley": 16,
+      "back_channel": false
+    },
+    {
+      "turn": 17,
+      "speaker": "agent",
+      "text": "It's a supplement, not really a medication, so it's pretty mild.",
+      "start_ms": 217022,
+      "end_ms": 221246,
+      "node": null,
+      "volley": 17,
+      "back_channel": false
+    },
+    {
+      "turn": 18,
+      "speaker": "caller",
+      "text": "Maybe. I don't know.",
+      "start_ms": 239309,
+      "end_ms": 240629,
+      "node": null,
+      "volley": 18,
+      "back_channel": false
+    },
+    {
+      "turn": 19,
+      "speaker": "agent",
+      "text": "Okay. So less phone, no coffee after noon, and try the melatonin. Does that sound good?",
+      "start_ms": 250951,
+      "end_ms": 256693,
+      "node": null,
+      "volley": 19,
+      "back_channel": false
+    },
+    {
+      "turn": 20,
+      "speaker": "caller",
+      "text": "I guess I could try the coffee thing.",
+      "start_ms": 264434,
+      "end_ms": 266876,
+      "node": null,
+      "volley": 20,
+      "back_channel": false
+    },
+    {
+      "turn": 21,
+      "speaker": "agent",
+      "text": "Cutting the afternoon coffee is something you could try. What else might help you wind down?",
+      "start_ms": 272037,
+      "end_ms": 278109,
+      "node": null,
+      "volley": 21,
+      "back_channel": false
+    },
+    {
+      "turn": 22,
+      "speaker": "caller",
+      "text": "Maybe reading instead of scrolling.",
+      "start_ms": 280690,
+      "end_ms": 283000,
+      "node": null,
+      "volley": 22,
+      "back_channel": false
+    }
+  ],
+  "volleys": [
+    {
+      "volley": 1,
+      "speaker": "agent",
+      "turn_start": 1,
+      "turn_end": 1,
+      "absorbed_turns": [],
+      "text": "So you're here about your sleep. How many hours are you getting a night?",
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "Q",
-          "evidence_quote": "Do you drink coffee after lunch?",
-          "rationale": "Closed question; the second fact-finding question in a row.",
+          "question_subtype": "closed",
+          "evidence_quote": "How many hours are you getting a night?",
+          "rationale": "Asks for a number.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 4,
-      "speaker": "client",
-      "text": "Usually one around three, yeah.",
-      "node": null,
-      "start_sec": 16.6,
+      "volley": 2,
+      "speaker": "caller",
+      "turn_start": 2,
+      "turn_end": 2,
+      "absorbed_turns": [],
+      "text": "Maybe five? It depends on the night.",
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "neutral",
       "client_evidence_quote": null
     },
     {
-      "turn": 5,
-      "speaker": "practitioner",
-      "text": "And do you look at your phone in bed?",
-      "node": null,
-      "start_sec": 19.9,
+      "volley": 3,
+      "speaker": "agent",
+      "turn_start": 3,
+      "turn_end": 3,
+      "absorbed_turns": [],
+      "text": "Do you drink coffee after lunch?",
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "Q",
-          "evidence_quote": "do you look at your phone in bed?",
-          "rationale": "Third closed question in a row, with no reflection in between.",
+          "question_subtype": "closed",
+          "evidence_quote": "Do you drink coffee after lunch?",
+          "rationale": "Yes or no question.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 6,
-      "speaker": "client",
-      "text": "Sometimes. It helps me wind down.",
-      "node": null,
-      "start_sec": 24.8,
+      "volley": 4,
+      "speaker": "caller",
+      "turn_start": 4,
+      "turn_end": 4,
+      "absorbed_turns": [],
+      "text": "Usually one around three, yeah.",
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
+      "client_talk": "neutral",
+      "client_evidence_quote": null
+    },
+    {
+      "volley": 5,
+      "speaker": "agent",
+      "turn_start": 5,
+      "turn_end": 5,
+      "absorbed_turns": [],
+      "text": "Are you napping during the day?",
+      "nodes": [],
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "Q",
+          "question_subtype": "closed",
+          "evidence_quote": "Are you napping during the day?",
+          "rationale": "Yes or no question.",
+          "evidence_valid": true
+        }
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
+    },
+    {
+      "volley": 6,
+      "speaker": "caller",
+      "turn_start": 6,
+      "turn_end": 6,
+      "absorbed_turns": [],
+      "text": "Sometimes on weekends, if I can.",
+      "nodes": [],
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [],
+      "client_talk": "neutral",
+      "client_evidence_quote": null
+    },
+    {
+      "volley": 7,
+      "speaker": "agent",
+      "turn_start": 7,
+      "turn_end": 7,
+      "absorbed_turns": [],
+      "text": "And do you look at your phone in bed?",
+      "nodes": [],
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [
+        {
+          "code": "Q",
+          "question_subtype": "closed",
+          "evidence_quote": "And do you look at your phone in bed?",
+          "rationale": "Yes or no question.",
+          "evidence_valid": true
+        }
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
+    },
+    {
+      "volley": 8,
+      "speaker": "caller",
+      "turn_start": 8,
+      "turn_end": 8,
+      "absorbed_turns": [],
+      "text": "Sometimes. It helps me wind down.",
+      "nodes": [],
+      "excluded": false,
+      "exclusion_reason": null,
+      "codes": [],
       "client_talk": "sustain",
       "client_evidence_quote": "It helps me wind down."
     },
     {
-      "turn": 7,
-      "speaker": "practitioner",
+      "volley": 9,
+      "speaker": "agent",
+      "turn_start": 9,
+      "turn_end": 9,
+      "absorbed_turns": [],
       "text": "Well, it doesn't. The blue light keeps your brain awake. You need to stop using your phone at night.",
-      "node": null,
-      "start_sec": 28.5,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "CONFRONT",
+          "question_subtype": null,
           "evidence_quote": "Well, it doesn't.",
-          "rationale": "Directly contradicts the client's own experience.",
+          "rationale": "Contradicts the caller directly.",
           "evidence_valid": true
         },
         {
           "code": "GI",
+          "question_subtype": null,
           "evidence_quote": "The blue light keeps your brain awake.",
-          "rationale": "Gives information about screens and sleep.",
+          "rationale": "Gives information.",
           "evidence_valid": true
         },
         {
           "code": "PERSUADE",
+          "question_subtype": null,
           "evidence_quote": "You need to stop using your phone at night.",
-          "rationale": "Tells the client what to do without asking permission.",
+          "rationale": "Tells the caller what to do without asking.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 8,
-      "speaker": "client",
+      "volley": 10,
+      "speaker": "caller",
+      "turn_start": 10,
+      "turn_end": 10,
+      "absorbed_turns": [],
       "text": "I've heard that. It's just the only time I get to myself.",
-      "node": null,
-      "start_sec": 37.2,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "sustain",
       "client_evidence_quote": "It's just the only time I get to myself."
     },
     {
-      "turn": 9,
-      "speaker": "practitioner",
+      "volley": 11,
+      "speaker": "agent",
+      "turn_start": 11,
+      "turn_end": 11,
+      "absorbed_turns": [],
       "text": "Your phone time is the only time that's yours.",
-      "node": null,
-      "start_sec": 43.2,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "SR",
+          "question_subtype": null,
           "evidence_quote": "Your phone time is the only time that's yours.",
-          "rationale": "Restates the client's statement.",
+          "rationale": "Restates what the caller said.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 10,
-      "speaker": "client",
+      "volley": 12,
+      "speaker": "caller",
+      "turn_start": 12,
+      "turn_end": 12,
+      "absorbed_turns": [],
       "text": "Pretty much. Once the kids are down, that hour is mine.",
-      "node": null,
-      "start_sec": 48.1,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "sustain",
       "client_evidence_quote": "that hour is mine"
     },
     {
-      "turn": 11,
-      "speaker": "practitioner",
-      "text": "That hour is something you protect because nothing else in the day belongs to you. Are you exercising at all?",
-      "node": null,
-      "start_sec": 53.7,
+      "volley": 13,
+      "speaker": "agent",
+      "turn_start": 13,
+      "turn_end": 13,
+      "absorbed_turns": [],
+      "text": "That hour is something you protect because nothing else in the day belongs to you.",
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "CR",
+          "question_subtype": null,
           "evidence_quote": "That hour is something you protect because nothing else in the day belongs to you.",
-          "rationale": "Adds meaning by naming why the hour matters to the client.",
-          "evidence_valid": true
-        },
-        {
-          "code": "Q",
-          "evidence_quote": "Are you exercising at all?",
-          "rationale": "Closed question that changes the subject right after the reflection.",
+          "rationale": "Adds the meaning behind the habit.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 12,
-      "speaker": "client",
-      "text": "Not really. I'm too tired.",
-      "node": null,
-      "start_sec": 62.8,
+      "volley": 14,
+      "speaker": "caller",
+      "turn_start": 14,
+      "turn_end": 14,
+      "absorbed_turns": [],
+      "text": "Yeah, I guess so. But I'm still exhausted every morning.",
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
-      "client_talk": "sustain",
-      "client_evidence_quote": "I'm too tired."
+      "codes": [],
+      "client_talk": "change",
+      "client_evidence_quote": "I'm still exhausted every morning."
     },
     {
-      "turn": 13,
-      "speaker": "practitioner",
-      "text": "Have you tried melatonin? Just take three milligrams before bed, that's what most people do.",
-      "node": null,
-      "start_sec": 66.1,
+      "volley": 15,
+      "speaker": "agent",
+      "turn_start": 15,
+      "turn_end": 15,
+      "absorbed_turns": [],
+      "text": "You should try melatonin. Just take three milligrams before bed, that's what most people do.",
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
-          "code": "Q",
-          "evidence_quote": "Have you tried melatonin?",
-          "rationale": "Closed question.",
+          "code": "PERSUADE",
+          "question_subtype": null,
+          "evidence_quote": "You should try melatonin.",
+          "rationale": "Pushes a solution without permission.",
           "evidence_valid": true
         },
         {
-          "code": "PERSUADE",
+          "code": "GI",
+          "question_subtype": null,
           "evidence_quote": "Just take three milligrams before bed",
-          "rationale": "Unsolicited advice, including a specific dose.",
+          "rationale": "Gives a dose.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 14,
-      "speaker": "client",
+      "volley": 16,
+      "speaker": "caller",
+      "turn_start": 16,
+      "turn_end": 16,
+      "absorbed_turns": [],
       "text": "I don't really like taking pills.",
-      "node": null,
-      "start_sec": 73.3,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "sustain",
       "client_evidence_quote": "I don't really like taking pills."
     },
     {
-      "turn": 15,
-      "speaker": "practitioner",
+      "volley": 17,
+      "speaker": "agent",
+      "turn_start": 17,
+      "turn_end": 17,
+      "absorbed_turns": [],
       "text": "It's a supplement, not really a medication, so it's pretty mild.",
-      "node": null,
-      "start_sec": 77.0,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "GI",
-          "evidence_quote": "It's a supplement, not really a medication, so it's pretty mild.",
-          "rationale": "Gives information about melatonin.",
+          "question_subtype": null,
+          "evidence_quote": "It's a supplement, not really a medication",
+          "rationale": "Gives information.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 16,
-      "speaker": "client",
+      "volley": 18,
+      "speaker": "caller",
+      "turn_start": 18,
+      "turn_end": 18,
+      "absorbed_turns": [],
       "text": "Maybe. I don't know.",
-      "node": null,
-      "start_sec": 82.6,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "neutral",
       "client_evidence_quote": null
     },
     {
-      "turn": 17,
-      "speaker": "practitioner",
+      "volley": 19,
+      "speaker": "agent",
+      "turn_start": 19,
+      "turn_end": 19,
+      "absorbed_turns": [],
       "text": "Okay. So less phone, no coffee after noon, and try the melatonin. Does that sound good?",
-      "node": null,
-      "start_sec": 85.6,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "PERSUADE",
+          "question_subtype": null,
           "evidence_quote": "So less phone, no coffee after noon, and try the melatonin.",
-          "rationale": "Presents the practitioner's own advice as the plan instead of the client's ideas.",
+          "rationale": "Lists the agent's own plan.",
           "evidence_valid": true
         },
         {
           "code": "Q",
+          "question_subtype": "closed",
           "evidence_quote": "Does that sound good?",
-          "rationale": "Closed question seeking agreement.",
+          "rationale": "Yes or no question.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 18,
-      "speaker": "client",
+      "volley": 20,
+      "speaker": "caller",
+      "turn_start": 20,
+      "turn_end": 20,
+      "absorbed_turns": [],
       "text": "I guess I could try the coffee thing.",
-      "node": null,
-      "start_sec": 93.1,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "change",
-      "client_evidence_quote": "I guess I could try the coffee thing."
+      "client_evidence_quote": "I could try the coffee thing."
     },
     {
-      "turn": 19,
-      "speaker": "practitioner",
-      "text": "Cutting the afternoon coffee is something you could try. Anything else?",
-      "node": null,
-      "start_sec": 97.6,
+      "volley": 21,
+      "speaker": "agent",
+      "turn_start": 21,
+      "turn_end": 21,
+      "absorbed_turns": [],
+      "text": "Cutting the afternoon coffee is something you could try. What else might help you wind down?",
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "SR",
+          "question_subtype": null,
           "evidence_quote": "Cutting the afternoon coffee is something you could try.",
-          "rationale": "Restates the client's statement.",
+          "rationale": "Restates the caller's idea.",
           "evidence_valid": true
         },
         {
           "code": "Q",
-          "evidence_quote": "Anything else?",
-          "rationale": "Closed question.",
+          "question_subtype": "open",
+          "evidence_quote": "What else might help you wind down?",
+          "rationale": "Open question.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 20,
-      "speaker": "client",
-      "text": "No, I think that's it.",
-      "node": null,
-      "start_sec": 103.2,
+      "volley": 22,
+      "speaker": "caller",
+      "turn_start": 22,
+      "turn_end": 22,
+      "absorbed_turns": [],
+      "text": "Maybe reading instead of scrolling.",
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
-      "client_talk": "neutral",
-      "client_evidence_quote": null
+      "codes": [],
+      "client_talk": "change",
+      "client_evidence_quote": "Maybe reading instead of scrolling."
     }
   ],
   "counts": {
-    "Q": 7,
+    "Q": 6,
     "SR": 2,
     "CR": 1,
-    "GI": 2,
-    "PERSUADE": 3,
-    "PERSUADE_WP": 0,
+    "GI": 3,
     "AF": 0,
     "SEEK": 0,
-    "EMPHASIZE": 0,
+    "EMPH": 0,
+    "PWP": 0,
+    "PERSUADE": 3,
     "CONFRONT": 1
   },
+  "question_counts": {
+    "open": 1,
+    "closed": 5,
+    "unknown": 0
+  },
   "client_talk_counts": {
-    "change": 1,
-    "sustain": 5,
+    "change": 3,
+    "sustain": 4,
     "neutral": 4
   },
   "measures": [
     {
       "id": "pct_complex_reflections",
-      "label": "% Complex Reflections",
+      "label": "Complex reflections",
       "value": 0.3333,
       "n": 3,
       "formula": "CR / (SR + CR)",
       "threshold": {
         "op": ">=",
-        "value": 0.4,
-        "source": "placeholder"
+        "value": 0.5,
+        "source": "Sponsor Deliverables v1.2 s5: % Complex Reflections 50% (from v3.2)"
       },
-      "status": "fail"
+      "status": "below",
+      "note": null
     },
     {
       "id": "reflection_to_question",
-      "label": "Reflection-to-Question Ratio",
-      "value": 0.4286,
-      "n": 10,
+      "label": "Reflections per question",
+      "value": 0.5,
+      "n": 9,
       "formula": "(SR + CR) / Q",
+      "threshold": null,
+      "status": "reported",
+      "note": "Reported, no threshold. Table C looks at the flow instead."
+    },
+    {
+      "id": "pct_open_questions",
+      "label": "Open questions",
+      "value": 0.1667,
+      "n": 6,
+      "formula": "open Q / all Q",
       "threshold": {
         "op": ">=",
-        "value": 2.0,
-        "source": "placeholder"
+        "value": 0.7,
+        "source": "Sponsor Deliverables v1.2 s5: open-question rate 70% (new; MITI 3.1.1 definition)"
       },
-      "status": "fail"
+      "status": "below",
+      "note": null
     },
     {
       "id": "total_mia",
-      "label": "Total MI-Adherent",
+      "label": "MI-adherent",
       "value": 0,
-      "n": 10,
-      "formula": "AF + SEEK + EMPHASIZE",
+      "n": 11,
+      "formula": "AF + SEEK + EMPH",
       "threshold": null,
-      "status": "no_threshold"
+      "status": "reported",
+      "note": "Reported, no threshold."
     },
     {
       "id": "total_mina",
-      "label": "Total MI Non-Adherent",
+      "label": "MI non-adherent",
       "value": 4,
-      "n": 10,
+      "n": 11,
       "formula": "PERSUADE + CONFRONT",
       "threshold": {
         "op": "==",
         "value": 0,
-        "source": "placeholder"
+        "source": "Sponsor Deliverables v1.2 s5: MI Non-Adherent 0 (from v3.2)"
       },
-      "status": "fail"
+      "status": "below",
+      "note": null
     },
     {
-      "id": "relational",
-      "label": "Relational",
-      "value": 2.0,
-      "n": 20,
-      "formula": "(partnership + empathy) / 2",
-      "threshold": {
-        "op": ">=",
-        "value": 4.0,
-        "source": "placeholder"
-      },
-      "status": "fail"
+      "id": "caller_change_talk_ratio",
+      "label": "Caller change talk",
+      "value": 0.4286,
+      "n": 7,
+      "formula": "change / (change + sustain)",
+      "threshold": null,
+      "status": "reported",
+      "note": "Reported, no threshold: it depends on the caller as much as on the agent."
     },
     {
       "id": "technical",
-      "label": "Technical",
-      "value": 1.5,
-      "n": 20,
-      "formula": "(cultivating_change_talk + softening_sustain_talk) / 2",
+      "label": "Technical global",
+      "value": null,
+      "n": 11,
+      "formula": "(cultivating change talk + softening sustain talk) / 2",
       "threshold": {
         "op": ">=",
-        "value": 4.0,
-        "source": "placeholder"
+        "value": 4,
+        "source": "Sponsor Deliverables v1.2 s5: technical global 4; can flag a session for review, never passes one"
       },
-      "status": "fail"
+      "status": "not_rated",
+      "note": "Not rated: needs full scoreability."
+    },
+    {
+      "id": "relational",
+      "label": "Relational global",
+      "value": 2.0,
+      "n": 11,
+      "formula": "(partnership + empathy) / 2",
+      "threshold": {
+        "op": ">=",
+        "value": 4,
+        "source": "Sponsor Deliverables v1.2 s5: relational global 4; can flag a session for review, never passes one"
+      },
+      "status": "below",
+      "note": "Can flag a session for review; never passes one. Validated on n = 20 only."
     }
   ],
   "globals": [
     {
-      "id": "cultivating_change_talk",
-      "score": 2,
-      "cited_turns": [
-        11,
-        19
-      ],
-      "rationale": "Few attempts to draw out the client's reasons for change; the one change statement (T18) got a simple reflection and a closed question."
-    },
-    {
-      "id": "softening_sustain_talk",
-      "score": 1,
-      "cited_turns": [
-        7,
-        13,
-        15
-      ],
-      "rationale": "Argued with the client's reasons for using the phone and avoiding pills, which tends to strengthen sustain talk."
-    },
-    {
       "id": "partnership",
       "score": 2,
-      "cited_turns": [
-        7,
-        13,
-        17
-      ],
-      "rationale": "The practitioner set the agenda and supplied every solution; the client was never asked for ideas."
+      "cited_turns": [9, 19],
+      "rationale": "The agent sets the plan and asks the caller to agree to it."
     },
     {
       "id": "empathy",
       "score": 2,
-      "cited_turns": [
-        9,
-        11
-      ],
-      "rationale": "Two reflections touched the client's need for personal time, but most turns were fact-finding questions."
+      "cited_turns": [9, 17],
+      "rationale": "Brushes past the caller's reasons and her dislike of pills."
     }
   ],
-  "flags": {
-    "longest_reflection_run": {
-      "length": 1,
-      "turns": [
-        9
-      ],
+  "table_c": {
+    "c1_reflection_run": {
+      "length": 2,
       "cap": 2,
-      "exceeds_cap": false
+      "span": {
+        "start_volley": 11,
+        "end_volley": 13,
+        "turn_start": 11,
+        "turn_end": 13,
+        "nodes": []
+      },
+      "breach": false
     },
-    "windowed_rq": {
-      "window_size": 10,
-      "points": [
+    "c2_windowed_rq": {
+      "window_size": 5,
+      "windows": [
         {
-          "end_turn": 10,
-          "rq": 0.33
+          "start_volley": 1,
+          "end_volley": 9,
+          "turn_start": 1,
+          "turn_end": 9,
+          "nodes": [],
+          "reflections": 0,
+          "questions": 4,
+          "rq": 0.0
         },
         {
-          "end_turn": 11,
-          "rq": 0.67
+          "start_volley": 3,
+          "end_volley": 11,
+          "turn_start": 3,
+          "turn_end": 11,
+          "nodes": [],
+          "reflections": 1,
+          "questions": 3,
+          "rq": 0.3333
         },
         {
-          "end_turn": 12,
-          "rq": 0.67
-        },
-        {
-          "end_turn": 13,
-          "rq": 0.67
-        },
-        {
-          "end_turn": 14,
-          "rq": 0.67
-        },
-        {
-          "end_turn": 15,
+          "start_volley": 5,
+          "end_volley": 13,
+          "turn_start": 5,
+          "turn_end": 13,
+          "nodes": [],
+          "reflections": 2,
+          "questions": 2,
           "rq": 1.0
         },
         {
-          "end_turn": 16,
+          "start_volley": 7,
+          "end_volley": 15,
+          "turn_start": 7,
+          "turn_end": 15,
+          "nodes": [],
+          "reflections": 2,
+          "questions": 1,
+          "rq": 2.0
+        },
+        {
+          "start_volley": 9,
+          "end_volley": 17,
+          "turn_start": 9,
+          "turn_end": 17,
+          "nodes": [],
+          "reflections": 2,
+          "questions": 0,
+          "rq": null
+        },
+        {
+          "start_volley": 11,
+          "end_volley": 19,
+          "turn_start": 11,
+          "turn_end": 19,
+          "nodes": [],
+          "reflections": 2,
+          "questions": 1,
+          "rq": 2.0
+        },
+        {
+          "start_volley": 13,
+          "end_volley": 21,
+          "turn_start": 13,
+          "turn_end": 21,
+          "nodes": [],
+          "reflections": 2,
+          "questions": 2,
           "rq": 1.0
-        },
-        {
-          "end_turn": 17,
-          "rq": 0.67
-        },
-        {
-          "end_turn": 18,
-          "rq": 0.67
-        },
-        {
-          "end_turn": 19,
-          "rq": 0.5
-        },
-        {
-          "end_turn": 20,
-          "rq": 0.5
         }
-      ]
+      ],
+      "worst_over_following": {
+        "start_volley": 9,
+        "end_volley": 17,
+        "turn_start": 9,
+        "turn_end": 17,
+        "nodes": [],
+        "reflections": 2,
+        "questions": 0,
+        "rq": null
+      },
+      "worst_interrogation": {
+        "start_volley": 1,
+        "end_volley": 9,
+        "turn_start": 1,
+        "turn_end": 9,
+        "nodes": [],
+        "reflections": 0,
+        "questions": 4,
+        "rq": 0.0
+      },
+      "breach_no_questions": true,
+      "breach_no_reflections": true
     }
   },
+  "table_d": [
+    {
+      "code": "D1_clinical_advice",
+      "volley": 15,
+      "turn_start": 15,
+      "turn_end": 15,
+      "node": null,
+      "evidence_quote": "Just take three milligrams before bed",
+      "rationale": "Names and doses a supplement the caller did not ask about.",
+      "clinician_review": true
+    }
+  ],
+  "safety_volleys": [],
   "issues": [
     {
-      "issue_id": "ISS-0001",
+      "entry_id": "run-mock-2026-11-05-00006",
+      "run_id": "run-mock-2026-11-05",
       "session_id": "MOCK-REF-002",
-      "type": "measure_below_threshold",
-      "title": "Too few reflections add meaning",
-      "detail": "33% of the coach's reflections added meaning (1 of 3). Goal: 40% or more.",
-      "measure_id": "pct_complex_reflections",
-      "node": null,
-      "turns": [
-        9,
-        11,
-        19
-      ],
-      "evidence_quote": null,
       "provenance": "reference_corpus",
       "aven_version": null,
-      "coder_prompt_version": "coder-v0.1",
-      "model": "mock-model-v0",
-      "created_at": "2026-10-20T18:01:14Z"
+      "scorer_prompt_version": "globals=globals-v0.2;prohibited=prohibited-v0.2;volley_coder=volley-coder-v0.5",
+      "scorer_model": "mock-model-v0",
+      "entry_type": "TABLE_C",
+      "item": "C2_window_no_reflections",
+      "observed": "reflections=0;questions=4;window=5",
+      "threshold": "reflections>=1 per 5 agent volleys",
+      "scoreability": "counts_only",
+      "turn_start": 1,
+      "turn_end": 9,
+      "node_active": null,
+      "evidence": "[turn 1] So you're here about your sleep. How many hours are you getting a night? || [turn 3] Do you drink coffee after lunch? || [turn 5] Are you napping during the day? || [turn 7] And do you look at your phone in bed? || [turn 9] Well, it doesn't. The blue light keeps your brain awake. You need to stop using your phone at night."
     },
     {
-      "issue_id": "ISS-0002",
+      "entry_id": "run-mock-2026-11-05-00007",
+      "run_id": "run-mock-2026-11-05",
       "session_id": "MOCK-REF-002",
-      "type": "measure_below_threshold",
-      "title": "Asked far more than listened",
-      "detail": "0.43 reflections per question (3 reflections, 7 questions). Goal: 2 or more.",
-      "measure_id": "reflection_to_question",
-      "node": null,
-      "turns": [
-        1,
-        3,
-        5,
-        9,
-        11,
-        13,
-        17,
-        19
-      ],
-      "evidence_quote": null,
       "provenance": "reference_corpus",
       "aven_version": null,
-      "coder_prompt_version": "coder-v0.1",
-      "model": "mock-model-v0",
-      "created_at": "2026-10-20T18:01:14Z"
+      "scorer_prompt_version": "globals=globals-v0.2;prohibited=prohibited-v0.2;volley_coder=volley-coder-v0.5",
+      "scorer_model": "mock-model-v0",
+      "entry_type": "MEASURE",
+      "item": "pct_complex_reflections",
+      "observed": "0.3333",
+      "threshold": "0.5",
+      "scoreability": "counts_only",
+      "turn_start": 1,
+      "turn_end": 21,
+      "node_active": null,
+      "evidence": "[turn 11] Your phone time is the only time that's yours. || [turn 21] Cutting the afternoon coffee is something you could try."
     },
     {
-      "issue_id": "ISS-0003",
+      "entry_id": "run-mock-2026-11-05-00008",
+      "run_id": "run-mock-2026-11-05",
       "session_id": "MOCK-REF-002",
-      "type": "measure_below_threshold",
-      "title": "Coach pushed advice or argued",
-      "detail": "4 pushy moments (3 pushing advice, 1 arguing). Goal: none.",
-      "measure_id": "total_mina",
-      "node": null,
-      "turns": [
-        7,
-        13,
-        17
-      ],
-      "evidence_quote": "Well, it doesn't.",
       "provenance": "reference_corpus",
       "aven_version": null,
-      "coder_prompt_version": "coder-v0.1",
-      "model": "mock-model-v0",
-      "created_at": "2026-10-20T18:01:14Z"
+      "scorer_prompt_version": "globals=globals-v0.2;prohibited=prohibited-v0.2;volley_coder=volley-coder-v0.5",
+      "scorer_model": "mock-model-v0",
+      "entry_type": "MEASURE",
+      "item": "pct_open_questions",
+      "observed": "0.1667",
+      "threshold": "0.7",
+      "scoreability": "counts_only",
+      "turn_start": 1,
+      "turn_end": 21,
+      "node_active": null,
+      "evidence": "[turn 1] How many hours are you getting a night? || [turn 3] Do you drink coffee after lunch? || [turn 5] Are you napping during the day? || [turn 7] And do you look at your phone in bed? || [turn 19] Does that sound good?"
     },
     {
-      "issue_id": "ISS-0004",
+      "entry_id": "run-mock-2026-11-05-00009",
+      "run_id": "run-mock-2026-11-05",
       "session_id": "MOCK-REF-002",
-      "type": "measure_below_threshold",
-      "title": "Low relationship score",
-      "detail": "2.0 out of 5 (partnership 2, empathy 2). Goal: 4 or more.",
-      "measure_id": "relational",
-      "node": null,
-      "turns": [
-        7,
-        9,
-        11,
-        13,
-        17
-      ],
-      "evidence_quote": null,
       "provenance": "reference_corpus",
       "aven_version": null,
-      "coder_prompt_version": "coder-v0.1",
-      "model": "mock-model-v0",
-      "created_at": "2026-10-20T18:01:14Z"
+      "scorer_prompt_version": "globals=globals-v0.2;prohibited=prohibited-v0.2;volley_coder=volley-coder-v0.5",
+      "scorer_model": "mock-model-v0",
+      "entry_type": "MEASURE",
+      "item": "relational_global",
+      "observed": "2",
+      "threshold": "4",
+      "scoreability": "counts_only",
+      "turn_start": 1,
+      "turn_end": 21,
+      "node_active": null,
+      "evidence": "[turn 9] Well, it doesn't. The blue light keeps your brain awake. You need to stop using your phone at night. || [turn 17] It's a supplement, not really a medication, so it's pretty mild. || [turn 19] Okay. So less phone, no coffee after noon, and try the melatonin. Does that sound good?"
     },
     {
-      "issue_id": "ISS-0005",
+      "entry_id": "run-mock-2026-11-05-00010",
+      "run_id": "run-mock-2026-11-05",
       "session_id": "MOCK-REF-002",
-      "type": "measure_below_threshold",
-      "title": "Low technique score",
-      "detail": "1.5 out of 5 (drawing out reasons 2, easing resistance 1). Goal: 4 or more.",
-      "measure_id": "technical",
-      "node": null,
-      "turns": [
-        7,
-        11,
-        13,
-        15,
-        19
-      ],
-      "evidence_quote": null,
       "provenance": "reference_corpus",
       "aven_version": null,
-      "coder_prompt_version": "coder-v0.1",
-      "model": "mock-model-v0",
-      "created_at": "2026-10-20T18:01:14Z"
+      "scorer_prompt_version": "globals=globals-v0.2;prohibited=prohibited-v0.2;volley_coder=volley-coder-v0.5",
+      "scorer_model": "mock-model-v0",
+      "entry_type": "MEASURE",
+      "item": "mi_non_adherent",
+      "observed": "4",
+      "threshold": "0",
+      "scoreability": "counts_only",
+      "turn_start": 9,
+      "turn_end": 9,
+      "node_active": null,
+      "evidence": "Well, it doesn't. || You need to stop using your phone at night."
     },
     {
-      "issue_id": "ISS-0006",
+      "entry_id": "run-mock-2026-11-05-00011",
+      "run_id": "run-mock-2026-11-05",
       "session_id": "MOCK-REF-002",
-      "type": "table_d_behavior",
-      "title": "Gave medication advice",
-      "detail": "Recommended a specific melatonin dose. (Example rule: the sponsor's real list is still coming.)",
-      "measure_id": null,
-      "node": null,
-      "turns": [
-        13
-      ],
-      "evidence_quote": "Just take three milligrams before bed",
       "provenance": "reference_corpus",
       "aven_version": null,
-      "coder_prompt_version": "coder-v0.1",
-      "model": "mock-model-v0",
-      "created_at": "2026-10-20T18:01:14Z"
+      "scorer_prompt_version": "globals=globals-v0.2;prohibited=prohibited-v0.2;volley_coder=volley-coder-v0.5",
+      "scorer_model": "mock-model-v0",
+      "entry_type": "TABLE_C",
+      "item": "C2_window_no_questions",
+      "observed": "reflections=2;questions=0;window=5",
+      "threshold": "questions>=1 per 5 agent volleys",
+      "scoreability": "counts_only",
+      "turn_start": 9,
+      "turn_end": 17,
+      "node_active": null,
+      "evidence": "[turn 9] Well, it doesn't. The blue light keeps your brain awake. You need to stop using your phone at night. || [turn 11] Your phone time is the only time that's yours. || [turn 13] That hour is something you protect because nothing else in the day belongs to you. || [turn 15] You should try melatonin. Just take three milligrams before bed, that's what most people do. || [turn 17] It's a supplement, not really a medication, so it's pretty mild."
+    },
+    {
+      "entry_id": "run-mock-2026-11-05-00012",
+      "run_id": "run-mock-2026-11-05",
+      "session_id": "MOCK-REF-002",
+      "provenance": "reference_corpus",
+      "aven_version": null,
+      "scorer_prompt_version": "globals=globals-v0.2;prohibited=prohibited-v0.2;volley_coder=volley-coder-v0.5",
+      "scorer_model": "mock-model-v0",
+      "entry_type": "MEASURE",
+      "item": "mi_non_adherent",
+      "observed": "4",
+      "threshold": "0",
+      "scoreability": "counts_only",
+      "turn_start": 15,
+      "turn_end": 15,
+      "node_active": null,
+      "evidence": "You should try melatonin."
+    },
+    {
+      "entry_id": "run-mock-2026-11-05-00013",
+      "run_id": "run-mock-2026-11-05",
+      "session_id": "MOCK-REF-002",
+      "provenance": "reference_corpus",
+      "aven_version": null,
+      "scorer_prompt_version": "globals=globals-v0.2;prohibited=prohibited-v0.2;volley_coder=volley-coder-v0.5",
+      "scorer_model": "mock-model-v0",
+      "entry_type": "TABLE_D",
+      "item": "D1_clinical_advice",
+      "observed": null,
+      "threshold": null,
+      "scoreability": "counts_only",
+      "turn_start": 15,
+      "turn_end": 15,
+      "node_active": null,
+      "evidence": "Just take three milligrams before bed"
+    },
+    {
+      "entry_id": "run-mock-2026-11-05-00014",
+      "run_id": "run-mock-2026-11-05",
+      "session_id": "MOCK-REF-002",
+      "provenance": "reference_corpus",
+      "aven_version": null,
+      "scorer_prompt_version": "globals=globals-v0.2;prohibited=prohibited-v0.2;volley_coder=volley-coder-v0.5",
+      "scorer_model": "mock-model-v0",
+      "entry_type": "MEASURE",
+      "item": "mi_non_adherent",
+      "observed": "4",
+      "threshold": "0",
+      "scoreability": "counts_only",
+      "turn_start": 19,
+      "turn_end": 19,
+      "node_active": null,
+      "evidence": "So less phone, no coffee after noon, and try the melatonin."
     }
   ]
 }

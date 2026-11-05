@@ -46,6 +46,23 @@
   summary::-webkit-details-marker {
     display: none;
   }
+  /* Numbers line up in tiles, tables and counts. */
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+  ::selection {
+    background: var(--color-brand-200);
+    color: var(--color-navy-950);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Excluded (not scored) messages: light hatching. */

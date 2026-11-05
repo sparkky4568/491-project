@@ -1,4 +1,4 @@
-/** Small inline icon set (24×24 stroke icons). Decorative by default: pair with visible text. */
+/** Small inline icon set (24x24 stroke icons). Decorative by default: pair with visible text. */
 const PATHS = {
   alert: 'M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z',
   check: 'M5 12.5l4.5 4.5L19 7',
@@ -14,6 +14,10 @@ const PATHS = {
   chevronDown: 'M6 9l6 6 6-6',
   chat: 'M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z',
   target: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zm0-4a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0-4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z',
+  download: 'M12 4v11m0 0-4-4m4 4 4-4M5 20h14',
+  clipboard:
+    'M9 4h6m-6 0a1 1 0 0 0-1 1v1h8V5a1 1 0 0 0-1-1M8 5H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2M9 12h6m-6 4h4',
+  shield: 'M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6l-7-3z',
 } as const
 
 export type IconName = keyof typeof PATHS
