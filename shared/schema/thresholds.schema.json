@@ -2,20 +2,29 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "thresholds.schema.json",
   "title": "Thresholds",
-  "description": "shared/config/thresholds.json. Owned by the sponsor; the console displays these and never edits them.",
+  "description": "shared/config/thresholds.json. The sponsor's fixed v1.2 thresholds (Sponsor Deliverables v1.2 s5 and s6). The console displays these and never edits them; the team never moves one to improve agreement.",
   "type": "object",
   "required": ["_status"],
   "properties": {
-    "_status": { "type": "string", "description": "Starts with PLACEHOLDER until the sponsor confirms." }
+    "_status": {
+      "type": "string",
+      "description": "Plain-English status line. Starts with PLACEHOLDER only if a value is not the sponsor's; the v1.2 file does not."
+    }
   },
   "additionalProperties": {
     "type": "object",
     "additionalProperties": false,
     "required": ["op", "value", "source"],
     "properties": {
-      "op": { "enum": [">=", "<=", "==", ">", "<"] },
-      "value": { "type": "number" },
-      "source": { "type": "string" }
+      "op": {
+        "enum": [">=", "<=", "==", ">", "<"]
+      },
+      "value": {
+        "type": "number"
+      },
+      "source": {
+        "type": "string"
+      }
     }
   }
 }

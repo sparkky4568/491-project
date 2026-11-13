@@ -1,69 +1,68 @@
-/** Shared building blocks: cards, pills, buttons and page headers. */
+/** Shared building blocks (Figma "01 Components"): buttons, chips, cards, pills and states. */
 import type { ReactNode } from 'react'
-import { ISSUE_TYPE_COPY, STATUS_COPY } from '../lib/miti'
-import type { IssueType, MeasureStatus } from '../lib/schema'
+import { ENTRY_TYPE_COPY, SCOREABILITY_COPY, STATUS_COPY } from '../lib/miti'
+import type { EntryType, MeasureStatus, Scoreability } from '../lib/schema'
 import { Icon, type IconName } from './Icon'
 
-export const primaryButton =
-  'inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-navy-950 shadow-[0_6px_16px_-6px_rgba(242,138,36,0.7)] transition hover:bg-brand-400'
+export const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus'
 
-export const secondaryButton =
-  'inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-navy-900 ring-1 ring-navy-200 transition hover:bg-navy-50 disabled:opacity-50'
+const buttonBase = `inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-4 py-2.5 type-small-strong transition disabled:cursor-not-allowed disabled:opacity-50 max-lg:min-h-11 ${focusRing}`
 
-export const textLink =
-  'font-semibold text-brand-700 underline decoration-brand-300 underline-offset-4 hover:decoration-brand-600'
+/** Primary: action/primary fill, white text. */
+export const primaryButton = `${buttonBase} bg-action text-white enabled:hover:bg-action-hover`
+/** Secondary: white, 1px border/strong. */
+export const secondaryButton = `${buttonBase} border border-line-strong bg-surface text-ink enabled:hover:bg-canvas`
+/** Ghost: no fill, link color. */
+export const ghostButton = `${buttonBase} px-2 text-link enabled:hover:underline underline-offset-4`
 
-export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return (
-    <div
-      className={`rounded-2xl bg-white shadow-[0_1px_2px_rgba(16,47,77,0.05),0_12px_32px_-16px_rgba(16,47,77,0.18)] ring-1 ring-navy-900/5 ${className}`}
-    >
-      {children}
-    </div>
-  )
+/** Filter chip: 36 high, pill; active = action/primary fill. */
+export function chipClass(active: boolean) {
+  return `inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3.5 py-1.5 type-label whitespace-nowrap transition disabled:opacity-50 disabled:cursor-not-allowed ${focusRing} ${
+    active ? 'border-action bg-action text-white' : 'border-line-strong bg-surface text-ink enabled:hover:bg-canvas'
+  }`
 }
 
-export function PageContainer({ children, narrow = false }: { children: ReactNode; narrow?: boolean }) {
-  return <div className={`mx-auto w-full px-4 pb-16 sm:px-6 ${narrow ? 'max-w-4xl' : 'max-w-6xl'}`}>{children}</div>
-}
-
-/** Big Alvera-style headline: navy text with one phrase in orange. */
-export function PageHero({
-  eyebrow,
-  title,
-  accent,
+export function Card({
   children,
+  className = '',
+  as = 'div',
 }: {
-  eyebrow: string
-  title: string
-  accent?: string
-  children?: ReactNode
+  children: ReactNode
+  className?: string
+  as?: 'div' | 'section'
 }) {
-  return (
-    <header className="pt-10 pb-8 sm:pt-14">
-      <Eyebrow>{eyebrow}</Eyebrow>
-      <h1 className="mt-3 max-w-4xl text-4xl leading-[1.05] font-extrabold tracking-[-0.035em] text-navy-900 sm:text-6xl">
-        {title} {accent && <span className="block text-brand-700">{accent}</span>}
-      </h1>
-      {children && <div className="mt-4 max-w-2xl text-lg leading-relaxed text-navy-600">{children}</div>}
-    </header>
-  )
+  const Tag = as
+  return <Tag className={`rounded-lg border border-line bg-surface shadow-card ${className}`}>{children}</Tag>
 }
 
-export function Eyebrow({ children }: { children: ReactNode }) {
-  return (
-    <p className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold tracking-[0.12em] text-brand-700 uppercase ring-1 ring-navy-900/5">
-      <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-brand-500" />
-      {children}
-    </p>
-  )
+export function Overline({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return <p className={`type-overline text-muted ${className}`}>{children}</p>
 }
 
-export function SectionTitle({ children, hint }: { children: ReactNode; hint?: ReactNode }) {
+/** A section header: Heading 2, an optional caption, and an optional action on the right. */
+export function SectionTitle({
+  id,
+  children,
+  hint,
+  action,
+  level = 2,
+}: {
+  id?: string
+  children: ReactNode
+  hint?: ReactNode
+  action?: ReactNode
+  level?: 2 | 3
+}) {
+  const H = level === 2 ? 'h2' : 'h3'
   return (
-    <div className="mb-3">
-      <h2 className="text-xl font-bold tracking-tight text-navy-900">{children}</h2>
-      {hint && <p className="mt-0.5 text-sm text-navy-500">{hint}</p>}
+    <div className="mb-4 flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+      <div className="max-w-3xl min-w-0">
+        <H id={id} className={level === 2 ? 'type-h2 text-ink' : 'type-h3 text-ink'}>
+          {children}
+        </H>
+        {hint && <p className="mt-1 type-small text-ink-2">{hint}</p>}
+      </div>
+      {action}
     </div>
   )
 }
@@ -73,80 +72,169 @@ export function SectionTitle({ children, hint }: { children: ReactNode; hint?: R
 export function Pill({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 type-label whitespace-nowrap ${className}`}
     >
       {children}
     </span>
   )
 }
 
-const STATUS_STYLE: Record<MeasureStatus, { className: string; icon: IconName }> = {
-  pass: { className: 'bg-green-50 text-green-800 ring-1 ring-green-200', icon: 'check' },
-  fail: { className: 'bg-red-50 text-red-800 ring-1 ring-red-200', icon: 'x' },
-  no_threshold: { className: 'bg-navy-50 text-navy-600 ring-1 ring-navy-200', icon: 'minus' },
-  insufficient_data: { className: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200', icon: 'dots' },
+export const TONE = {
+  meets: 'border-meets-line bg-meets-bg text-meets-fg',
+  below: 'border-below-line bg-below-bg text-below-fg',
+  reported: 'border-reported-line bg-reported-bg text-reported-fg',
+  insufficient: 'border-insuff-line bg-insuff-bg text-insuff-fg',
+  notrated: 'border-notrated-line bg-notrated-bg text-notrated-fg',
+  danger: 'border-danger-line bg-danger-bg text-danger-fg',
+  info: 'border-info-line bg-info-bg text-info-fg',
+} as const
+
+export const STATUS_STYLE: Record<MeasureStatus, { className: string; icon: IconName }> = {
+  meets: { className: TONE.meets, icon: 'check' },
+  below: { className: TONE.below, icon: 'flag' },
+  reported: { className: TONE.reported, icon: 'info' },
+  insufficient_data: { className: TONE.insufficient, icon: 'dots' },
+  not_rated: { className: TONE.notrated, icon: 'minus' },
 }
 
-export function StatusPill({ status, label }: { status: MeasureStatus; label?: string }) {
+/** mock: the scores are mock or practice data, so meets and below drop their pass/fail colors. */
+export function StatusPill({ status, mock = false }: { status: MeasureStatus; mock?: boolean }) {
   const style = STATUS_STYLE[status]
+  const neutral = mock && (status === 'meets' || status === 'below')
   return (
-    <Pill className={style.className}>
+    <Pill className={neutral ? TONE.notrated : style.className}>
       <Icon name={style.icon} className="h-3.5 w-3.5" />
-      {label ?? STATUS_COPY[status]}
+      {STATUS_COPY[status]}
+      {neutral && ' (mock)'}
     </Pill>
   )
 }
 
-const ISSUE_ICONS: Record<IssueType, IconName> = {
-  measure_below_threshold: 'target',
-  table_c_flag: 'flag',
-  table_d_behavior: 'ban',
-}
+export const ENTRY_ICONS: Record<EntryType, IconName> = { MEASURE: 'target', TABLE_C: 'flag', TABLE_D: 'ban' }
 
-export function IssueTypePill({ type }: { type: IssueType }) {
-  const tone =
-    type === 'table_d_behavior'
-      ? 'bg-red-50 text-red-800 ring-1 ring-red-200'
-      : 'bg-brand-50 text-brand-800 ring-1 ring-brand-200'
+/** Categorical, not severity. */
+export function EntryTypePill({ type }: { type: EntryType }) {
+  const tone = type === 'TABLE_D' ? TONE.danger : type === 'TABLE_C' ? TONE.below : TONE.reported
   return (
     <Pill className={tone}>
-      <Icon name={ISSUE_ICONS[type]} className="h-3.5 w-3.5" />
-      {ISSUE_TYPE_COPY[type].label}
+      <Icon name={ENTRY_ICONS[type]} className="h-3.5 w-3.5" />
+      {ENTRY_TYPE_COPY[type].label}
     </Pill>
   )
 }
 
-// ------------------------------------------------------------------ Controls
+const SCOREABILITY_STYLE: Record<Scoreability, { className: string; icon: IconName }> = {
+  full: { className: TONE.meets, icon: 'check' },
+  counts_only: { className: TONE.info, icon: 'dots' },
+  outside_instrument: { className: TONE.insufficient, icon: 'info' },
+  not_scoreable: { className: TONE.notrated, icon: 'minus' },
+}
 
-/** Click-to-open explanation, used instead of on-screen jargon. */
-export function Explainer({ summary = 'What is this?', children }: { summary?: string; children: ReactNode }) {
+/** mock: mock or practice scores, shown without the green "full" color. */
+export function ScoreabilityChip({ state, mock = false }: { state: Scoreability; mock?: boolean }) {
+  const style = SCOREABILITY_STYLE[state]
+  const className = mock && state === 'full' ? TONE.notrated : style.className
   return (
-    <details className="group mt-2 text-sm">
-      <summary className="inline-flex items-center gap-1 font-semibold text-navy-500 hover:text-navy-900">
-        <Icon name="chevronDown" className="h-4 w-4 transition group-open:rotate-180" />
-        {summary}
-      </summary>
-      <div className="mt-2 space-y-1.5 leading-relaxed text-navy-600">{children}</div>
-    </details>
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 type-small-strong whitespace-nowrap ${className}`}
+    >
+      <Icon name={style.icon} className="h-4 w-4" />
+      <span>
+        <span className="sr-only">Scoreability: </span>
+        {SCOREABILITY_COPY[state].label}
+      </span>
+    </span>
   )
 }
 
 // ---------------------------------------------------------------- States
 
-export function ErrorPanel({ title, message, details = [] }: { title: string; message: string; details?: string[] }) {
+export function ErrorPanel({
+  title,
+  message,
+  details = [],
+  children,
+}: {
+  title: string
+  message: ReactNode
+  details?: string[]
+  children?: ReactNode
+}) {
   return (
-    <div role="alert" className="rounded-2xl bg-red-50 p-5 text-red-950 ring-1 ring-red-200">
-      <p className="flex items-center gap-2 font-semibold">
-        <Icon name="alert" /> <span>{title}</span>
-      </p>
-      <p className="mt-1">{message}</p>
-      {details.length > 0 && (
-        <ul className="mt-2 list-disc space-y-1 pl-5 font-mono text-xs">
-          {details.map((d) => (
-            <li key={d}>{d}</li>
-          ))}
-        </ul>
-      )}
+    <div role="alert" className="flex gap-4 rounded-lg border border-danger-line bg-surface p-5 sm:p-6">
+      <span
+        aria-hidden="true"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-danger-bg text-danger-fg"
+      >
+        <Icon name="alert" className="h-5 w-5" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="type-h3 text-ink">{title}</p>
+        <div className="mt-1 type-small text-ink-2">{message}</div>
+        {details.length > 0 && (
+          <ul className="mt-3 space-y-1 rounded-md bg-subtle p-3 type-mono break-words text-ink">
+            {details.map((d, i) => (
+              <li key={`${i}-${d}`}>{d}</li>
+            ))}
+          </ul>
+        )}
+        {children}
+      </div>
     </div>
   )
+}
+
+/** A calm "nothing here" card with a dashed border. */
+export function EmptyState({
+  icon = 'check',
+  title,
+  children,
+  centered = false,
+}: {
+  icon?: IconName
+  title: string
+  children?: ReactNode
+  centered?: boolean
+}) {
+  return (
+    <div
+      className={`flex gap-4 rounded-lg border border-dashed border-line-strong bg-surface p-5 sm:p-6 ${
+        centered ? 'flex-col items-center px-6 py-10 text-center' : 'items-start'
+      }`}
+    >
+      <span
+        aria-hidden="true"
+        className={`flex shrink-0 items-center justify-center rounded-md bg-subtle text-ink-2 ${centered ? 'h-12 w-12' : 'h-9 w-9'}`}
+      >
+        <Icon name={icon} className="h-5 w-5" />
+      </span>
+      <div className={centered ? 'max-w-md' : ''}>
+        <p className="type-h3 text-ink">{title}</p>
+        {children && <div className="mt-1 type-small text-ink-2">{children}</div>}
+      </div>
+    </div>
+  )
+}
+
+/** Skeleton bars while something loads. */
+export function Skeleton({ label }: { label: string }) {
+  return (
+    <Card className="p-6">
+      <div aria-busy="true" aria-live="polite" className="space-y-4">
+        <div className="skeleton h-3 w-32" />
+        <div className="skeleton h-6 w-1/2" />
+        <div className="skeleton h-3 w-3/4" />
+        <div className="skeleton h-11 w-full" />
+        <div className="skeleton h-3 w-full" />
+        <div className="skeleton h-3 w-5/6" />
+        <p className="type-caption text-muted">{label}</p>
+      </div>
+    </Card>
+  )
+}
+
+/** A dot plus words: where the scores came from. Never color alone. */
+export function SourceDot({ tone }: { tone: 'live' | 'demo' | 'offline' }) {
+  const color = tone === 'live' ? 'bg-live' : tone === 'demo' ? 'bg-demo' : 'bg-offline'
+  return <span aria-hidden="true" className={`inline-block h-2 w-2 shrink-0 rounded-full ${color}`} />
 }

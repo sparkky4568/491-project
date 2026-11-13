@@ -1,6 +1,6 @@
 # AVEN Scorer
 
-The Center for Care Optimization runs **Aven**, a voice-based health coach that uses Motivational Interviewing (MI). Today a physician reads Aven transcripts one at a time to check MI quality. The **AVEN Scorer** is a batch pipeline that scores coaching transcripts against **MITI 4.2.1**, the standard MI fidelity coding system. In Stage 1, an LLM codes every practitioner turn with a MITI behavior code and a verbatim supporting quote, and tags each client turn as change, sustain or neutral talk. In Stage 2, plain code (not the LLM) applies the sponsor's exclusion rules and computes the summary measures. A separate LLM pass gives the four global ratings, each citing the turns behind it. Every problem the scorer finds goes into an issue log with evidence, and the scorer is validated against expert human coders. The **scorer page** in `frontend/` is the front door: paste a conversation, click **Score it**, and see the verdict, the scores, any problems, and what the coach did in each message.
+The Center for Care Optimization runs **Aven**, a voice-based health coach that uses Motivational Interviewing (MI). Today a physician reads Aven transcripts one at a time to check MI quality. The **AVEN Scorer** is a batch pipeline that scores coaching transcripts against **MITI 4.2.1**, the standard MI fidelity coding system. In Stage 1, an LLM codes every practitioner turn with a MITI behavior code and a verbatim supporting quote, and tags each client turn as change, sustain or neutral talk. In Stage 2, plain code (not the LLM) applies the sponsor's exclusion rules and computes the summary measures. A separate LLM pass gives the four global ratings, each citing the turns behind it. Every measure below the sponsor's threshold, every Table C flow flag and every Table D behavior goes into an issue log with the quoted evidence. The log records what was found, never what to change, and there is no pass or fail verdict on a call. The scorer is validated against expert human coders. The **scorer page** in `frontend/` is the front door: paste a conversation, click **Score it**, and see the scores, what the scorer found, and what the coach did in each message.
 
 > **Status: prototype on mock data.** Every conversation in this repo is invented. There's no real member data or PHI, and there never will be.
 
@@ -30,7 +30,7 @@ aven-scorer/
 │   └── prompts/               scorer prompt files, versioned
 ├── shared/
 │   ├── schema/                JSON Schema per shape
-│   ├── config/thresholds.json sponsor thresholds (placeholders for now)
+│   ├── config/thresholds.json sponsor thresholds (fixed in Sponsor Deliverables v1.2)
 │   └── sample_data/           mock transcripts, scored sessions, validation report
 ├── frontend/                  scorer page
 ├── pipeline/                  backend
@@ -62,14 +62,14 @@ It's one page:
 1. Paste a conversation into the box, one message per line, each starting with `Coach:` or `Person:`. Or click one of the **Try an example** buttons.
 2. Click **Score it**.
 3. The results appear below:
-   - the verdict ("2 problems found");
-   - each problem, with a **Show me** link to the exact message;
-   - six scores, each against its goal;
+   - whether the call could be scored, and how fully (the sponsor's scoreability rules);
+   - each issue-log entry, with a **Show me** link to the exact message;
+   - the scores, each against the sponsor's threshold where there is one;
    - the conversation as a chat, with every coach message tagged in plain English ("Reflects meaning", "Pushes advice"). Click a tag to highlight the exact words and see why.
 
    **More detail** (collapsed) holds the overall ratings, the counts, and exactly how it was scored.
 
-**Right now the scores are practice scores.** Until the real scorer exists, `frontend/src/lib/demoScorer.ts` tags messages with simple keyword rules and computes the scores with the placeholder rules in the data contract. The page labels these as practice scores, and nothing pasted leaves the browser.
+**Right now the scores are practice scores.** Until the real scorer exists, `frontend/src/lib/demoScorer.ts` tags messages with simple keyword rules and computes the scores with the v1.2 rules in the data contract. The page labels these as practice scores, and nothing pasted leaves the browser.
 
 Plain-English names and explanations for every code, measure and rating live in one file, `frontend/src/lib/miti.ts`.
 
@@ -105,17 +105,17 @@ Things to know:
 1. **No real member data or PHI, ever.** We invent all mock conversations. Don't copy text from AnnoMI, CASAA or any real transcript.
 2. **Mock data looks like mock data.** Every mock file has `"is_mock": true`, and the page shows a "Practice score" bar whenever practice or mock scores are on screen.
 3. **Provenance on everything.** Every scored result records its provenance (`real`, `simulated`, `reference_corpus` or `internal_test`), the scorer prompt version and the model id, shown under **More detail**.
-4. **Thresholds belong to the sponsor.** They live in `shared/config/thresholds.json`, they're display-only on the page, and they stay labeled as placeholders until the sponsor confirms them. Never change one to improve agreement.
+4. **Thresholds belong to the sponsor.** They live in `shared/config/thresholds.json`, they're display-only on the page, and they are the sponsor's fixed v1.2 values (Sponsor Deliverables v1.2 s5 and s6). Never change one to improve agreement.
 5. **Global ratings are advisory** until the scorer is validated.
 6. **The LLM never does the math.** Counts and measures come from plain code (the pipeline, or for now the practice scorer), never from the LLM. The page shows each formula under **What is this?**
 
 ## Sample data
 
-`shared/sample_data/` holds four invented sessions, each as an unscored transcript (`transcripts/`, also used for the page's **Try an example** buttons) and a hand-scored result (`scored/`), plus a mock validation report. The numbers are internally consistent (counts match codes, measures match counts, issues match measures and flags), so the pipeline and validation folders can use them as test fixtures. See [`shared/sample_data/README.md`](shared/sample_data/README.md) for what each one covers.
+`shared/sample_data/` holds four invented sessions, each as an unscored transcript (`transcripts/`, also used for the page's **Try an example** buttons) and a hand-scored result (`scored/`), plus a mock validation report. The numbers are internally consistent (counts match codes, measures match counts, issue-log entries match the measures, Table C and Table D), so the pipeline and validation folders can use them as test fixtures. See [`shared/sample_data/README.md`](shared/sample_data/README.md) for what each one covers.
 
 ## Docs
 
-- [`docs/DATA_CONTRACT.md`](docs/DATA_CONTRACT.md): the JSON shapes, field by field, and the placeholder rules used in the mock data
+- [`docs/DATA_CONTRACT.md`](docs/DATA_CONTRACT.md): the JSON shapes, field by field, and the rules the mock data follows
 - [`docs/TEAM_PLAN.md`](docs/TEAM_PLAN.md): team plan and timeline
 - [`docs/prompts/`](docs/prompts/): scorer prompt files
 - [`CONTRIBUTING.md`](CONTRIBUTING.md): branches, pull requests and what never gets committed

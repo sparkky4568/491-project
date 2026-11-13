@@ -14,9 +14,9 @@ Ingest, exclusions, metrics, flags and the issue log. This is Stage 2 of the sco
 
 **Responsibilities**
 - Check each evidence quote verbatim against the turn text and set `evidence_valid`.
-- Apply the sponsor's exclusion rules, then compute `counts`, `client_talk_counts`, `measures` (each with its `n`), Table C `flags` and `issues`.
+- Apply the sponsor's exclusion rules, then compute `counts`, `client_talk_counts`, `measures` (each with its `n`), Table C (`table_c`) and the issue-log entries in `issues`. The issue log records what was found, never what to change: no verdict, severity or ranking.
 - Never ask the LLM to count or compute.
 
-**Test fixtures:** `shared/sample_data/transcripts/` are inputs, and `shared/sample_data/scored/` are the matching expected outputs. The placeholder rules they were built with are listed in the data contract, under "Placeholder rules used in the mock data".
+**Test fixtures:** `shared/sample_data/transcripts/` are inputs, and `shared/sample_data/scored/` are the matching expected outputs. The rules they follow are listed in the data contract, under "Rules the mock data follows".
 
 Python setup coming from the owner.

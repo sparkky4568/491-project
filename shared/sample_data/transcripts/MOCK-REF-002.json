@@ -1,152 +1,194 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "1.0",
   "session_id": "MOCK-REF-002",
   "is_mock": true,
   "provenance": "reference_corpus",
   "source": "casaa",
-  "target_behavior": "sleeping better",
   "aven_version": null,
-  "recorded_at": null,
+  "channel": "voice",
+  "duration_sec": 284,
+  "change_goal": {
+    "text": "stop drinking coffee after lunch",
+    "state": "behavior"
+  },
+  "target_behavior": "sleeping better",
   "turns": [
     {
       "turn": 1,
-      "speaker": "practitioner",
+      "speaker": "agent",
       "text": "So you're here about your sleep. How many hours are you getting a night?",
-      "node": null,
-      "start_sec": 2.0
+      "start_ms": 0,
+      "end_ms": 4752,
+      "node": null
     },
     {
       "turn": 2,
-      "speaker": "client",
+      "speaker": "caller",
       "text": "Maybe five? It depends on the night.",
-      "node": null,
-      "start_sec": 8.8
+      "start_ms": 9913,
+      "end_ms": 12289,
+      "node": null
     },
     {
       "turn": 3,
-      "speaker": "practitioner",
+      "speaker": "agent",
       "text": "Do you drink coffee after lunch?",
-      "node": null,
-      "start_sec": 12.9
+      "start_ms": 25192,
+      "end_ms": 27304,
+      "node": null
     },
     {
       "turn": 4,
-      "speaker": "client",
+      "speaker": "caller",
       "text": "Usually one around three, yeah.",
-      "node": null,
-      "start_sec": 16.6
+      "start_ms": 37626,
+      "end_ms": 39672,
+      "node": null
     },
     {
       "turn": 5,
-      "speaker": "practitioner",
-      "text": "And do you look at your phone in bed?",
-      "node": null,
-      "start_sec": 19.9
+      "speaker": "agent",
+      "text": "Are you napping during the day?",
+      "start_ms": 49994,
+      "end_ms": 52040,
+      "node": null
     },
     {
       "turn": 6,
-      "speaker": "client",
-      "text": "Sometimes. It helps me wind down.",
-      "node": null,
-      "start_sec": 24.8
+      "speaker": "caller",
+      "text": "Sometimes on weekends, if I can.",
+      "start_ms": 64942,
+      "end_ms": 67054,
+      "node": null
     },
     {
       "turn": 7,
-      "speaker": "practitioner",
-      "text": "Well, it doesn't. The blue light keeps your brain awake. You need to stop using your phone at night.",
-      "node": null,
-      "start_sec": 28.5
+      "speaker": "agent",
+      "text": "And do you look at your phone in bed?",
+      "start_ms": 74795,
+      "end_ms": 77237,
+      "node": null
     },
     {
       "turn": 8,
-      "speaker": "client",
-      "text": "I've heard that. It's just the only time I get to myself.",
-      "node": null,
-      "start_sec": 37.2
+      "speaker": "caller",
+      "text": "Sometimes. It helps me wind down.",
+      "start_ms": 92720,
+      "end_ms": 94898,
+      "node": null
     },
     {
       "turn": 9,
-      "speaker": "practitioner",
-      "text": "Your phone time is the only time that's yours.",
-      "node": null,
-      "start_sec": 43.2
+      "speaker": "agent",
+      "text": "Well, it doesn't. The blue light keeps your brain awake. You need to stop using your phone at night.",
+      "start_ms": 102640,
+      "end_ms": 109240,
+      "node": null
     },
     {
       "turn": 10,
-      "speaker": "client",
-      "text": "Pretty much. Once the kids are down, that hour is mine.",
-      "node": null,
-      "start_sec": 48.1
+      "speaker": "caller",
+      "text": "I've heard that. It's just the only time I get to myself.",
+      "start_ms": 114401,
+      "end_ms": 118163,
+      "node": null
     },
     {
       "turn": 11,
-      "speaker": "practitioner",
-      "text": "That hour is something you protect because nothing else in the day belongs to you. Are you exercising at all?",
-      "node": null,
-      "start_sec": 53.7
+      "speaker": "agent",
+      "text": "Your phone time is the only time that's yours.",
+      "start_ms": 131065,
+      "end_ms": 134102,
+      "node": null
     },
     {
       "turn": 12,
-      "speaker": "client",
-      "text": "Not really. I'm too tired.",
-      "node": null,
-      "start_sec": 62.8
+      "speaker": "caller",
+      "text": "Pretty much. Once the kids are down, that hour is mine.",
+      "start_ms": 152165,
+      "end_ms": 155795,
+      "node": null
     },
     {
       "turn": 13,
-      "speaker": "practitioner",
-      "text": "Have you tried melatonin? Just take three milligrams before bed, that's what most people do.",
-      "node": null,
-      "start_sec": 66.1
+      "speaker": "agent",
+      "text": "That hour is something you protect because nothing else in the day belongs to you.",
+      "start_ms": 171278,
+      "end_ms": 176690,
+      "node": null
     },
     {
       "turn": 14,
-      "speaker": "client",
-      "text": "I don't really like taking pills.",
-      "node": null,
-      "start_sec": 73.3
+      "speaker": "caller",
+      "text": "Yeah, I guess so. But I'm still exhausted every morning.",
+      "start_ms": 179270,
+      "end_ms": 182966,
+      "node": null
     },
     {
       "turn": 15,
-      "speaker": "practitioner",
-      "text": "It's a supplement, not really a medication, so it's pretty mild.",
-      "node": null,
-      "start_sec": 77.0
+      "speaker": "agent",
+      "text": "You should try melatonin. Just take three milligrams before bed, that's what most people do.",
+      "start_ms": 188128,
+      "end_ms": 194200,
+      "node": null
     },
     {
       "turn": 16,
-      "speaker": "client",
-      "text": "Maybe. I don't know.",
-      "node": null,
-      "start_sec": 82.6
+      "speaker": "caller",
+      "text": "I don't really like taking pills.",
+      "start_ms": 209682,
+      "end_ms": 211860,
+      "node": null
     },
     {
       "turn": 17,
-      "speaker": "practitioner",
-      "text": "Okay. So less phone, no coffee after noon, and try the melatonin. Does that sound good?",
-      "node": null,
-      "start_sec": 85.6
+      "speaker": "agent",
+      "text": "It's a supplement, not really a medication, so it's pretty mild.",
+      "start_ms": 217022,
+      "end_ms": 221246,
+      "node": null
     },
     {
       "turn": 18,
-      "speaker": "client",
-      "text": "I guess I could try the coffee thing.",
-      "node": null,
-      "start_sec": 93.1
+      "speaker": "caller",
+      "text": "Maybe. I don't know.",
+      "start_ms": 239309,
+      "end_ms": 240629,
+      "node": null
     },
     {
       "turn": 19,
-      "speaker": "practitioner",
-      "text": "Cutting the afternoon coffee is something you could try. Anything else?",
-      "node": null,
-      "start_sec": 97.6
+      "speaker": "agent",
+      "text": "Okay. So less phone, no coffee after noon, and try the melatonin. Does that sound good?",
+      "start_ms": 250951,
+      "end_ms": 256693,
+      "node": null
     },
     {
       "turn": 20,
-      "speaker": "client",
-      "text": "No, I think that's it.",
-      "node": null,
-      "start_sec": 103.2
+      "speaker": "caller",
+      "text": "I guess I could try the coffee thing.",
+      "start_ms": 264434,
+      "end_ms": 266876,
+      "node": null
+    },
+    {
+      "turn": 21,
+      "speaker": "agent",
+      "text": "Cutting the afternoon coffee is something you could try. What else might help you wind down?",
+      "start_ms": 272037,
+      "end_ms": 278109,
+      "node": null
+    },
+    {
+      "turn": 22,
+      "speaker": "caller",
+      "text": "Maybe reading instead of scrolling.",
+      "start_ms": 280690,
+      "end_ms": 283000,
+      "node": null
     }
-  ]
+  ],
+  "events": []
 }
