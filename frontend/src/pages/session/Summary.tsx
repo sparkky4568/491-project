@@ -1,204 +1,41 @@
 import type { ReactNode } from 'react'
 import { Icon } from '../../components/Icon'
-import { Card, ENTRY_ICONS, Explainer, ScoreabilityChip, SectionTitle, StatusPill } from '../../components/ui'
-import { formatDuration, formatMeasureValue, formatThreshold, measureUnit } from '../../lib/format'
+import { Card, ENTRY_ICONS, Pill, ScoreabilityChip, SectionTitle, StatusPill, TONE, focusRing } from '../../components/ui'
+import { formatMeasureValue, measureUnit } from '../../lib/format'
 import {
   ENTRY_TYPE_COPY,
-  GLOBAL_COPY,
   GLOBAL_MEASURES,
   GLOBAL_MEASURE_NOTE,
   MEASURE_COPY,
-  PROVENANCE_COPY,
   REPORTED_MEASURES,
-  SCOREABILITY_COPY,
-  SOURCE_COPY,
   THRESHOLD_MEASURES,
   canonicalMeasureId,
   coachWords,
-  topicLabel,
+  itemLabel,
+  nodeLabel,
 } from '../../lib/miti'
-import type { EntryType, Measure, ScoredSession } from '../../lib/schema'
-import { TurnLinks } from './turnNav'
+import type { SessionTab } from '../../lib/router'
+import type { EntryType, Measure, ScoredSession, Threshold } from '../../lib/schema'
+import { sessionTopic } from '../../lib/sessionStats'
+import { withheldMeasures, withheldReason } from '../../lib/withheld'
+import { TurnSpanLink, linkClass } from './turnNav'
 
-export const sessionTopic = (s: Pick<ScoredSession, 'change_goal' | 'target_behavior'>) =>
-  topicLabel(s.change_goal.text ?? s.target_behavior)
-
-function channelLine(session: ScoredSession): string {
-  const length = formatDuration(session.duration_sec)
-  if (session.channel === 'text') return 'Text conversation, no timings'
-  return length ? `Voice call, ${length}` : 'Voice call'
+/** "at least 50%", "exactly 0", "at most 2". */
+export function thresholdWords(id: string, t: Pick<Threshold, 'op' | 'value'>): string {
+  const value = measureUnit(id) === 'percent' ? formatMeasureValue(id, t.value) : String(Number(t.value.toFixed(2)))
+  switch (t.op) {
+    case '>=':
+      return `at least ${value}`
+    case '<=':
+      return `at most ${value}`
+    case '>':
+      return `more than ${value}`
+    case '<':
+      return `under ${value}`
+    case '==':
+      return `exactly ${value}`
+  }
 }
-
-// ------------------------------------------------------------ Session header
-
-/** Neutral summary of the session: what it was about, whether it could be scored, and what was found. */
-export function SessionHeader({
-  session,
-  action,
-  onShowIssues,
-}: {
-  session: ScoredSession
-  action?: ReactNode
-  onShowIssues: (type: EntryType) => void
-}) {
-  const state = session.scoreability.state
-  const measureRows = session.issues.filter((i) => i.entry_type === 'MEASURE')
-  const measureItems = new Set(measureRows.map((i) => i.item))
-  // Measures are counted once each; MI Non-Adherent writes one row per volley, so the row count can be higher.
-  const found: Array<{ type: EntryType; count: number; rows: number }> = [
-    { type: 'MEASURE', count: measureItems.size, rows: measureRows.length },
-    ...(['TABLE_C', 'TABLE_D'] as const).map((type) => {
-      const rows = session.issues.filter((i) => i.entry_type === type).length
-      return { type, count: rows, rows }
-    }),
-  ]
-  return (
-    <Card className="overflow-hidden">
-      <div className="p-5 sm:p-7">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="min-w-0">
-            <p className="text-xs font-semibold tracking-[0.12em] text-navy-500 uppercase">
-              Session <span className="font-mono tracking-normal normal-case">{session.session_id}</span>
-            </p>
-            <h2 className="mt-1.5 text-2xl font-bold tracking-tight text-balance text-navy-900 sm:text-3xl">
-              {sessionTopic(session)}
-            </h2>
-          </div>
-          {action}
-        </div>
-
-        <dl className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-          <Meta label="Channel">{channelLine(session)}</Meta>
-          <Meta label="Coach volleys">
-            <span className="tabular-nums">{session.scoreability.agent_volleys}</span>
-          </Meta>
-          <Meta label="Type">{PROVENANCE_COPY[session.provenance]}</Meta>
-          <Meta label="Source">{SOURCE_COPY[session.source]}</Meta>
-        </dl>
-
-        <div className="mt-5 flex flex-col gap-3 rounded-xl bg-navy-50/70 p-4 ring-1 ring-navy-100 sm:flex-row sm:items-start">
-          <ScoreabilityChip state={state} />
-          <div className="text-sm leading-relaxed text-navy-700">
-            <p>{SCOREABILITY_COPY[state].explain}</p>
-            {session.scoreability.reason && (
-              <p className="mt-1 text-navy-500">
-                <span className="font-semibold text-navy-700">Reason given:</span> {coachWords(session.scoreability.reason)}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {session.safety_volleys.length > 0 && (
-          <p className="mt-3 flex items-start gap-2 text-sm text-navy-600">
-            <Icon name="shield" className="mt-0.5 text-navy-500" />
-            <span>
-              {session.safety_volleys.length} volley{session.safety_volleys.length === 1 ? ' was' : 's were'} spoken in the safety
-              node. By sponsor rule {session.safety_volleys.length === 1 ? 'it is' : 'they are'} left out of every count, rating
-              and flag.
-            </span>
-          </p>
-        )}
-      </div>
-
-      <div className="border-t border-navy-100 bg-navy-50/40 px-5 py-4 sm:px-7">
-        <h3 className="text-sm font-semibold text-navy-700">What the scorer found</h3>
-        <ul className="mt-3 grid gap-2 sm:grid-cols-3">
-          {found.map(({ type, count, rows }) => (
-            <li key={type}>
-              <button
-                type="button"
-                onClick={() => onShowIssues(type)}
-                disabled={count === 0}
-                className="flex w-full items-center gap-3 rounded-xl bg-white px-4 py-3 text-left ring-1 ring-navy-200 transition enabled:hover:ring-brand-300 disabled:cursor-default"
-              >
-                <span
-                  aria-hidden="true"
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                    count > 0
-                      ? 'bg-brand-50 text-brand-700 ring-1 ring-brand-200'
-                      : 'bg-navy-50 text-navy-400 ring-1 ring-navy-100'
-                  }`}
-                >
-                  <Icon name={ENTRY_ICONS[type]} />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-2xl leading-none font-extrabold text-navy-900 tabular-nums">{count}</span>
-                  <span className="mt-1 block text-sm text-navy-600">{ENTRY_TYPE_COPY[type].plural}</span>
-                  {rows !== count && (
-                    <span className="block text-xs text-navy-500">
-                      <span className="tabular-nums">{rows}</span> rows in the issue log
-                    </span>
-                  )}
-                </span>
-                {count > 0 && (
-                  <span className="ml-auto text-navy-400">
-                    <Icon name="arrowRight" />
-                    <span className="sr-only">, show in the issue log</span>
-                  </span>
-                )}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </Card>
-  )
-}
-
-function Meta({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div className="flex items-baseline gap-1.5">
-      <dt className="text-navy-500">{label}</dt>
-      <dd className="font-semibold text-navy-900">{children}</dd>
-    </div>
-  )
-}
-
-/** A not_scoreable session: say so calmly, and show nothing but the conversation. */
-export function NotScoreableCard({ session, action }: { session: ScoredSession; action?: ReactNode }) {
-  const volleys = session.scoreability.agent_volleys
-  const tooShort = volleys < 5
-  return (
-    <Card className="p-5 sm:p-7">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="min-w-0">
-          <p className="text-xs font-semibold tracking-[0.12em] text-navy-500 uppercase">
-            Session <span className="font-mono tracking-normal normal-case">{session.session_id}</span>
-          </p>
-          <h2 className="mt-1.5 text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">{sessionTopic(session)}</h2>
-        </div>
-        {action}
-      </div>
-      <div className="mt-5 flex flex-col items-start gap-3 rounded-xl border border-dashed border-navy-200 bg-navy-50/60 p-4 sm:flex-row sm:gap-4 sm:p-5">
-        <ScoreabilityChip state="not_scoreable" />
-        <div className="text-sm leading-relaxed text-navy-700">
-          {tooShort ? (
-            <>
-              <p className="font-semibold text-navy-900">This conversation is too short to score.</p>
-              <p className="mt-1">
-                It has {volleys} coach volley{volleys === 1 ? '' : 's'}, and the sponsor needs at least 5. The scorer refuses
-                rather than estimating, so there are no scores or issue-log rows.
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="font-semibold text-navy-900">There is nothing here to score.</p>
-              <p className="mt-1">
-                None of the coach volleys could be coded (greetings, sign-offs and similar), so there are no scores or issue-log
-                rows.
-              </p>
-            </>
-          )}
-          {session.scoreability.reason && (
-            <p className="mt-1 text-navy-500">Reason given: {coachWords(session.scoreability.reason)}</p>
-          )}
-        </div>
-      </div>
-    </Card>
-  )
-}
-
-// ------------------------------------------------------------------- Scores
 
 function byCanonical(session: ScoredSession) {
   const map = new Map<string, Measure>()
@@ -206,11 +43,11 @@ function byCanonical(session: ScoredSession) {
   return map
 }
 
-export function Scores({ session }: { session: ScoredSession }) {
+function splitMeasures(session: ScoredSession) {
   const measures = byCanonical(session)
   const known = new Set([...THRESHOLD_MEASURES, ...REPORTED_MEASURES])
   const extra = [...measures.entries()].filter(([id]) => !known.has(id))
-  const main = [
+  const compared = [
     ...THRESHOLD_MEASURES.map((id) => measures.get(id)),
     ...extra.filter(([, m]) => m.threshold !== null).map(([, m]) => m),
   ].filter((m): m is Measure => !!m)
@@ -218,219 +55,423 @@ export function Scores({ session }: { session: ScoredSession }) {
     ...REPORTED_MEASURES.map((id) => measures.get(id)),
     ...extra.filter(([, m]) => m.threshold === null).map(([, m]) => m),
   ].filter((m): m is Measure => !!m)
-  const outside = session.scoreability.state === 'outside_instrument'
+  return { compared, reported }
+}
 
+const rated = (m: Measure) => m.value !== null && (m.status === 'meets' || m.status === 'below')
+
+// --------------------------------------------------------------------- Tab
+
+export function Summary({
+  session,
+  onShowIssues,
+  onShowTab,
+}: {
+  session: ScoredSession
+  onShowIssues: (type: EntryType) => void
+  onShowTab: (tab: SessionTab) => void
+}) {
+  if (session.scoreability.state === 'not_scoreable')
+    return (
+      <div className="space-y-6">
+        <NotScoreableCard session={session} onView={() => onShowTab('transcript')} />
+        <SafetyVolleys session={session} />
+      </div>
+    )
   return (
-    <section aria-labelledby="scores-title">
-      <SectionTitle id="scores-title" hint="Each measure next to the sponsor's threshold. Thresholds are fixed for the project.">
-        Scores
-      </SectionTitle>
-      {outside && (
-        <p className="mb-4 flex items-start gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-950 ring-1 ring-amber-200">
+    <div className="space-y-6">
+      <Found session={session} onShowIssues={onShowIssues} />
+      {session.scoreability.state === 'outside_instrument' && (
+        <p className={`flex items-start gap-2 rounded-md border px-4 py-3 type-small ${TONE.insufficient}`}>
           <Icon name="info" className="mt-0.5" />
-          <span>The goal in this call was a decision, which MITI does not cover, so the measures are not rated.</span>
+          The goal in this call was a decision, which MITI does not cover, so the measures are counted, not rated.
         </p>
       )}
-      {main.length === 0 ? (
-        <p className="text-navy-500">The scorer returned no measures for this call.</p>
-      ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {main.map((m) => (
-            <li key={m.id}>
-              <MeasureTile measure={m} />
-            </li>
-          ))}
-        </ul>
-      )}
+      <MeasuresCard session={session} />
+      <ReportedCard session={session} />
+      <WithheldList session={session} />
+      <SafetyNote session={session} />
+      <SafetyVolleys session={session} />
+    </div>
+  )
+}
 
-      {reported.length > 0 && (
-        <div className="mt-6">
-          <h3 className="text-sm font-semibold text-navy-700">Reported only</h3>
-          <p className="mt-0.5 text-sm text-navy-500">The sponsor set no threshold for these. They are shown for context.</p>
-          <ul className="mt-3 grid gap-3 sm:grid-cols-3">
-            {reported.map((m) => (
-              <li key={m.id}>
-                <ReportedTile measure={m} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+// ------------------------------------------------------------- Found tiles
+
+function Found({ session, onShowIssues }: { session: ScoredSession; onShowIssues: (type: EntryType) => void }) {
+  const rows = (type: EntryType) => session.issues.filter((i) => i.entry_type === type)
+  const uniqueLabels = (type: EntryType) => [...new Set(rows(type).map((i) => itemLabel(type, i.item).label))]
+  const measureItems = new Set(rows('MEASURE').map((i) => i.item))
+  const clinician = session.table_d.filter((h) => h.clinician_review).length
+  const tiles: Array<{ type: EntryType; count: number; detail: string }> = [
+    { type: 'MEASURE', count: measureItems.size, detail: uniqueLabels('MEASURE').join(', ') },
+    { type: 'TABLE_C', count: rows('TABLE_C').length, detail: uniqueLabels('TABLE_C').join('; ') },
+    {
+      type: 'TABLE_D',
+      count: rows('TABLE_D').length,
+      detail:
+        clinician > 0 ? `${clinician} need${clinician === 1 ? 's' : ''} clinician review` : uniqueLabels('TABLE_D').join(', '),
+    },
+  ]
+  return (
+    <section aria-labelledby="found-title">
+      <h2 id="found-title" className="mb-3 type-h3 text-ink">
+        What the scorer found
+      </h2>
+      <ul className="grid gap-3 md:grid-cols-3 md:gap-4">
+        {tiles.map(({ type, count, detail }) => {
+          const label = type === 'TABLE_D' ? ENTRY_TYPE_COPY.TABLE_D.label : ENTRY_TYPE_COPY[type].plural
+          const body = (
+            <>
+              <span
+                aria-hidden="true"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-subtle text-ink-2"
+              >
+                <Icon name={ENTRY_ICONS[type]} className="h-[18px] w-[18px]" />
+              </span>
+              <span className="flex min-w-0 flex-1 items-center gap-3 md:block">
+                <span className="block type-number text-ink max-md:text-[22px] max-md:leading-7">{count}</span>
+                <span className="block min-w-0">
+                  <span className="block type-small-strong text-ink md:mt-1">{label}</span>
+                  {count > 0 && detail && <span className="mt-0.5 block type-caption text-ink-2">{detail}</span>}
+                </span>
+              </span>
+              {count > 0 && <Icon name="arrowRight" className="self-center text-link" />}
+            </>
+          )
+          return (
+            <li key={type}>
+              {count > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => onShowIssues(type)}
+                  className={`flex min-h-14 w-full items-center gap-3 rounded-lg border border-line bg-surface p-4 text-left shadow-card transition hover:bg-info-bg md:items-start ${focusRing}`}
+                >
+                  {body}
+                  <span className="sr-only">, show in the issue log</span>
+                </button>
+              ) : (
+                <div className="flex min-h-14 w-full items-start gap-3 rounded-lg border border-line bg-surface p-4">{body}</div>
+              )}
+            </li>
+          )
+        })}
+      </ul>
     </section>
   )
 }
 
-function unitSuffix(id: string): string {
-  switch (measureUnit(id)) {
-    case 'outOf5':
-      return ' / 5'
-    case 'ratio':
-      return ' per question'
-    default:
-      return ''
-  }
+// ---------------------------------------------------------------- Measures
+
+function measureLabel(m: Measure) {
+  return MEASURE_COPY[canonicalMeasureId(m.id)]?.label ?? m.label
 }
 
-/** The scorer's own note, or a plain one for statuses that need it. Globals use GLOBAL_MEASURE_NOTE instead. */
-function statusNote(measure: Measure): string | null {
-  const rated = measure.status === 'meets' || measure.status === 'below'
-  if (measure.note && (!rated || !GLOBAL_MEASURES.has(canonicalMeasureId(measure.id)))) return coachWords(measure.note)
-  if (measure.status === 'insufficient_data') return 'Fewer than 10 coded coach volleys, so this is not reported.'
-  if (measure.status === 'not_rated') return 'Not rated for this kind of call.'
-  return null
+function measureSub(m: Measure): string {
+  const id = canonicalMeasureId(m.id)
+  if (GLOBAL_MEASURES.has(id)) return GLOBAL_MEASURE_NOTE
+  return MEASURE_COPY[id]?.miti ?? `${m.label} = ${m.formula}`
 }
 
-function MeasureTile({ measure }: { measure: Measure }) {
-  const id = canonicalMeasureId(measure.id)
-  const copy = MEASURE_COPY[id]
-  const hasValue = measure.value !== null && (measure.status === 'meets' || measure.status === 'below')
-  const note = statusNote(measure)
+function basedOn(m: Measure): string {
+  return `${m.n} ${MEASURE_COPY[canonicalMeasureId(m.id)]?.nLabel ?? 'items'}`
+}
+
+function ValueText({ m, className = 'type-h3' }: { m: Measure; className?: string }) {
+  const id = canonicalMeasureId(m.id)
+  if (!rated(m))
+    return (
+      <span className={`${className} text-muted`}>
+        n/a<span className="sr-only"> (not available)</span>
+      </span>
+    )
+  return <span className={`${className} text-ink tabular-nums`}>{formatMeasureValue(id, m.value)}</span>
+}
+
+function MeasuresCard({ session }: { session: ScoredSession }) {
+  const { compared } = splitMeasures(session)
+  const title = (
+    <div className="p-5 sm:p-6">
+      <h2 className="type-h2 text-ink">Measures against sponsor thresholds</h2>
+      <p className="mt-1 max-w-3xl type-small text-ink-2">
+        Thresholds are fixed by Sponsor Deliverables v1.2 for the whole project. Each measure is shown next to its threshold; no
+        overall verdict is given.
+      </p>
+    </div>
+  )
+  if (compared.length === 0)
+    return (
+      <Card>
+        {title}
+        <p className="px-6 pb-6 type-small text-ink-2">The scorer returned no measures for this call.</p>
+      </Card>
+    )
   return (
-    <Card className="flex h-full flex-col p-5">
-      <div className="flex items-start justify-between gap-2">
-        <h3 className="font-semibold text-navy-900">{copy?.label ?? measure.label}</h3>
-        <StatusPill status={measure.status} />
-      </div>
-      <p className="mt-3 text-4xl font-extrabold tracking-tight text-navy-900 tabular-nums">
-        {hasValue ? formatMeasureValue(id, measure.value) : <span className="text-navy-500">n/a</span>}
-        {hasValue && <span className="text-base font-semibold text-navy-500">{unitSuffix(id)}</span>}
-      </p>
-      <Meter measure={measure} />
-      <p className="mt-2 text-sm text-navy-500">
-        Threshold: {measure.threshold ? formatThreshold(id, measure.threshold) : 'none set'}
-      </p>
-      {note && <p className="mt-2 text-xs leading-relaxed text-navy-500">{note}</p>}
-      {GLOBAL_MEASURES.has(id) && <p className="mt-2 text-xs leading-relaxed text-navy-500">{GLOBAL_MEASURE_NOTE}</p>}
-      <div className="mt-auto pt-1">
-        <Explainer>
-          {copy && <p>{copy.explain}</p>}
-          <p>
-            Based on <span className="tabular-nums">{measure.n}</span> {copy?.nLabel ?? 'items'}.
-          </p>
-          {measure.threshold && <p className="text-xs text-navy-500">Threshold source: {measure.threshold.source}</p>}
-          <p className="text-xs text-navy-500">Official measure: {copy?.miti ?? `${measure.label} = ${measure.formula}`}</p>
-        </Explainer>
-      </div>
+    <Card className="overflow-hidden">
+      {title}
+      {/* Wide screens: a table. */}
+      <table className="hidden w-full text-left type-small md:table">
+        <caption className="sr-only">Measures against sponsor thresholds</caption>
+        <thead className="bg-subtle type-caption text-muted">
+          <tr>
+            <th scope="col" className="px-6 py-2.5 font-medium">
+              Measure
+            </th>
+            <th scope="col" className="px-4 py-2.5 font-medium">
+              Value
+            </th>
+            <th scope="col" className="px-4 py-2.5 font-medium">
+              Sponsor threshold
+            </th>
+            <th scope="col" className="px-4 py-2.5 font-medium">
+              Status
+            </th>
+            <th scope="col" className="px-4 py-2.5 pr-6 font-medium">
+              Based on
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-divider">
+          {compared.map((m) => {
+            const id = canonicalMeasureId(m.id)
+            const why = withheldReason(m, session)
+            return (
+              <tr key={m.id} className="align-top">
+                <th scope="row" className="px-6 py-3.5 text-left font-normal">
+                  <span className="block type-small-strong text-ink">
+                    {measureLabel(m)}
+                    {GLOBAL_MEASURES.has(id) && ' (global, 1 to 5)'}
+                  </span>
+                  <span className="mt-0.5 block type-caption text-muted">{measureSub(m)}</span>
+                  {why && <span className="mt-1 block type-caption text-ink-2">{why}</span>}
+                </th>
+                <td className="px-4 py-3.5">
+                  <ValueText m={m} />
+                </td>
+                <td className="px-4 py-3.5 text-ink">{m.threshold ? thresholdWords(id, m.threshold) : 'none set'}</td>
+                <td className="px-4 py-3.5">
+                  <StatusPill status={m.status} mock={session.is_mock} />
+                </td>
+                <td className="px-4 py-3.5 pr-6 text-ink tabular-nums">{basedOn(m)}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+      {/* Phones: a stacked list. */}
+      <ul className="divide-y divide-divider border-t border-divider md:hidden">
+        {compared.map((m) => {
+          const id = canonicalMeasureId(m.id)
+          const why = withheldReason(m, session)
+          return (
+            <li key={m.id} className="px-4 py-3.5">
+              <div className="flex items-start justify-between gap-3">
+                <p className="type-small-strong text-ink">
+                  {measureLabel(m)}
+                  {GLOBAL_MEASURES.has(id) && ' (global)'}
+                </p>
+                <StatusPill status={m.status} mock={session.is_mock} />
+              </div>
+              <p className="mt-1 flex items-baseline gap-2">
+                <ValueText m={m} className="type-h2" />
+                <span className="type-small text-ink-2">
+                  threshold {m.threshold ? thresholdWords(id, m.threshold) : 'none set'}
+                </span>
+              </p>
+              <p className="mt-0.5 type-caption text-muted">
+                {GLOBAL_MEASURES.has(id) ? 'can flag for review, never passes' : basedOn(m)}
+              </p>
+              {why && <p className="mt-1 type-caption text-ink-2">{why}</p>}
+            </li>
+          )
+        })}
+      </ul>
     </Card>
   )
 }
 
-/** A small bar: the value against the threshold marker. Words above carry the meaning; this is a picture of it. */
-function Meter({ measure }: { measure: Measure }) {
-  const id = canonicalMeasureId(measure.id)
-  const unit = measureUnit(id)
-  const t = measure.threshold
-  const rated = measure.value !== null && (measure.status === 'meets' || measure.status === 'below')
-  const toScale = (v: number) => (unit === 'percent' ? (Math.abs(v) <= 1 ? v * 100 : v) : v)
-  const value = rated ? toScale(measure.value as number) : null
-  const thresholdValue = t ? toScale(t.value) : null
-  const max = unit === 'percent' ? 100 : unit === 'outOf5' ? 5 : Math.max(4, value ?? 0, thresholdValue ?? 0)
-  const pct = (v: number) => `${Math.min(100, Math.max(0, (v / max) * 100))}%`
-  const fill = measure.status === 'below' ? 'bg-brand-500' : 'bg-navy-700'
+function ReportedCard({ session }: { session: ScoredSession }) {
+  const { reported } = splitMeasures(session)
+  if (reported.length === 0) return null
   return (
-    <div aria-hidden="true" className="relative mt-4 h-2.5 rounded-full bg-navy-100">
-      {value !== null && <div className={`absolute inset-y-0 left-0 rounded-full ${fill}`} style={{ width: pct(value) }} />}
-      {value === null && <div className="absolute inset-0 rounded-full border border-dashed border-navy-300 bg-white" />}
-      {thresholdValue !== null && (
-        <div
-          className="absolute -top-1 -bottom-1 w-0.5 -translate-x-1/2 rounded-full bg-navy-900"
-          style={{ left: thresholdValue === 0 ? '2px' : pct(thresholdValue) }}
-        />
-      )}
-    </div>
-  )
-}
-
-function ReportedTile({ measure }: { measure: Measure }) {
-  const id = canonicalMeasureId(measure.id)
-  const copy = MEASURE_COPY[id]
-  const shown = measure.value !== null && measure.status === 'reported'
-  const note = statusNote(measure)
-  return (
-    <div className="h-full rounded-2xl bg-white/70 p-4 ring-1 ring-navy-900/5">
-      <div className="flex items-start justify-between gap-2">
-        <h4 className="text-sm font-semibold text-navy-800">{copy?.label ?? measure.label}</h4>
-        <StatusPill status={measure.status} />
+    <Card className="p-5 sm:p-6">
+      <div className="flex flex-wrap items-center gap-3">
+        <h2 className="type-h2 text-ink">Reported only</h2>
+        <StatusPill status="reported" />
       </div>
-      <p className="mt-2 text-2xl font-bold text-navy-900 tabular-nums">
-        {shown ? formatMeasureValue(id, measure.value) : <span className="text-navy-500">n/a</span>}
-        {shown && <span className="text-sm font-semibold text-navy-500">{unitSuffix(id)}</span>}
+      <p className="mt-2 type-small text-ink-2">
+        The sponsor set no threshold for these. They are shown for context and never compared or flagged.
       </p>
-      {note && measure.status !== 'reported' && <p className="mt-1 text-xs text-navy-500">{note}</p>}
-      <Explainer>
-        {copy && <p>{copy.explain}</p>}
-        <p>
-          Based on <span className="tabular-nums">{measure.n}</span> {copy?.nLabel ?? 'items'}.
+      <ul className="mt-4 grid gap-3 md:grid-cols-3 md:gap-4">
+        {reported.map((m) => {
+          const id = canonicalMeasureId(m.id)
+          const copy = MEASURE_COPY[id]
+          const shown = m.value !== null && m.status === 'reported'
+          const why = withheldReason(m, session)
+          return (
+            <li key={m.id} className="rounded-md bg-subtle p-4">
+              <p className="type-small-strong text-ink">{measureLabel(m)}</p>
+              <p className="mt-1">
+                {shown ? (
+                  <span className="type-number text-ink">{formatMeasureValue(id, m.value)}</span>
+                ) : (
+                  <span className="type-number text-muted">
+                    n/a<span className="sr-only"> (not available)</span>
+                  </span>
+                )}
+              </p>
+              <p className="mt-1 type-mono text-muted">{copy?.miti.split(' = ')[1] ?? m.formula}</p>
+              <p className="mt-1 type-caption text-ink-2">{why ?? basedOn(m)}</p>
+              {id === 'caller_change_talk_ratio' && (
+                <p className="mt-0.5 type-caption text-ink-2">Depends on the caller as much as the coach.</p>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </Card>
+  )
+}
+
+/** Every measure and rating not reported for this session, each with its reason, in one list. */
+function WithheldList({ session }: { session: ScoredSession }) {
+  const items = withheldMeasures(session)
+  if (items.length === 0) return null
+  return (
+    <Card as="section" className="overflow-hidden">
+      <div className="p-5 sm:p-6">
+        <h2 id="withheld-measures" className="type-h3 text-ink">
+          Not reported for this session
+        </h2>
+        <p className="mt-1 type-small text-ink-2">
+          Withheld because of the session's scoreability or too little data. None of these is a finding.
         </p>
-        <p className="text-xs text-navy-500">Official measure: {copy?.miti ?? `${measure.label} = ${measure.formula}`}</p>
-      </Explainer>
+      </div>
+      <ul className="divide-y divide-divider border-t border-divider">
+        {items.map((item) => (
+          <li key={item.key} className="flex flex-col gap-1 px-5 py-3 sm:flex-row sm:items-baseline sm:gap-6 sm:px-6">
+            <div className="min-w-0 sm:w-1/3">
+              <p className="type-small-strong text-ink">{item.label}</p>
+              <p className="type-mono break-all text-muted">{item.code}</p>
+            </div>
+            <p className="type-small text-ink-2 sm:flex-1">{item.reason}</p>
+          </li>
+        ))}
+      </ul>
+    </Card>
+  )
+}
+
+// ------------------------------------------------------------ Not scoreable
+
+export function NotScoreableCard({ session, onView }: { session: ScoredSession; onView: () => void }) {
+  const volleys = session.scoreability.agent_volleys
+  return (
+    <Card className="p-5 sm:p-6">
+      <div className="flex flex-wrap items-center gap-3">
+        <ScoreabilityChip state="not_scoreable" />
+        <p className="type-h3 text-ink">
+          <span className="type-mono">{session.session_id}</span> {sessionTopic(session)}
+        </p>
+      </div>
+      <p className="mt-3 type-small text-ink-2">
+        {volleys < 5
+          ? `This conversation has ${volleys} coach volley${volleys === 1 ? '' : 's'}; the sponsor needs at least 5.`
+          : 'None of the coach volleys could be coded (greetings, sign-offs and similar).'}{' '}
+        No measures, flags or issue-log rows are produced; the scorer refuses rather than estimating. The conversation is still
+        shown as received.
+        {session.scoreability.reason && <> Reason given: {coachWords(session.scoreability.reason)}</>}
+      </p>
+      <button type="button" onClick={onView} className={`mt-3 ${linkClass}`}>
+        View conversation
+      </button>
+    </Card>
+  )
+}
+
+// ------------------------------------------------------------ Safety node
+
+function SafetyNote({ session }: { session: ScoredSession }) {
+  const n = session.safety_volleys.length
+  if (n === 0) return null
+  return (
+    <div className="flex items-start gap-3 rounded-lg border border-line bg-surface px-5 py-4">
+      <Icon name="shield" className="mt-0.5 text-ink-2" />
+      <p className="type-small text-ink">
+        {n} volley{n === 1 ? ' was' : 's were'} spoken in the safety node (volley{n === 1 ? '' : 's'}{' '}
+        {session.safety_volleys.join(', ')}). By sponsor rule {n === 1 ? 'it is' : 'they are'} left out of every count, rating and
+        flag.{' '}
+        <button
+          type="button"
+          className={linkClass}
+          onClick={() => {
+            const el = document.getElementById('safety-volleys')
+            el?.scrollIntoView({ block: 'start' })
+            el?.focus({ preventScroll: true })
+          }}
+        >
+          See the list
+        </button>
+      </p>
     </div>
   )
 }
 
-// ------------------------------------------------------------------ Globals
-
-const TECHNICAL_GLOBALS = ['cultivating_change_talk', 'softening_sustain_talk']
-
-export function OverallRatings({ session }: { session: ScoredSession }) {
-  const technicalRated = TECHNICAL_GLOBALS.every((id) => session.globals.some((g) => g.id === id))
+/**
+ * deliv v1.2 s4: volleys spoken in safety_response are excluded from coding and listed separately,
+ * apart from the transcript. The issue log never quotes them.
+ */
+export function SafetyVolleys({ session }: { session: ScoredSession }) {
+  if (session.safety_volleys.length === 0) return null
+  const byNumber = new Map(session.volleys.map((v) => [v.volley, v]))
   return (
-    <section aria-labelledby="ratings-title">
-      <SectionTitle id="ratings-title" hint="The four MITI global ratings, 1 to 5, with the turns behind each one.">
-        Overall ratings
-      </SectionTitle>
-      <p className="mb-3 flex items-start gap-2 rounded-xl bg-sky-50 px-4 py-3 text-sm text-sky-950 ring-1 ring-sky-200">
-        <Icon name="info" className="mt-0.5" />
-        <span>{GLOBAL_MEASURE_NOTE}</span>
-      </p>
-      {session.globals.length === 0 ? (
-        <p className="rounded-2xl bg-white/70 p-5 text-sm text-navy-600 ring-1 ring-navy-900/5">
-          Not rated for this call. Text conversations and calls whose goal was a decision get no overall ratings.
-        </p>
-      ) : (
-        <>
-          {!technicalRated && (
-            <p className="mb-3 text-sm text-navy-600">
-              Technique ratings are given only for full sessions (10 minutes or longer, with a behavior goal reached).
-            </p>
-          )}
-          <Card className="divide-y divide-navy-100">
-            {session.globals.map((g) => (
-              <div key={g.id} className="p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <p className="font-semibold text-navy-900">
-                    {GLOBAL_COPY[g.id]?.label ?? g.id}
-                    {GLOBAL_COPY[g.id] && (
-                      <span className="ml-2 text-xs font-medium text-navy-500">{GLOBAL_COPY[g.id].miti}</span>
-                    )}
-                  </p>
-                  <ScoreDots score={g.score} />
-                </div>
-                <p className="mt-1.5 leading-relaxed text-navy-600">{g.rationale}</p>
-                <div className="mt-3">
-                  <TurnLinks turns={g.cited_turns} />
-                </div>
+    <Card as="section" className="scroll-mt-24 overflow-hidden">
+      <div id="safety-volleys" tabIndex={-1} className="scroll-mt-24 p-5 outline-none sm:p-6">
+        <SectionTitle
+          level={3}
+          hint="Listed separately by sponsor rule. These volleys are not coded, counted or rated, and the issue log never quotes them. Safety adherence is reviewed by the sponsor."
+        >
+          Spoken in the safety node
+        </SectionTitle>
+      </div>
+      <ul className="divide-y divide-divider border-t border-divider">
+        {session.safety_volleys.map((n) => {
+          const v = byNumber.get(n)
+          return (
+            <li key={n} className="px-5 py-4 sm:px-6">
+              <div className="flex flex-wrap items-center gap-2 type-caption text-muted">
+                <Pill className={TONE.reported}>
+                  <Icon name="shield" className="h-3.5 w-3.5" />
+                  Volley {n}
+                </Pill>
+                {v && <TurnSpanLink start={v.turn_start} end={v.turn_end} />}
+                {v && v.nodes.length > 0 && (
+                  <span className="type-mono">
+                    <span className="sr-only">Node: </span>
+                    {v.nodes.map(nodeLabel).join(', ')}
+                  </span>
+                )}
               </div>
-            ))}
-          </Card>
-        </>
-      )}
-    </section>
+              {v ? (
+                <blockquote className="mt-2 rounded-md border-l-[3px] border-line-strong bg-subtle px-4 py-2 type-body break-words text-ink">
+                  "{v.text}"
+                </blockquote>
+              ) : (
+                <p className="mt-2 type-small text-ink-2">This volley number is not in the scored volleys.</p>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </Card>
   )
 }
 
-function ScoreDots({ score }: { score: number }) {
+export function Meta({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <span className="flex items-center gap-2">
-      <span aria-hidden="true" className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <span key={i} className={`h-2.5 w-2.5 rounded-full ${i <= score ? 'bg-navy-700' : 'bg-navy-100'}`} />
-        ))}
-      </span>
-      <span className="font-bold text-navy-900 tabular-nums">
-        {score}
-        <span className="font-medium text-navy-500"> / 5</span>
-      </span>
-    </span>
+    <div className="flex items-baseline gap-1.5">
+      <dt className="text-muted">{label}</dt>
+      <dd className="font-semibold text-ink">{children}</dd>
+    </div>
   )
 }

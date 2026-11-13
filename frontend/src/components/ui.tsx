@@ -1,90 +1,66 @@
-/** Shared building blocks: cards, pills, buttons and section headers. */
+/** Shared building blocks (Figma "01 Components"): buttons, chips, cards, pills and states. */
 import type { ReactNode } from 'react'
 import { ENTRY_TYPE_COPY, SCOREABILITY_COPY, STATUS_COPY } from '../lib/miti'
 import type { EntryType, MeasureStatus, Scoreability } from '../lib/schema'
 import { Icon, type IconName } from './Icon'
 
-const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600'
+export const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus'
 
-export const primaryButton = `inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-navy-950 shadow-[0_6px_16px_-6px_rgba(242,138,36,0.7)] transition hover:bg-brand-400 disabled:opacity-60 ${focusRing}`
+const buttonBase = `inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-4 py-2.5 type-small-strong transition disabled:cursor-not-allowed disabled:opacity-50 max-lg:min-h-11 ${focusRing}`
 
-export const secondaryButton = `inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-navy-900 ring-1 ring-navy-200 transition hover:bg-navy-50 disabled:opacity-50 ${focusRing}`
+/** Primary: action/primary fill, white text. */
+export const primaryButton = `${buttonBase} bg-action text-white enabled:hover:bg-action-hover`
+/** Secondary: white, 1px border/strong. */
+export const secondaryButton = `${buttonBase} border border-line-strong bg-surface text-ink enabled:hover:bg-canvas`
+/** Ghost: no fill, link color. */
+export const ghostButton = `${buttonBase} px-2 text-link enabled:hover:underline underline-offset-4`
 
-export const textLink =
-  'font-semibold text-brand-700 underline decoration-brand-300 underline-offset-4 hover:decoration-brand-600'
-
-/** Filter chip: a toggle button with a count. */
+/** Filter chip: 36 high, pill; active = action/primary fill. */
 export function chipClass(active: boolean) {
-  return `inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold ring-1 transition ${focusRing} ${
-    active ? 'bg-navy-900 text-white ring-navy-900' : 'bg-white text-navy-800 ring-navy-200 hover:bg-navy-50'
+  return `inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3.5 py-1.5 type-label whitespace-nowrap transition disabled:opacity-50 disabled:cursor-not-allowed ${focusRing} ${
+    active ? 'border-action bg-action text-white' : 'border-line-strong bg-surface text-ink enabled:hover:bg-canvas'
   }`
 }
 
-export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return (
-    <div
-      className={`rounded-2xl bg-white shadow-[0_1px_2px_rgba(16,47,77,0.04),0_10px_28px_-18px_rgba(16,47,77,0.22)] ring-1 ring-navy-900/5 ${className}`}
-    >
-      {children}
-    </div>
-  )
-}
-
-export function PageContainer({ children }: { children: ReactNode }) {
-  return <div className="mx-auto w-full max-w-5xl px-4 pb-16 sm:px-6">{children}</div>
-}
-
-/** Big headline: navy text with one phrase in orange. */
-export function PageHero({
-  eyebrow,
-  title,
-  accent,
+export function Card({
   children,
+  className = '',
+  as = 'div',
 }: {
-  eyebrow: string
-  title: string
-  accent?: string
-  children?: ReactNode
+  children: ReactNode
+  className?: string
+  as?: 'div' | 'section'
 }) {
-  return (
-    <header className="pt-10 pb-8 sm:pt-14">
-      <Eyebrow>{eyebrow}</Eyebrow>
-      <h1 className="mt-3 max-w-4xl text-4xl leading-[1.05] font-extrabold tracking-[-0.035em] text-balance text-navy-900 sm:text-6xl">
-        {title} {accent && <span className="block text-brand-700">{accent}</span>}
-      </h1>
-      {children && <div className="mt-4 max-w-2xl text-lg leading-relaxed text-navy-600">{children}</div>}
-    </header>
-  )
+  const Tag = as
+  return <Tag className={`rounded-lg border border-line bg-surface shadow-card ${className}`}>{children}</Tag>
 }
 
-export function Eyebrow({ children }: { children: ReactNode }) {
-  return (
-    <p className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold tracking-[0.12em] text-brand-700 uppercase ring-1 ring-navy-900/5">
-      <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-brand-500" />
-      {children}
-    </p>
-  )
+export function Overline({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return <p className={`type-overline text-muted ${className}`}>{children}</p>
 }
 
-/** A section header: title, an optional one-line hint, and an optional action on the right. */
+/** A section header: Heading 2, an optional caption, and an optional action on the right. */
 export function SectionTitle({
   id,
   children,
   hint,
   action,
+  level = 2,
 }: {
   id?: string
   children: ReactNode
   hint?: ReactNode
   action?: ReactNode
+  level?: 2 | 3
 }) {
+  const H = level === 2 ? 'h2' : 'h3'
   return (
-    <div className="mb-4 flex flex-wrap items-end justify-between gap-x-4 gap-y-2 border-b border-navy-900/10 pb-3">
-      <div className="min-w-0">
-        <h2 id={id} className="text-xl font-bold tracking-tight text-navy-900 sm:text-2xl">
+    <div className="mb-4 flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+      <div className="max-w-3xl min-w-0">
+        <H id={id} className={level === 2 ? 'type-h2 text-ink' : 'type-h3 text-ink'}>
           {children}
-        </h2>
-        {hint && <p className="mt-1 max-w-2xl text-sm leading-relaxed text-navy-500">{hint}</p>}
+        </H>
+        {hint && <p className="mt-1 type-small text-ink-2">{hint}</p>}
       </div>
       {action}
     </div>
@@ -96,40 +72,49 @@ export function SectionTitle({
 export function Pill({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 type-label whitespace-nowrap ${className}`}
     >
       {children}
     </span>
   )
 }
 
+export const TONE = {
+  meets: 'border-meets-line bg-meets-bg text-meets-fg',
+  below: 'border-below-line bg-below-bg text-below-fg',
+  reported: 'border-reported-line bg-reported-bg text-reported-fg',
+  insufficient: 'border-insuff-line bg-insuff-bg text-insuff-fg',
+  notrated: 'border-notrated-line bg-notrated-bg text-notrated-fg',
+  danger: 'border-danger-line bg-danger-bg text-danger-fg',
+  info: 'border-info-line bg-info-bg text-info-fg',
+} as const
+
 export const STATUS_STYLE: Record<MeasureStatus, { className: string; icon: IconName }> = {
-  meets: { className: 'bg-emerald-50 text-emerald-900 ring-1 ring-emerald-200', icon: 'check' },
-  below: { className: 'bg-brand-50 text-brand-800 ring-1 ring-brand-300', icon: 'flag' },
-  reported: { className: 'bg-navy-50 text-navy-600 ring-1 ring-navy-200', icon: 'info' },
-  insufficient_data: { className: 'bg-amber-50 text-amber-900 ring-1 ring-amber-200', icon: 'dots' },
-  not_rated: { className: 'bg-navy-50 text-navy-600 ring-1 ring-navy-200', icon: 'minus' },
+  meets: { className: TONE.meets, icon: 'check' },
+  below: { className: TONE.below, icon: 'flag' },
+  reported: { className: TONE.reported, icon: 'info' },
+  insufficient_data: { className: TONE.insufficient, icon: 'dots' },
+  not_rated: { className: TONE.notrated, icon: 'minus' },
 }
 
-export function StatusPill({ status }: { status: MeasureStatus }) {
+/** mock: the scores are mock or practice data, so meets and below drop their pass/fail colors. */
+export function StatusPill({ status, mock = false }: { status: MeasureStatus; mock?: boolean }) {
   const style = STATUS_STYLE[status]
+  const neutral = mock && (status === 'meets' || status === 'below')
   return (
-    <Pill className={style.className}>
+    <Pill className={neutral ? TONE.notrated : style.className}>
       <Icon name={style.icon} className="h-3.5 w-3.5" />
       {STATUS_COPY[status]}
+      {neutral && ' (mock)'}
     </Pill>
   )
 }
 
 export const ENTRY_ICONS: Record<EntryType, IconName> = { MEASURE: 'target', TABLE_C: 'flag', TABLE_D: 'ban' }
 
+/** Categorical, not severity. */
 export function EntryTypePill({ type }: { type: EntryType }) {
-  const tone =
-    type === 'TABLE_D'
-      ? 'bg-red-50 text-red-900 ring-1 ring-red-200'
-      : type === 'TABLE_C'
-        ? 'bg-brand-50 text-brand-800 ring-1 ring-brand-200'
-        : 'bg-navy-50 text-navy-800 ring-1 ring-navy-200'
+  const tone = type === 'TABLE_D' ? TONE.danger : type === 'TABLE_C' ? TONE.below : TONE.reported
   return (
     <Pill className={tone}>
       <Icon name={ENTRY_ICONS[type]} className="h-3.5 w-3.5" />
@@ -139,17 +124,19 @@ export function EntryTypePill({ type }: { type: EntryType }) {
 }
 
 const SCOREABILITY_STYLE: Record<Scoreability, { className: string; icon: IconName }> = {
-  full: { className: 'bg-emerald-50 text-emerald-900 ring-emerald-200', icon: 'check' },
-  counts_only: { className: 'bg-sky-50 text-sky-900 ring-sky-200', icon: 'dots' },
-  outside_instrument: { className: 'bg-amber-50 text-amber-900 ring-amber-200', icon: 'info' },
-  not_scoreable: { className: 'bg-navy-100 text-navy-800 ring-navy-200', icon: 'minus' },
+  full: { className: TONE.meets, icon: 'check' },
+  counts_only: { className: TONE.info, icon: 'dots' },
+  outside_instrument: { className: TONE.insufficient, icon: 'info' },
+  not_scoreable: { className: TONE.notrated, icon: 'minus' },
 }
 
-export function ScoreabilityChip({ state }: { state: Scoreability }) {
+/** mock: mock or practice scores, shown without the green "full" color. */
+export function ScoreabilityChip({ state, mock = false }: { state: Scoreability; mock?: boolean }) {
   const style = SCOREABILITY_STYLE[state]
+  const className = mock && state === 'full' ? TONE.notrated : style.className
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold whitespace-nowrap ring-1 ${style.className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 type-small-strong whitespace-nowrap ${className}`}
     >
       <Icon name={style.icon} className="h-4 w-4" />
       <span>
@@ -160,61 +147,94 @@ export function ScoreabilityChip({ state }: { state: Scoreability }) {
   )
 }
 
-// ------------------------------------------------------------------ Controls
-
-/** Click-to-open explanation, used instead of on-screen jargon. */
-export function Explainer({ summary = 'What is this?', children }: { summary?: string; children: ReactNode }) {
-  return (
-    <details className="group mt-2 text-sm">
-      <summary className="inline-flex items-center gap-1 rounded font-semibold text-navy-500 hover:text-navy-900">
-        <Icon name="chevronDown" className="h-4 w-4 transition group-open:rotate-180 motion-reduce:transition-none" />
-        {summary}
-      </summary>
-      <div className="mt-2 space-y-1.5 leading-relaxed text-navy-600">{children}</div>
-    </details>
-  )
-}
-
 // ---------------------------------------------------------------- States
 
-export function ErrorPanel({ title, message, details = [] }: { title: string; message: string; details?: string[] }) {
+export function ErrorPanel({
+  title,
+  message,
+  details = [],
+  children,
+}: {
+  title: string
+  message: ReactNode
+  details?: string[]
+  children?: ReactNode
+}) {
   return (
-    <div role="alert" className="flex gap-4 rounded-2xl bg-white p-5 ring-1 ring-red-200 sm:p-6">
+    <div role="alert" className="flex gap-4 rounded-lg border border-danger-line bg-surface p-5 sm:p-6">
       <span
         aria-hidden="true"
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-700 ring-1 ring-red-200"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-danger-bg text-danger-fg"
       >
         <Icon name="alert" className="h-5 w-5" />
       </span>
-      <div className="min-w-0">
-        <p className="font-bold text-navy-900">{title}</p>
-        <p className="mt-1 text-navy-700">{message}</p>
+      <div className="min-w-0 flex-1">
+        <p className="type-h3 text-ink">{title}</p>
+        <div className="mt-1 type-small text-ink-2">{message}</div>
         {details.length > 0 && (
-          <ul className="mt-3 space-y-1 rounded-xl bg-navy-50 p-3 font-mono text-xs break-words text-navy-800">
-            {details.map((d) => (
-              <li key={d}>{d}</li>
+          <ul className="mt-3 space-y-1 rounded-md bg-subtle p-3 type-mono break-words text-ink">
+            {details.map((d, i) => (
+              <li key={`${i}-${d}`}>{d}</li>
             ))}
           </ul>
         )}
+        {children}
       </div>
     </div>
   )
 }
 
-/** A calm "nothing here" card. */
-export function EmptyState({ icon = 'check', title, children }: { icon?: IconName; title: string; children?: ReactNode }) {
+/** A calm "nothing here" card with a dashed border. */
+export function EmptyState({
+  icon = 'check',
+  title,
+  children,
+  centered = false,
+}: {
+  icon?: IconName
+  title: string
+  children?: ReactNode
+  centered?: boolean
+}) {
   return (
-    <div className="flex items-start gap-4 rounded-2xl border border-dashed border-navy-200 bg-white/60 p-5 sm:p-6">
+    <div
+      className={`flex gap-4 rounded-lg border border-dashed border-line-strong bg-surface p-5 sm:p-6 ${
+        centered ? 'flex-col items-center px-6 py-10 text-center' : 'items-start'
+      }`}
+    >
       <span
         aria-hidden="true"
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy-50 text-navy-600 ring-1 ring-navy-200"
+        className={`flex shrink-0 items-center justify-center rounded-md bg-subtle text-ink-2 ${centered ? 'h-12 w-12' : 'h-9 w-9'}`}
       >
         <Icon name={icon} className="h-5 w-5" />
       </span>
-      <div>
-        <p className="font-semibold text-navy-900">{title}</p>
-        {children && <div className="mt-1 text-sm leading-relaxed text-navy-600">{children}</div>}
+      <div className={centered ? 'max-w-md' : ''}>
+        <p className="type-h3 text-ink">{title}</p>
+        {children && <div className="mt-1 type-small text-ink-2">{children}</div>}
       </div>
     </div>
   )
+}
+
+/** Skeleton bars while something loads. */
+export function Skeleton({ label }: { label: string }) {
+  return (
+    <Card className="p-6">
+      <div aria-busy="true" aria-live="polite" className="space-y-4">
+        <div className="skeleton h-3 w-32" />
+        <div className="skeleton h-6 w-1/2" />
+        <div className="skeleton h-3 w-3/4" />
+        <div className="skeleton h-11 w-full" />
+        <div className="skeleton h-3 w-full" />
+        <div className="skeleton h-3 w-5/6" />
+        <p className="type-caption text-muted">{label}</p>
+      </div>
+    </Card>
+  )
+}
+
+/** A dot plus words: where the scores came from. Never color alone. */
+export function SourceDot({ tone }: { tone: 'live' | 'demo' | 'offline' }) {
+  const color = tone === 'live' ? 'bg-live' : tone === 'demo' ? 'bg-demo' : 'bg-offline'
+  return <span aria-hidden="true" className={`inline-block h-2 w-2 shrink-0 rounded-full ${color}`} />
 }

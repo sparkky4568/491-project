@@ -72,13 +72,13 @@ export const CODE_INFO: Record<Code, CodeInfo> = {
   },
 }
 
-/** One color family per kind of behavior. Tags always carry words, so color is never the only signal. */
+/** One color family per kind of behavior (Figma code/* tokens). Tags always carry words and a code, so color is never the only signal. */
 export const GROUP_STYLE: Record<CodeGroup, { label: string; tag: string; dot: string }> = {
-  question: { label: 'Questions', tag: 'bg-sky-50 text-sky-900 ring-sky-200', dot: 'bg-sky-500' },
-  listening: { label: 'Listening', tag: 'bg-violet-50 text-violet-900 ring-violet-200', dot: 'bg-violet-500' },
-  information: { label: 'Information', tag: 'bg-slate-100 text-slate-800 ring-slate-200', dot: 'bg-slate-400' },
-  supportive: { label: 'Supportive', tag: 'bg-teal-50 text-teal-900 ring-teal-200', dot: 'bg-teal-500' },
-  pushy: { label: 'MI Non-Adherent', tag: 'bg-red-50 text-red-900 ring-red-300', dot: 'bg-red-600' },
+  question: { label: 'Questions', tag: 'bg-code-question-bg text-code-question-fg', dot: 'bg-code-question-fg' },
+  listening: { label: 'Listening', tag: 'bg-code-listening-bg text-code-listening-fg', dot: 'bg-code-listening-fg' },
+  information: { label: 'Information', tag: 'bg-code-information-bg text-code-information-fg', dot: 'bg-code-information-fg' },
+  supportive: { label: 'Supportive', tag: 'bg-code-supportive-bg text-code-supportive-fg', dot: 'bg-code-supportive-fg' },
+  pushy: { label: 'MI Non-Adherent', tag: 'bg-code-nonadherent-bg text-code-nonadherent-fg', dot: 'bg-code-nonadherent-fg' },
 }
 
 export const CLIENT_TALK_INFO: Record<ClientTalk, { label: string; explain: string; miti: string }> = {
@@ -200,7 +200,7 @@ export const THRESHOLD_MEASURES = [
 export const REPORTED_MEASURES = ['reflection_to_question', 'caller_change_talk_ratio', 'mi_adherent']
 /** deliv s5: the globals can flag a session for review and never pass one. */
 export const GLOBAL_MEASURES = new Set(['technical_global', 'relational_global'])
-export const GLOBAL_MEASURE_NOTE = 'Can flag a session for review, never passes one. Checked on 20 sessions only.'
+export const GLOBAL_MEASURE_NOTE = 'Can flag a session for review; never passes one.'
 
 /** Measures about one moment rather than the whole call. Their issue rows point at single volleys. */
 export const MOMENT_MEASURES = new Set(['mi_non_adherent'])
@@ -214,7 +214,7 @@ export const GLOBAL_COPY: Record<string, { label: string; miti: string }> = {
 
 export const STATUS_COPY: Record<MeasureStatus, string> = {
   meets: 'Meets threshold',
-  below: 'Misses threshold',
+  below: 'Below threshold',
   reported: 'Reported only',
   insufficient_data: 'Not enough data',
   not_rated: 'Not rated',
@@ -248,7 +248,7 @@ export const SCOREABILITY_COPY: Record<Scoreability, { label: string; explain: s
 export const ENTRY_TYPE_COPY: Record<EntryType, { label: string; plural: string; explain: string }> = {
   MEASURE: {
     label: 'Measure',
-    plural: 'Measures that miss the threshold',
+    plural: 'Measures below threshold',
     explain: 'A measure did not meet its sponsor threshold.',
   },
   TABLE_C: { label: 'Flow flag', plural: 'Flow flags', explain: 'A conversation-flow flag from Table C.' },
@@ -298,7 +298,7 @@ export const TABLE_D_INFO: Record<TableDCode, { label: string; official: string;
 }
 
 const TABLE_C_ITEMS: Record<string, { label: string; official: string }> = {
-  C1_reflection_run: { label: 'Too many reflections in a row', official: 'C1 Longest reflection run' },
+  C1_reflection_run: { label: 'Reflections in a row', official: 'C1 Longest reflection run' },
   C2_window_no_questions: { label: 'Stretch with no questions', official: 'C2 Windowed R:Q, no questions' },
   C2_window_no_reflections: { label: 'Stretch with no reflections', official: 'C2 Windowed R:Q, no reflections' },
 }
@@ -328,6 +328,25 @@ export const SOURCE_COPY: Record<Source, string> = {
   annomi: 'AnnoMI',
   casaa: 'CASAA',
   other: 'Pasted text',
+}
+
+/**
+ * An invented example conversation: marked is_mock with a MOCK- session id (the same rule the
+ * scorer API uses to let these through its split guard). Its source tag only picks which rules
+ * apply; it is not corpus or call data.
+ */
+export function isInventedSample(session: { session_id: string; is_mock: boolean }): boolean {
+  return session.is_mock && session.session_id.startsWith('MOCK-')
+}
+
+export function provenanceLabel(session: { session_id: string; is_mock: boolean; provenance: Provenance }): string {
+  return isInventedSample(session) ? 'Invented sample' : PROVENANCE_COPY[session.provenance]
+}
+
+export function sourceLabel(session: { session_id: string; is_mock: boolean; source: Source }): string {
+  return isInventedSample(session)
+    ? `Tagged ${SOURCE_COPY[session.source]} (invented, not real data)`
+    : SOURCE_COPY[session.source]
 }
 
 export const SAFETY_NODE = 'safety_response'

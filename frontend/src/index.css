@@ -1,42 +1,163 @@
 @import 'tailwindcss';
 
+/*
+ * Design v2 tokens (Figma "Aven Scorer Review Console - Design v2", page "Console v2", frame 00 Tokens).
+ * Status colors mark state only: every status also carries an icon and a word.
+ */
 @theme {
   --font-sans: 'DM Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  --font-mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 
-  /* Deep navy for text and headings */
-  --color-navy-50: #f3f7fb;
-  --color-navy-100: #e4edf6;
-  --color-navy-200: #c9d8e8;
-  --color-navy-300: #9db5ce;
-  --color-navy-400: #6d8aa8;
-  --color-navy-500: #4c6886;
-  --color-navy-600: #38526e;
-  --color-navy-700: #284059;
-  --color-navy-800: #1b3149;
-  --color-navy-900: #102f4d;
-  --color-navy-950: #0b1d31;
+  /* Surfaces and borders */
+  --color-canvas: #f4f6f9;
+  --color-surface: #ffffff;
+  --color-subtle: #ebf0f5;
+  --color-sidebar: #0f2236;
+  --color-line: #d5dde6;
+  --color-line-strong: #76879a;
+  --color-divider: #e3e8ee;
 
-  /* Warm orange accent */
-  --color-brand-50: #fff6ed;
-  --color-brand-100: #ffe8d1;
-  --color-brand-200: #ffd0a3;
-  --color-brand-300: #fdb06b;
-  --color-brand-400: #f99a3e;
-  --color-brand-500: #f28a24;
-  --color-brand-600: #dc7213;
-  --color-brand-700: #b3570c;
-  --color-brand-800: #8c440f;
+  /* Text and action */
+  --color-ink: #0f2236;
+  --color-ink-2: #3d5166;
+  --color-muted: #56687a;
+  --color-link: #1f5a96;
+  --color-on-dark-muted: #b8c4d1;
+  --color-action: #102f4d;
+  --color-action-hover: #1d4670;
+  --color-brand: #f28a24;
+  --color-brand-soft: #fdb06b;
+  --color-brand-strong: #b3570c;
+  --color-focus: #c2620f;
+
+  /* Status (state only) */
+  --color-meets-bg: #e8f5ee;
+  --color-meets-fg: #14532d;
+  --color-meets-line: #a7d7b9;
+  --color-below-bg: #fdf0e4;
+  --color-below-fg: #7a3a06;
+  --color-below-line: #f2c08f;
+  --color-reported-bg: #ebf0f5;
+  --color-reported-fg: #3d5166;
+  --color-reported-line: #c9d3de;
+  --color-insuff-bg: #fef6dc;
+  --color-insuff-fg: #6b4a00;
+  --color-insuff-line: #ebcf7a;
+  --color-notrated-bg: #f1f3f5;
+  --color-notrated-fg: #4b5563;
+  --color-notrated-line: #d1d5db;
+  --color-danger-bg: #fcebeb;
+  --color-danger-fg: #8a1c1c;
+  --color-danger-line: #f0b4b4;
+  --color-info-bg: #e7f1fa;
+  --color-info-fg: #0b4a7a;
+  --color-info-line: #a9cbe8;
+
+  /* Behavior codes and caller talk */
+  --color-code-question-bg: #e7f1fa;
+  --color-code-question-fg: #0b4a7a;
+  --color-code-listening-bg: #f1ecfb;
+  --color-code-listening-fg: #4c1d95;
+  --color-code-information-bg: #f1f5f9;
+  --color-code-information-fg: #334155;
+  --color-code-supportive-bg: #e6f5f3;
+  --color-code-supportive-fg: #134e4a;
+  --color-code-nonadherent-bg: #fcebeb;
+  --color-code-nonadherent-fg: #8a1c1c;
+  --color-talk-sustain-bg: #fff1e6;
+  --color-talk-sustain-fg: #7c2d12;
+
+  /* Chart and indicators */
+  --color-chart-line: #1f5a96;
+  --color-chart-breach: #b42318;
+  --color-live: #15803d;
+  --color-demo: #b45309;
+  --color-offline: #8696a7;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --shadow-card: 0 1px 2px rgba(15, 34, 54, 0.06), 0 8px 24px -12px rgba(15, 34, 54, 0.08);
+}
+
+/* Type scale (DESIGN_SPEC 2.2). Numbers use tabular figures. */
+@utility type-display {
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+@utility type-h1 {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+@utility type-h2 {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+@utility type-h3 {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+@utility type-body {
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: 400;
+}
+@utility type-small {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+@utility type-small-strong {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+@utility type-label {
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 600;
+}
+@utility type-caption {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+@utility type-overline {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.96px;
+  text-transform: uppercase;
+}
+@utility type-number {
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  font-variant-numeric: tabular-nums;
+}
+@utility type-mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
 }
 
 @layer base {
   body {
-    @apply bg-navy-50 font-sans text-navy-900 antialiased;
-    background-image: linear-gradient(180deg, #dbe9f5 0px, #eaf2f9 280px, var(--color-navy-50) 620px);
-    background-repeat: no-repeat;
+    @apply bg-canvas font-sans text-ink antialiased;
   }
   :focus-visible {
-    outline: 2px solid var(--color-brand-600);
+    outline: 2px solid var(--color-focus);
     outline-offset: 2px;
   }
   button:not(:disabled),
@@ -51,8 +172,8 @@
     font-variant-numeric: tabular-nums;
   }
   ::selection {
-    background: var(--color-brand-200);
-    color: var(--color-navy-950);
+    background: var(--color-info-line);
+    color: var(--color-ink);
   }
 }
 
@@ -61,24 +182,16 @@
   ::before,
   ::after {
     transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }
 
-/* Excluded (not scored) messages: light hatching. */
-.not-scored {
-  background-image: repeating-linear-gradient(
-    135deg,
-    transparent 0 8px,
-    color-mix(in oklab, var(--color-navy-200) 35%, transparent) 8px 9px
-  );
-}
-
-/* Flash a message after jumping to it. */
+/* Flash a volley after jumping to it. */
 @keyframes turn-flash {
   0%,
   35% {
-    box-shadow: 0 0 0 3px var(--color-brand-400);
+    box-shadow: 0 0 0 3px var(--color-focus);
   }
   100% {
     box-shadow: 0 0 0 3px transparent;
@@ -90,6 +203,18 @@
 @media (prefers-reduced-motion: reduce) {
   .turn-flash {
     animation: none;
-    box-shadow: 0 0 0 3px var(--color-brand-400);
+    box-shadow: 0 0 0 3px var(--color-focus);
   }
+}
+
+/* Skeleton bars while a session loads. */
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+.skeleton {
+  background: var(--color-subtle);
+  border-radius: var(--radius-md);
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
 }

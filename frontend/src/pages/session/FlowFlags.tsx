@@ -1,195 +1,257 @@
 import { useState, type ReactNode } from 'react'
 import { Icon } from '../../components/Icon'
-import { Card, Pill, SectionTitle } from '../../components/ui'
-import { nodeLabel } from '../../lib/miti'
-import type { RqWindow, TableC } from '../../lib/schema'
-import { TurnSpanLink } from './turnNav'
+import { Card, EmptyState, Pill, TONE, focusRing } from '../../components/ui'
+import type { RqWindow, ScoredSession, VolleySpan } from '../../lib/schema'
+import { ShowInTranscript, TurnSpanLink } from './turnNav'
 import { WindowedRqChart } from './WindowedRqChart'
 
-function FlagPill({ flagged, children }: { flagged: boolean; children: ReactNode }) {
-  return flagged ? (
-    <Pill className="bg-brand-50 text-brand-800 ring-1 ring-brand-300">
+function FlagState({ raised }: { raised: boolean }) {
+  return raised ? (
+    <Pill className={TONE.below}>
       <Icon name="flag" className="h-3.5 w-3.5" />
-      {children}
+      Flag raised
     </Pill>
   ) : (
-    <Pill className="bg-navy-50 text-navy-600 ring-1 ring-navy-200">
-      <Icon name="minus" className="h-3.5 w-3.5" />
-      {children}
+    <Pill className={TONE.meets}>
+      <Icon name="check" className="h-3.5 w-3.5" />
+      No flag
     </Pill>
   )
 }
 
-/** Table C (deliv s6): computed by code from the volley codes. */
-export function FlowFlags({ tableC }: { tableC: TableC }) {
+function spanSentence(prefix: string, span: VolleySpan): string {
+  const volleys =
+    span.start_volley === span.end_volley ? `volley ${span.start_volley}` : `volleys ${span.start_volley} to ${span.end_volley}`
+  const turns = span.turn_start === span.turn_end ? `turn ${span.turn_start}` : `turns ${span.turn_start} to ${span.turn_end}`
+  const nodes = span.nodes.length > 0 ? `, node${span.nodes.length === 1 ? '' : 's'} ${span.nodes.join('; ')}` : ''
+  return `${prefix}coach ${volleys} (${turns})${nodes}.`
+}
+
+function FlagCard({
+  title,
+  official,
+  raised,
+  number,
+  explain,
+  children,
+}: {
+  title: string
+  official: string
+  raised: boolean
+  number: string
+  explain: string
+  children?: ReactNode
+}) {
+  return (
+    <Card className="flex h-full flex-col p-5 sm:p-6">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="type-h3 text-ink">{title}</h3>
+          <p className="type-mono text-muted">{official}</p>
+        </div>
+        <FlagState raised={raised} />
+      </div>
+      <p className="mt-4 type-number text-ink">{number}</p>
+      <p className="mt-1 type-small text-ink-2">{explain}</p>
+      {children && <div className="mt-3 space-y-3 type-small text-ink">{children}</div>}
+    </Card>
+  )
+}
+
+/** Table C (deliv s6): computed by code from the volley codes, over coded coach volleys only. */
+export function FlowFlags({ session }: { session: ScoredSession }) {
+  const tableC = session.table_c
+  const [view, setView] = useState<'chart' | 'table'>('chart')
+  if (!tableC)
+    return (
+      <EmptyState icon="flag" title="No flow flags for this session">
+        The scorer computed no Table C for it.
+      </EmptyState>
+    )
   const run = tableC.c1_reflection_run
   const c2 = tableC.c2_windowed_rq
-  const [showNumbers, setShowNumbers] = useState(false)
+  const total = c2.windows.length
+  const indexed = c2.windows.map((w, i) => ({ w, i }))
+  const noQ = indexed.filter(({ w }) => w.questions === 0)
+  const noR = indexed.filter(({ w }) => w.reflections === 0)
+  const lowest = c2.worst_interrogation
+  const lowestIndex = lowest ? c2.windows.findIndex((w) => w.start_volley === lowest.start_volley) : -1
+  const windowsWord = (n: number) => `${n} window${n === 1 ? '' : 's'}`
 
   return (
-    <section aria-labelledby="flow-title">
-      <SectionTitle id="flow-title" hint="The sponsor's conversation-flow flags (Table C), counted over coded coach volleys.">
-        Flow flags
-      </SectionTitle>
-      <div className="grid items-start gap-4 lg:grid-cols-[1fr_1.7fr]">
-        <Card className="p-5">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <h3 className="font-semibold text-navy-900">Reflections in a row</h3>
-              <p className="font-mono text-xs text-navy-500">C1 Longest reflection run</p>
-            </div>
-            <FlagPill flagged={run.breach}>{run.breach ? 'Flagged' : 'Not flagged'}</FlagPill>
-          </div>
-          <p className="mt-4 text-4xl font-extrabold tracking-tight text-navy-900 tabular-nums">
-            {run.length} <span className="text-base font-semibold text-navy-500">in a row</span>
-          </p>
-          <p className="mt-1 text-sm text-navy-500">
-            Longest run of reflective coach volleys with no question. The design cap is{' '}
-            <span className="tabular-nums">{run.cap}</span>; three or more is flagged.
-          </p>
+    <div className="space-y-6">
+      <div>
+        <h2 className="type-h2 text-ink">Conversation-flow flags (Table C)</h2>
+        <p className="mt-1 type-small text-ink-2">
+          Computed by code from the volley codes, over coded coach volleys only. Safety-node and excluded volleys are skipped.
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <FlagCard
+          title="Reflections in a row"
+          official="C1 Longest reflection run"
+          raised={run.breach}
+          number={String(run.length)}
+          explain={`longest run; design cap ${run.cap}, more than ${run.cap} in a row is flagged`}
+        >
           {run.span ? (
-            <div className="mt-4 space-y-1.5">
-              <TurnSpanLink start={run.span.turn_start} end={run.span.turn_end} />
-              {run.span.nodes.length > 0 && <p className="text-xs text-navy-500">{run.span.nodes.map(nodeLabel).join(', ')}</p>}
-            </div>
-          ) : (
-            <p className="mt-4 text-sm text-navy-500">No reflections in this call.</p>
-          )}
-        </Card>
-
-        <Card className="p-5">
-          <div className="flex flex-wrap items-start justify-between gap-2">
-            <div>
-              <h3 className="font-semibold text-navy-900">Reflections per question, window by window</h3>
-              <p className="font-mono text-xs text-navy-500">C2 Windowed R:Q</p>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              <FlagPill flagged={c2.breach_no_questions}>
-                {c2.breach_no_questions ? 'No-question window' : 'Every window has a question'}
-              </FlagPill>
-              <FlagPill flagged={c2.breach_no_reflections}>
-                {c2.breach_no_reflections ? 'No-reflection window' : 'Every window has a reflection'}
-              </FlagPill>
-            </div>
-          </div>
-          <p className="mt-2 text-sm text-navy-500">
-            Each window is <span className="tabular-nums">{c2.window_size}</span> coded coach volleys. A window with no questions
-            or no reflections is flagged. Click a point, or use the numbers table, to jump there.
-          </p>
-
-          {c2.windows.length === 0 ? (
-            <p className="mt-4 text-sm text-navy-500">No coded coach volleys to window.</p>
-          ) : (
             <>
-              <div className="mt-3">
-                <WindowedRqChart windows={c2.windows} />
-              </div>
-              <ChartKey />
-              <dl className="mt-4 grid gap-3 sm:grid-cols-2">
-                <WorstWindow title="Highest R:Q (over-following side)" window={c2.worst_over_following} />
-                <WorstWindow title="Lowest R:Q (interrogation side)" window={c2.worst_interrogation} />
-              </dl>
-              <button
-                type="button"
-                aria-expanded={showNumbers}
-                onClick={() => setShowNumbers((s) => !s)}
-                className="mt-4 text-sm font-semibold text-brand-700 underline underline-offset-4"
-              >
-                {showNumbers ? 'Hide the numbers' : 'Show the numbers'}
-              </button>
-              {showNumbers && <WindowTable windows={c2.windows} />}
+              <p>{spanSentence('', run.span).replace(/^c/, 'C')}</p>
+              <ShowInTranscript turn={run.span.turn_start} />
+            </>
+          ) : (
+            <p className="text-ink-2">No reflections in this call.</p>
+          )}
+        </FlagCard>
+
+        <FlagCard
+          title="Stretch with no questions"
+          official="C2 Windowed R:Q, no questions"
+          raised={c2.breach_no_questions}
+          number={windowsWord(noQ.length)}
+          explain={`of ${total} had no question`}
+        >
+          {noQ.length > 0 && (
+            <>
+              <p>{spanSentence(`Window ${noQ[0].i + 1}: `, noQ[0].w)}</p>
+              {noQ.length > 1 && <p className="text-ink-2">{noQ.length - 1} more listed in the table view.</p>}
+              <ShowInTranscript turn={noQ[0].w.turn_start} />
             </>
           )}
-        </Card>
+        </FlagCard>
+
+        <FlagCard
+          title="Stretch with no reflections"
+          official="C2 Windowed R:Q, no reflections"
+          raised={c2.breach_no_reflections}
+          number={windowsWord(noR.length)}
+          explain={`of ${total} had no reflection`}
+        >
+          {noR.length > 0 ? (
+            <>
+              <p>{spanSentence(`Window ${noR[0].i + 1}: `, noR[0].w)}</p>
+              <ShowInTranscript turn={noR[0].w.turn_start} />
+            </>
+          ) : (
+            lowest &&
+            lowest.rq !== null && (
+              <p className="text-ink-2">
+                Lowest R:Q, window {lowestIndex + 1}: {lowest.rq.toFixed(2)} (volleys {lowest.start_volley} to {lowest.end_volley}
+                ).
+              </p>
+            )
+          )}
+        </FlagCard>
       </div>
-    </section>
-  )
-}
 
-function ChartKey() {
-  return (
-    <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-navy-500">
-      <span className="inline-flex items-center gap-1.5">
-        <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10">
-          <circle cx="5" cy="5" r="4" fill="#102f4d" />
-        </svg>
-        R:Q for a window
-      </span>
-      <span className="inline-flex items-center gap-1.5">
-        <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10">
-          <rect width="10" height="10" fill="#b3570c" />
-        </svg>
-        Flagged: no reflections
-      </span>
-      <span className="inline-flex items-center gap-1.5">
-        <svg aria-hidden="true" width="12" height="10" viewBox="0 0 12 10">
-          <path d="M6 10 L0 0 L12 0 Z" fill="#b3570c" />
-        </svg>
-        Flagged: no questions (shown at the top)
-      </span>
-    </p>
-  )
-}
+      <Card className="p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="max-w-3xl min-w-0">
+            <h3 className="type-h3 text-ink">Reflections per question, window by window</h3>
+            <p className="mt-1 type-small text-ink-2">
+              Rolling window of {c2.window_size} coded coach volleys (sponsor Table C2). Each point is one window; R:Q is
+              reported, not compared with a threshold.
+            </p>
+          </div>
+          <div role="group" aria-label="Chart or table" className="inline-flex rounded-md bg-subtle p-1">
+            {(['chart', 'table'] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                aria-pressed={view === v}
+                onClick={() => setView(v)}
+                className={`min-h-9 rounded-md px-3.5 type-small-strong ${focusRing} ${
+                  view === v ? 'bg-surface text-ink shadow-card' : 'text-ink-2 hover:text-ink'
+                }`}
+              >
+                {v === 'chart' ? 'Chart' : 'Table'}
+              </button>
+            ))}
+          </div>
+        </div>
 
-function describe(w: RqWindow): string {
-  const rq = w.rq === null ? 'no questions' : `R:Q ${w.rq.toFixed(2)}`
-  return `${w.reflections} reflections, ${w.questions} questions, ${rq}`
-}
-
-function WorstWindow({ title, window }: { title: string; window: RqWindow | null }) {
-  return (
-    <div className="rounded-xl bg-navy-50/70 p-3 ring-1 ring-navy-100">
-      <dt className="text-xs font-semibold text-navy-600">{title}</dt>
-      {window ? (
-        <dd className="mt-1.5 space-y-1.5 text-sm text-navy-800">
-          <p className="tabular-nums">{describe(window)}</p>
-          <TurnSpanLink start={window.turn_start} end={window.turn_end} />
-        </dd>
-      ) : (
-        <dd className="mt-1.5 text-sm text-navy-500">None</dd>
-      )}
+        {total === 0 ? (
+          <p className="mt-4 type-small text-ink-2">No coded coach volleys to window.</p>
+        ) : view === 'chart' ? (
+          <>
+            <div className="mt-6">
+              <WindowedRqChart windows={c2.windows} />
+            </div>
+            <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2 type-caption text-ink-2">
+              <li className="inline-flex items-center gap-1.5">
+                <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12">
+                  <circle cx="6" cy="6" r="4" fill="#fff" stroke="#1f5a96" strokeWidth="2" />
+                </svg>
+                Window R:Q
+              </li>
+              <li className="inline-flex items-center gap-1.5">
+                <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12">
+                  <path d="M6 1 L11 11 L1 11 Z" fill="#b42318" />
+                </svg>
+                Flagged: no questions (shape and label, not color alone)
+              </li>
+              <li className="inline-flex items-center gap-1.5">
+                <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12">
+                  <path d="M6 0 L12 6 L6 12 L0 6 Z" fill="#b42318" />
+                </svg>
+                Flagged: no reflections
+              </li>
+              <li>Points are focusable; arrow keys move between windows. "Table" shows every window with its counts.</li>
+            </ul>
+          </>
+        ) : (
+          <WindowTable windows={c2.windows} />
+        )}
+      </Card>
     </div>
   )
 }
 
 function WindowTable({ windows }: { windows: RqWindow[] }) {
   return (
-    <div className="mt-3 overflow-x-auto">
-      <table className="w-full min-w-[22rem] text-sm">
+    <div className="mt-4 overflow-x-auto">
+      <table className="w-full min-w-[34rem] text-left type-small">
         <caption className="sr-only">Every window with its counts</caption>
-        <thead>
-          <tr className="text-left text-xs font-semibold tracking-wide text-navy-500 uppercase">
-            <th scope="col" className="py-2 pr-3">
-              Turns
-            </th>
-            <th scope="col" className="py-2 pr-3 text-right">
-              Refl.
-            </th>
-            <th scope="col" className="py-2 pr-3 text-right">
-              Qs
-            </th>
-            <th scope="col" className="py-2 pr-3 text-right">
-              R:Q
-            </th>
-            <th scope="col" className="py-2">
-              Flag
-            </th>
+        <thead className="bg-subtle type-caption text-muted">
+          <tr>
+            {['Window', 'Turns', 'Reflections', 'Questions', 'R:Q', 'Flag'].map((h) => (
+              <th key={h} scope="col" className="px-4 py-2.5 font-medium">
+                {h}
+              </th>
+            ))}
           </tr>
         </thead>
-        <tbody className="tabular-nums">
-          {windows.map((w) => (
-            <tr key={`${w.start_volley}-${w.end_volley}`} className="border-t border-navy-100">
-              <td className="py-1.5 pr-3">
-                <TurnSpanLink start={w.turn_start} end={w.turn_end} />
-              </td>
-              <td className="py-1.5 pr-3 text-right">{w.reflections}</td>
-              <td className="py-1.5 pr-3 text-right">{w.questions}</td>
-              <td className="py-1.5 pr-3 text-right">{w.rq === null ? 'n/a' : w.rq.toFixed(2)}</td>
-              <td className="py-1.5 text-brand-800">
-                {[w.questions === 0 && 'No questions', w.reflections === 0 && 'No reflections'].filter(Boolean).join(', ')}
-              </td>
-            </tr>
-          ))}
+        <tbody className="divide-y divide-divider tabular-nums">
+          {windows.map((w, i) => {
+            const flags = [w.questions === 0 && 'No questions', w.reflections === 0 && 'No reflections'].filter(Boolean)
+            return (
+              <tr key={`${w.start_volley}-${w.end_volley}`}>
+                <td className="px-4 py-2">
+                  w{i + 1}{' '}
+                  <span className="text-muted">
+                    (volleys {w.start_volley} to {w.end_volley})
+                  </span>
+                </td>
+                <td className="px-4 py-2">
+                  <TurnSpanLink start={w.turn_start} end={w.turn_end} />
+                </td>
+                <td className="px-4 py-2">{w.reflections}</td>
+                <td className="px-4 py-2">{w.questions}</td>
+                <td className="px-4 py-2">{w.rq === null ? 'undefined' : w.rq.toFixed(2)}</td>
+                <td className="px-4 py-2">
+                  {flags.length > 0 ? (
+                    <span className="inline-flex items-center gap-1 text-below-fg">
+                      <Icon name="flag" className="h-3.5 w-3.5" />
+                      {flags.join(', ')}
+                    </span>
+                  ) : (
+                    <span className="text-muted">none</span>
+                  )}
+                </td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
     </div>

@@ -1,298 +1,292 @@
-import { useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Icon } from '../../components/Icon'
-import { Card, EmptyState, EntryTypePill, SectionTitle, chipClass, secondaryButton } from '../../components/ui'
-import { formatObserved, issueLogFileName, issuesToCsv, splitEvidence } from '../../lib/format'
-import { ENTRY_TYPE_COPY, TABLE_D_INFO, itemLabel, nodeLabel } from '../../lib/miti'
-import { ENTRY_TYPES, type EntryType, type IssueLogEntry, type ScoredSession } from '../../lib/schema'
-import { TurnLink, TurnSpanLink } from './turnNav'
+import { Card, EmptyState, EntryTypePill, chipClass, focusRing, secondaryButton } from '../../components/ui'
+import { downloadIssueLog } from '../../lib/download'
+import { formatObserved, splitEvidence } from '../../lib/format'
+import { ENTRY_TYPE_COPY, itemLabel } from '../../lib/miti'
+import { ENTRY_TYPES, ISSUE_LOG_COLUMNS, type EntryType, type IssueLogEntry, type ScoredSession } from '../../lib/schema'
+import { TurnLink } from './turnNav'
 
 export type IssueFilter = 'all' | EntryType
 
-function downloadCsv(session: ScoredSession) {
-  const blob = new Blob([issuesToCsv(session.issues)], { type: 'text/csv;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = issueLogFileName(session.scorer.run_id)
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-  window.setTimeout(() => URL.revokeObjectURL(url), 0)
-}
+const rowDomId = (entryId: string) => `issue-${entryId}`
 
-/** The issue-log rows for this session (deliv s10). Unranked, in the order the scorer wrote them. */
+/** The issue-log rows for this session (deliv s10): exactly the sponsor's 16 columns. Unranked, in entry_id order. */
 export function IssueLog({
   session,
   filter,
   onFilter,
+  expandEntry = null,
 }: {
   session: ScoredSession
   filter: IssueFilter
   onFilter: (f: IssueFilter) => void
+  /** An entry to open and scroll to (from "Open issue-log row"). */
+  expandEntry?: string | null
 }) {
-  const rows = filter === 'all' ? session.issues : session.issues.filter((i) => i.entry_type === filter)
-  const count = (type: EntryType) => session.issues.filter((i) => i.entry_type === type).length
+  const [expanded, setExpanded] = useState<Set<string>>(() => new Set(expandEntry ? [expandEntry] : []))
+  const issues = [...session.issues].sort((a, b) => a.entry_id.localeCompare(b.entry_id, undefined, { numeric: true }))
+  const rows = filter === 'all' ? issues : issues.filter((i) => i.entry_type === filter)
+  const count = (type: EntryType) => issues.filter((i) => i.entry_type === type).length
+  const toggle = (id: string) =>
+    setExpanded((cur) => {
+      const next = new Set(cur)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+
+  useEffect(() => {
+    if (!expandEntry) return
+    document.getElementById(rowDomId(expandEntry))?.scrollIntoView({ block: 'center' })
+  }, [expandEntry])
+
+  const download = (format: 'csv' | 'jsonl') => downloadIssueLog(session.issues, session.scorer.run_id, format)
 
   return (
-    <section id="issue-log" aria-labelledby="issue-log-title" className="scroll-mt-20">
-      <SectionTitle
-        id="issue-log-title"
-        hint="The log records what was found, not what to change, and nothing in it is ranked."
-        action={
-          <button type="button" className={secondaryButton} onClick={() => downloadCsv(session)}>
+    <section aria-labelledby="issue-log-title" className="space-y-5">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="max-w-2xl">
+          <h2 id="issue-log-title" className="type-h2 text-ink">
+            Issue log
+          </h2>
+          <p className="mt-1 type-small text-ink-2">
+            Exactly the sponsor's 16 columns (deliv s10). It records what was found, not what to change; nothing is ranked and
+            there is no severity.
+          </p>
+        </div>
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
+          <button type="button" className={secondaryButton} onClick={() => download('csv')}>
             <Icon name="download" />
             Download CSV
           </button>
-        }
-      >
-        Issue log
-      </SectionTitle>
+          <button type="button" className={secondaryButton} onClick={() => download('jsonl')}>
+            <Icon name="download" />
+            Download JSONL
+          </button>
+        </div>
+      </div>
 
-      {session.issues.length === 0 ? (
-        <EmptyState title="Nothing reached the issue log.">
-          No measure came in below its threshold, no flow flag was raised and no prohibited behavior was found. The CSV still
-          downloads with its header row, so the run is on record.
+      {issues.length === 0 ? (
+        <EmptyState title="Nothing for the issue log">
+          Every measure meets its threshold and no flow flag or Table D hit was found. Downloads still produce a header-only CSV
+          and an empty JSONL file, so the run is on record.
         </EmptyState>
       ) : (
         <>
-          <div role="group" aria-label="Filter the issue log by type" className="mb-4 flex flex-wrap gap-2">
-            <button
-              type="button"
-              aria-pressed={filter === 'all'}
-              className={chipClass(filter === 'all')}
-              onClick={() => onFilter('all')}
-            >
-              All <span className="tabular-nums opacity-70">{session.issues.length}</span>
-            </button>
-            {ENTRY_TYPES.map((type) => (
+          <div className="flex flex-wrap items-center gap-3">
+            <div role="group" aria-label="Filter the issue log by type" className="flex flex-wrap gap-2">
               <button
-                key={type}
                 type="button"
-                aria-pressed={filter === type}
-                disabled={count(type) === 0}
-                className={`${chipClass(filter === type)} disabled:opacity-40`}
-                onClick={() => onFilter(type)}
+                aria-pressed={filter === 'all'}
+                className={chipClass(filter === 'all')}
+                onClick={() => onFilter('all')}
               >
-                {ENTRY_TYPE_COPY[type].label}
-                <span className="tabular-nums opacity-70">{count(type)}</span>
+                All <span className="tabular-nums">{issues.length}</span>
               </button>
-            ))}
+              {ENTRY_TYPES.map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  aria-pressed={filter === type}
+                  disabled={count(type) === 0}
+                  className={chipClass(filter === type)}
+                  onClick={() => onFilter(type)}
+                >
+                  {ENTRY_TYPE_COPY[type].label} <span className="tabular-nums">{count(type)}</span>
+                </button>
+              ))}
+            </div>
+            <p className="type-caption text-muted lg:ml-auto">
+              Shown in entry_id order. 8 of 16 columns in the table; expand a row for all 16.
+            </p>
           </div>
 
-          {/* Wide screens: a table. */}
-          <Card className="hidden overflow-hidden md:block">
-            <table className="w-full table-fixed text-left text-sm">
+          {/* Wide screens: a table with expandable rows. */}
+          <Card className="hidden overflow-x-auto md:block">
+            <table className="w-full min-w-[880px] text-left type-small">
               <caption className="sr-only">
-                Issue-log rows{filter === 'all' ? '' : `, ${ENTRY_TYPE_COPY[filter].label} only`}
+                Issue-log rows{filter === 'all' ? '' : `, ${ENTRY_TYPE_COPY[filter].label} only`}, in entry_id order
               </caption>
-              <colgroup>
-                <col className="w-[24%]" />
-                <col className="w-[18%]" />
-                <col className="w-[16%]" />
-                <col />
-              </colgroup>
-              <thead className="bg-navy-50/70 text-xs font-semibold tracking-wide text-navy-500 uppercase">
+              <thead className="bg-subtle type-caption text-muted">
                 <tr>
-                  <th scope="col" className="px-4 py-3">
-                    What was found
+                  <th scope="col" className="w-10 py-2.5 pl-4">
+                    <span className="sr-only">Expand</span>
                   </th>
-                  <th scope="col" className="px-4 py-3">
-                    Observed
-                  </th>
-                  <th scope="col" className="px-4 py-3">
-                    Where
-                  </th>
-                  <th scope="col" className="px-4 py-3">
-                    Evidence
-                  </th>
+                  {['entry_id', 'entry_type', 'item', 'observed', 'threshold', 'turns', 'evidence'].map((h) => (
+                    <th key={h} scope="col" className="px-3 py-2.5 font-medium">
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-navy-100 align-top">
-                {rows.map((entry) => (
-                  <tr key={entry.entry_id}>
-                    <td className="px-4 py-4">
-                      <ItemCell entry={entry} />
-                    </td>
-                    <td className="px-4 py-4">
-                      <ObservedCell entry={entry} session={session} />
-                    </td>
-                    <td className="px-4 py-4">
-                      <WhereCell entry={entry} />
-                    </td>
-                    <td className="px-4 py-4">
-                      <Evidence text={entry.evidence} />
-                    </td>
-                  </tr>
-                ))}
+              <tbody className="divide-y divide-divider">
+                {rows.map((entry) => {
+                  const open = expanded.has(entry.entry_id)
+                  const shown = formatObserved(entry, session.measures)
+                  return (
+                    <Fragment key={entry.entry_id}>
+                      <tr id={rowDomId(entry.entry_id)} className={`align-top ${open ? 'bg-info-bg' : ''}`}>
+                        <td className="py-3 pl-4">
+                          <button
+                            type="button"
+                            aria-expanded={open}
+                            aria-controls={`${rowDomId(entry.entry_id)}-all`}
+                            onClick={() => toggle(entry.entry_id)}
+                            className={`flex h-7 w-7 items-center justify-center rounded-md text-ink-2 hover:bg-subtle ${focusRing}`}
+                          >
+                            <Icon name={open ? 'chevronDown' : 'chevronRight'} />
+                            <span className="sr-only">
+                              {open ? 'Hide' : 'Show'} all 16 columns for {entry.entry_id}
+                            </span>
+                          </button>
+                        </td>
+                        <td className="px-3 py-3 type-mono whitespace-nowrap text-ink">{entry.entry_id}</td>
+                        <td className="px-3 py-3">
+                          <EntryTypePill type={entry.entry_type} />
+                        </td>
+                        <td className="px-3 py-3 text-ink">{itemLabel(entry.entry_type, entry.item).label}</td>
+                        <td className="px-3 py-3 text-ink tabular-nums">
+                          {shown ? shown.observed || entry.observed : <NotApplicable />}
+                        </td>
+                        <td className="px-3 py-3 text-ink tabular-nums">
+                          {shown ? shown.threshold || entry.threshold : <NotApplicable />}
+                        </td>
+                        <td className="px-3 py-3 whitespace-nowrap">
+                          <TurnLink
+                            turn={entry.turn_start}
+                            className={`type-mono text-link hover:underline ${focusRing} rounded-sm`}
+                          >
+                            {entry.turn_start}-{entry.turn_end}
+                            <span className="sr-only">, go to the conversation</span>
+                          </TurnLink>
+                        </td>
+                        <td className="max-w-[22rem] px-3 py-3 pr-5">
+                          <EvidencePreview text={entry.evidence} />
+                        </td>
+                      </tr>
+                      {open && (
+                        <tr id={`${rowDomId(entry.entry_id)}-all`} className="bg-subtle">
+                          <td />
+                          <td colSpan={7} className="px-3 py-4 pr-5">
+                            <AllColumns entry={entry} />
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  )
+                })}
               </tbody>
             </table>
           </Card>
 
           {/* Phones: stacked cards. */}
           <ul className="space-y-3 md:hidden">
-            {rows.map((entry) => (
-              <li key={entry.entry_id}>
-                <Card className="space-y-3 p-4">
-                  <ItemCell entry={entry} />
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <p className="text-xs font-semibold tracking-wide text-navy-500 uppercase">Observed</p>
-                      <div className="mt-1">
-                        <ObservedCell entry={entry} session={session} />
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold tracking-wide text-navy-500 uppercase">Where</p>
-                      <div className="mt-1">
-                        <WhereCell entry={entry} />
-                      </div>
-                    </div>
+            {rows.map((entry) => {
+              const open = expanded.has(entry.entry_id)
+              const shown = formatObserved(entry, session.measures)
+              return (
+                <li key={entry.entry_id} className="rounded-lg border border-line bg-surface p-4 shadow-card">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="type-mono text-ink">{entry.entry_id}</span>
+                    <EntryTypePill type={entry.entry_type} />
                   </div>
-                  <div>
-                    <p className="text-xs font-semibold tracking-wide text-navy-500 uppercase">Evidence</p>
-                    <div className="mt-1">
-                      <Evidence text={entry.evidence} />
+                  <p className="mt-2 type-h3 text-ink">{itemLabel(entry.entry_type, entry.item).label}</p>
+                  <dl className="mt-2 grid grid-cols-3 gap-3 type-small">
+                    <div>
+                      <dt className="type-caption text-muted">observed</dt>
+                      <dd className="text-ink">{shown ? shown.observed || entry.observed : <NotApplicable />}</dd>
                     </div>
+                    <div>
+                      <dt className="type-caption text-muted">threshold</dt>
+                      <dd className="text-ink">{shown ? shown.threshold || entry.threshold : <NotApplicable />}</dd>
+                    </div>
+                    <div>
+                      <dt className="type-caption text-muted">turns</dt>
+                      <dd>
+                        <TurnLink turn={entry.turn_start} className={`type-mono text-link ${focusRing} rounded-sm`}>
+                          {entry.turn_start}-{entry.turn_end}
+                        </TurnLink>
+                      </dd>
+                    </div>
+                  </dl>
+                  <div className="mt-3">
+                    <EvidencePreview text={entry.evidence} />
                   </div>
-                </Card>
-              </li>
-            ))}
+                  <button
+                    type="button"
+                    aria-expanded={open}
+                    onClick={() => toggle(entry.entry_id)}
+                    className={`mt-3 inline-flex min-h-11 items-center gap-1 type-small-strong text-link ${focusRing} rounded-sm`}
+                  >
+                    <Icon name={open ? 'chevronDown' : 'chevronRight'} />
+                    {open ? 'Hide' : 'Show'} all 16 columns
+                  </button>
+                  {open && (
+                    <div className="mt-2 rounded-md bg-subtle p-3">
+                      <AllColumns entry={entry} />
+                    </div>
+                  )}
+                </li>
+              )
+            })}
           </ul>
+
+          {issues.some((i) => i.entry_type === 'TABLE_D') && (
+            <p className="type-caption text-muted">
+              Table D rows have no observed or threshold value (deliv s10). The table shows "n/a" (read as "not applicable"); the
+              CSV leaves the cells blank.
+            </p>
+          )}
         </>
       )}
     </section>
   )
 }
 
-function ItemCell({ entry }: { entry: IssueLogEntry }) {
-  const { label, code } = itemLabel(entry.entry_type, entry.item)
+function NotApplicable() {
   return (
-    <div className="min-w-0">
-      <EntryTypePill type={entry.entry_type} />
-      <p className="mt-2 font-semibold text-navy-900">{label}</p>
-      <p className="mt-0.5 font-mono text-xs break-all text-navy-500">{code}</p>
-    </div>
+    <span className="text-muted" aria-label="not applicable">
+      n/a
+    </span>
   )
 }
 
-function ObservedCell({ entry, session }: { entry: IssueLogEntry; session: ScoredSession }) {
-  const shown = formatObserved(entry, session.measures)
-  if (!shown) return <p className="text-navy-500">Not applicable</p>
-  return (
-    <div className="tabular-nums">
-      <p className="font-semibold text-navy-900">{shown.observed || 'n/a'}</p>
-      {shown.threshold && <p className="mt-0.5 text-navy-500">Threshold: {shown.threshold}</p>}
-    </div>
-  )
-}
-
-function WhereCell({ entry }: { entry: IssueLogEntry }) {
-  const nodes =
-    entry.node_active
-      ?.split(';')
-      .map((n) => n.trim())
-      .filter(Boolean) ?? []
-  return (
-    <div className="space-y-1.5">
-      <TurnSpanLink start={entry.turn_start} end={entry.turn_end} />
-      {nodes.length > 0 && (
-        <p className="text-xs leading-relaxed break-words text-navy-500" title={nodes.map(nodeLabel).join(', ')}>
-          <span className="sr-only">Node active: </span>
-          {nodes.length <= 3
-            ? nodes.map(nodeLabel).join(', ')
-            : `${nodeLabel(nodes[0])} to ${nodeLabel(nodes[nodes.length - 1])} (${nodes.length} nodes)`}
-        </p>
-      )}
-    </div>
-  )
-}
-
-const QUOTES_SHOWN = 2
-
-/** Evidence quotes. Session-level rows carry several, each prefixed "[turn N]". */
-function Evidence({ text }: { text: string }) {
-  const [all, setAll] = useState(false)
+function EvidencePreview({ text }: { text: string }) {
   const quotes = splitEvidence(text)
-  if (quotes.length === 0) return <p className="text-navy-500">No quote</p>
-  const shown = all ? quotes : quotes.slice(0, QUOTES_SHOWN)
+  if (quotes.length === 0) return <span className="text-muted">No quote</span>
+  const first = quotes[0].text
   return (
-    <div className="space-y-2">
-      {shown.map((q, i) => (
-        <blockquote key={i} className="border-l-2 border-brand-300 pl-3 text-sm leading-relaxed break-words text-navy-800">
-          {q.turn !== null && (
-            <TurnLink
-              turn={q.turn}
-              className="mr-1.5 text-xs font-semibold text-brand-700 underline underline-offset-2 not-italic"
-            >
-              Turn {q.turn}
-            </TurnLink>
-          )}
-          <span className="italic">"{q.text}"</span>
-        </blockquote>
-      ))}
-      {quotes.length > QUOTES_SHOWN && (
-        <button
-          type="button"
-          aria-expanded={all}
-          onClick={() => setAll((a) => !a)}
-          className="text-xs font-semibold text-brand-700 underline underline-offset-4"
-        >
-          {all ? 'Show fewer' : `Show ${quotes.length - QUOTES_SHOWN} more`}
-        </button>
+    <p className="text-ink">
+      <span className="line-clamp-3">"{first}"</span>
+      {quotes.length > 1 && (
+        <span className="type-caption text-muted">
+          {' '}
+          and {quotes.length - 1} more quote{quotes.length === 2 ? '' : 's'}
+        </span>
       )}
-    </div>
+    </p>
   )
 }
 
-// ------------------------------------------------------------ Clinician review
-
-/** Table D hits a clinician reads one by one: D1 and D7 always, D3 when the invented fact is clinical. */
-export function ClinicianReview({ session }: { session: ScoredSession }) {
-  const hits = session.table_d.filter((h) => h.clinician_review)
-  if (hits.length === 0) return null
+/** All 16 columns, verbatim, in ISSUE_LOG_COLUMNS order. */
+function AllColumns({ entry }: { entry: IssueLogEntry }) {
   return (
-    <section aria-labelledby="clinician-title">
-      <SectionTitle
-        id="clinician-title"
-        hint="By sponsor rule these are also read individually by a clinician: clinical advice and privacy always, a made-up fact when it is clinical."
-      >
-        For clinician review
-      </SectionTitle>
-      <ul className="space-y-3">
-        {hits.map((hit) => {
-          const info = TABLE_D_INFO[hit.code]
+    <div>
+      <p className="type-overline text-muted">All 16 columns</p>
+      <dl className="mt-3 grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
+        {ISSUE_LOG_COLUMNS.map((col) => {
+          const value = entry[col]
           return (
-            <li key={`${hit.code}-${hit.volley}-${hit.turn_start}`}>
-              <Card className="p-4 sm:p-5">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="flex min-w-0 items-start gap-3">
-                    <span
-                      aria-hidden="true"
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-50 text-red-700 ring-1 ring-red-200"
-                    >
-                      <Icon name="clipboard" />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="font-semibold text-navy-900">{info.label}</p>
-                      <p className="font-mono text-xs text-navy-500">{info.official}</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-navy-500">
-                    {hit.node && <span>{nodeLabel(hit.node)}</span>}
-                    <TurnSpanLink start={hit.turn_start} end={hit.turn_end} />
-                  </div>
-                </div>
-                <blockquote className="mt-3 border-l-2 border-brand-300 pl-3 leading-relaxed break-words text-navy-800 italic">
-                  "{hit.evidence_quote}"
-                </blockquote>
-                <p className="mt-2 text-sm leading-relaxed text-navy-600">
-                  <span className="font-semibold text-navy-700">Scorer's reading:</span> {hit.rationale}
-                </p>
-              </Card>
-            </li>
+            <div key={col} className={col === 'evidence' ? 'sm:col-span-2 lg:col-span-4' : ''}>
+              <dt className="type-mono text-muted">{col}</dt>
+              <dd className="mt-0.5 type-small break-words whitespace-pre-wrap text-ink">
+                {value === null || value === '' ? <span className="text-muted">(blank)</span> : String(value)}
+              </dd>
+            </div>
           )
         })}
-      </ul>
-    </section>
+      </dl>
+    </div>
   )
 }

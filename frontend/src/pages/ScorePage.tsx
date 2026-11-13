@@ -1,320 +1,302 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Icon } from '../components/Icon'
 import { useDemoNotice } from '../components/Layout'
-import { ErrorPanel, PageContainer, PageHero, SectionTitle, primaryButton, secondaryButton } from '../components/ui'
-import { DataError, listExamples, scoreConversation, usingRealScorer } from '../lib/data'
-import { splitEvidence } from '../lib/format'
-import { usePrefersReducedMotion } from '../lib/hooks'
-import { MOMENT_MEASURES, canonicalMeasureId, topicLabel } from '../lib/miti'
+import { DropZone, LoadErrors, goToOpened } from '../components/LoadFiles'
+import { Card, ErrorPanel, TONE, chipClass, ghostButton, primaryButton, secondaryButton } from '../components/ui'
+import { useConnection } from '../lib/connection'
+import { DataError, listExamples, scoreConversation } from '../lib/data'
+import { topicLabel } from '../lib/miti'
 import { parseConversationInput, transcriptToText } from '../lib/parseInput'
-import type { EntryType, IssueLogEntry, ScoredSession, TranscriptIn } from '../lib/schema'
-import { Details } from './session/Details'
-import { FlowFlags } from './session/FlowFlags'
-import { ClinicianReview, IssueLog, type IssueFilter } from './session/IssueLog'
-import { NotScoreableCard, OverallRatings, Scores, SessionHeader, sessionTopic } from './session/Summary'
-import { Transcript, matchesFilter, type EvidenceKey, type VolleyFilter } from './session/Transcript'
-import { TurnNavContext, volleyDomId } from './session/turnNav'
+import { navigate } from '../lib/router'
+import { useRuns, type SessionOrigin } from '../lib/runs'
+import type { TranscriptIn } from '../lib/schema'
 
 const PLACEHOLDER = `Coach: What would you like to talk about today?
 Caller: I keep meaning to cook at home more, but by evening I'm too tired.
 Coach: Part of you wants home-cooked dinners, and the end of the day leaves nothing in the tank.
 Caller: Yeah. Maybe weekends would be easier to start with.`
 
-/** The whole app: paste a conversation, score it, see the results below. */
+type StepState = 'done' | 'active' | 'waiting'
+interface Progress {
+  mode: 'api' | 'practice'
+  volleys: number
+  step: number
+  started: number
+}
+
+/** Paste a conversation and score it, or open files the scorer already produced. */
 export function ScorePage() {
+  const { connection, recheck, apiUrl } = useConnection()
+  const runs = useRuns()
   const [text, setText] = useState('')
-  const [result, setResult] = useState<ScoredSession | null>(null)
   const [error, setError] = useState<{ message: string; details?: string[] } | null>(null)
-  const [busy, setBusy] = useState(false)
+  const [offline, setOffline] = useState<string | null>(null)
+  const [progress, setProgress] = useState<Progress | null>(null)
   const examples = useMemo(() => listExamples(), [])
   const [example, setExample] = useState<TranscriptIn | null>(null)
   const box = useRef<HTMLTextAreaElement>(null)
-  const resultsRef = useRef<HTMLDivElement>(null)
-  const reducedMotion = usePrefersReducedMotion()
-  useDemoNotice(!!result?.is_mock)
+  const hintId = useId()
+  const demo = connection.kind === 'demo'
+  useDemoNotice(demo ? 'practice' : null)
 
-  async function score() {
-    setError(null)
+  function parse() {
     // An untouched example is scored from its file, so it keeps its topic, timings, nodes and goal.
-    const parsed =
-      example && text === transcriptToText(example)
-        ? { kind: 'transcript' as const, transcript: example }
-        : parseConversationInput(text)
+    return example && text === transcriptToText(example)
+      ? { kind: 'transcript' as const, transcript: example }
+      : parseConversationInput(text)
+  }
+
+  async function score(forcePractice = false) {
+    if (progress) return
+    setError(null)
+    setOffline(null)
+    const parsed = parse()
     if (parsed.kind === 'error') {
-      setResult(null)
       setError(parsed)
       return
     }
-    setBusy(true)
+    if (parsed.kind === 'scored') {
+      runs.add([{ session: parsed.session, origin: 'pasted' }])
+      navigate({ page: 'session', sessionId: parsed.session.session_id, tab: 'summary' })
+      return
+    }
+    let mode: 'api' | 'practice' = 'practice'
+    if (!demo && !forcePractice) {
+      // Re-check before each score. Offline never falls back to practice on its own.
+      const now = await recheck()
+      if (now.kind !== 'live') {
+        setOffline(now.kind === 'offline' ? now.message : 'The scorer API is not answering.')
+        return
+      }
+      mode = 'api'
+    }
+    const agentTurns = parsed.transcript.turns.filter((t) => t.speaker === 'agent').length
+    const started = Date.now()
+    setProgress({ mode, volleys: agentTurns, step: 1, started })
     try {
-      setResult(parsed.kind === 'scored' ? parsed.session : await scoreConversation(parsed.transcript))
+      const session = await scoreConversation(parsed.transcript, mode)
+      setProgress({ mode, volleys: agentTurns, step: 3, started })
+      const origin: SessionOrigin = mode === 'api' ? 'api' : 'practice'
+      runs.add([{ session, origin }])
+      navigate({ page: 'session', sessionId: session.session_id, tab: 'summary' })
     } catch (err) {
-      setResult(null)
       setError(err instanceof DataError ? err : { message: err instanceof Error ? err.message : String(err) })
-    } finally {
-      setBusy(false)
+      setProgress(null)
     }
   }
 
-  // Bring the results into view as soon as they appear.
-  useEffect(() => {
-    if (result) resultsRef.current?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' })
-  }, [result, reducedMotion])
-
-  function scoreAnother() {
-    window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' })
-    box.current?.focus({ preventScroll: true })
-  }
+  const scoreLabel = demo ? 'Score it (practice)' : 'Score it'
 
   return (
-    <PageContainer>
-      <PageHero eyebrow="Coaching conversation scorer" title="Paste a conversation." accent="See what the scorer finds.">
-        How the coach listened, what they did in each volley, and anything the sponsor's rules pick up.
-      </PageHero>
+    <div className="space-y-6">
+      <header>
+        <h1 className="type-h1 text-ink">Score a call</h1>
+        <p className="mt-1 type-body text-ink-2">Paste a conversation, or load files the scorer already produced.</p>
+      </header>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          void score()
-        }}
-        className="rounded-2xl bg-white p-5 shadow-[0_1px_2px_rgba(16,47,77,0.04),0_10px_28px_-18px_rgba(16,47,77,0.22)] ring-1 ring-navy-900/5 sm:p-7"
-      >
-        <label htmlFor="conversation" className="block text-lg font-bold text-navy-900">
-          Conversation
-        </label>
-        <p id="conversation-hint" className="mt-1 text-sm text-navy-500">
-          Put each message on its own line, starting with <strong className="text-navy-800">Coach:</strong> or{' '}
-          <strong className="text-navy-800">Caller:</strong> You can also paste transcript or scored JSON.
-        </p>
-        <textarea
-          id="conversation"
-          ref={box}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          aria-describedby={usingRealScorer ? 'conversation-hint' : 'conversation-hint practice-warning'}
-          placeholder={PLACEHOLDER}
-          rows={10}
-          spellCheck={false}
-          className="mt-3 block w-full resize-y rounded-xl bg-navy-50 px-4 py-3 font-sans text-[15px] leading-7 text-navy-900 ring-1 ring-navy-200 placeholder:text-navy-400 focus:bg-white focus:ring-2 focus:ring-brand-400 focus:outline-none"
-        />
-
-        {!usingRealScorer && (
-          <div
-            id="practice-warning"
-            className="mt-3 flex items-start gap-3 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-950 ring-1 ring-amber-300"
-          >
-            <Icon name="alert" className="mt-0.5 h-5 w-5 text-amber-700" />
-            <p>
-              <strong className="font-semibold">Heads up: these scores are placeholders for now.</strong> The real AI scorer isn't
-              connected yet, so the results come from simple keyword rules and can be wrong. Nothing you paste is saved or sent
-              anywhere.
-            </p>
-          </div>
-        )}
-
-        <div className="mt-5 flex flex-wrap items-center gap-3">
-          <button type="submit" className={`${primaryButton} px-6 text-base`} disabled={busy}>
-            {busy ? 'Scoring...' : 'Score it'}
-            {!busy && <Icon name="arrowRight" />}
-          </button>
-          {text && (
-            <button
-              type="button"
-              className="rounded-lg px-2 py-1 text-sm font-semibold text-navy-500 hover:text-navy-900"
-              onClick={() => {
-                setText('')
-                setResult(null)
-                setError(null)
-                box.current?.focus()
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+        <div className="space-y-6">
+          <Card className="p-5 sm:p-6">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                void score()
               }}
             >
-              Clear
-            </button>
-          )}
-        </div>
-
-        {examples.length > 0 && (
-          <div className="mt-6 flex flex-wrap items-center gap-2 border-t border-navy-100 pt-4 text-sm">
-            <span className="text-navy-500">No conversation handy? Try an example:</span>
-            {examples.map((ex) => (
-              <button
-                key={ex.session_id}
-                type="button"
-                className="rounded-full bg-navy-50 px-3 py-1 font-semibold text-navy-800 ring-1 ring-navy-200 hover:bg-brand-50 hover:ring-brand-300"
-                onClick={() => {
-                  setText(transcriptToText(ex))
-                  setExample(ex)
-                  setResult(null)
-                  setError(null)
+              <label htmlFor="conversation" className="block type-h3 text-ink">
+                Conversation
+              </label>
+              <p id={hintId} className="mt-2 type-small text-ink-2">
+                One message per line, starting with Coach: or Caller:. Transcript JSON (schema 1.0) or ScoredSession JSON also
+                works.
+              </p>
+              <textarea
+                id="conversation"
+                ref={box}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                    e.preventDefault()
+                    void score()
+                  }
                 }}
-              >
-                {topicLabel(ex.change_goal.text ?? ex.target_behavior)}
-              </button>
-            ))}
-          </div>
-        )}
-      </form>
+                aria-describedby={demo ? `${hintId} practice-warning` : hintId}
+                placeholder={PLACEHOLDER}
+                rows={9}
+                spellCheck={false}
+                className="mt-4 block min-h-[220px] w-full resize-y rounded-md border border-line-strong bg-subtle px-4 py-3.5 type-body text-ink placeholder:text-muted focus:border-focus focus:bg-surface focus:outline-2 focus:outline-offset-0 focus:outline-focus"
+              />
 
-      {error && (
-        <div className="mt-6">
-          <ErrorPanel title="Can't score this yet" message={error.message} details={error.details} />
+              {demo && (
+                <div
+                  id="practice-warning"
+                  className={`mt-4 flex items-start gap-3 rounded-md border px-4 py-3 type-small ${TONE.insufficient}`}
+                >
+                  <Icon name="alert" className="mt-0.5 h-5 w-5" />
+                  <p>
+                    "Score it" gives practice scores while no scorer API is connected (VITE_API_URL is empty). They come from
+                    keyword rules and can be wrong. Nothing you paste is saved or sent anywhere.
+                  </p>
+                </div>
+              )}
+              {connection.kind === 'live' && connection.health.backend === 'fake' && (
+                <p className={`mt-4 flex items-start gap-3 rounded-md border px-4 py-3 type-small ${TONE.insufficient}`}>
+                  <Icon name="alert" className="mt-0.5 h-5 w-5" />
+                  The scorer API is running its fake backend, so its results are marked is_mock and shown as mock data.
+                </p>
+              )}
+
+              <div className="mt-5 flex flex-wrap items-center gap-3">
+                <button type="submit" className={primaryButton} disabled={progress !== null}>
+                  <Icon name="arrowRight" />
+                  {progress ? 'Scoring...' : scoreLabel}
+                </button>
+                <button
+                  type="button"
+                  className={ghostButton}
+                  disabled={progress !== null || text === ''}
+                  onClick={() => {
+                    setText('')
+                    setExample(null)
+                    setError(null)
+                    setOffline(null)
+                    box.current?.focus()
+                  }}
+                >
+                  Clear
+                </button>
+                <span className="ml-auto type-caption text-muted max-sm:hidden">Ctrl + Enter scores</span>
+              </div>
+
+              {examples.length > 0 && (
+                <div className="mt-5 flex flex-wrap items-center gap-2">
+                  <span className="type-small text-ink-2">Try an invented example:</span>
+                  {examples.map((ex) => (
+                    <button
+                      key={ex.session_id}
+                      type="button"
+                      className={chipClass(false)}
+                      onClick={() => {
+                        setText(transcriptToText(ex))
+                        setExample(ex)
+                        setError(null)
+                        setOffline(null)
+                      }}
+                    >
+                      {topicLabel(ex.change_goal.text ?? ex.target_behavior)}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </form>
+          </Card>
+
+          {offline && (
+            <Card className="p-5 sm:p-6">
+              <div role="alert" className="space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 type-label text-ink">
+                    <span aria-hidden="true" className="h-2 w-2 rounded-full bg-offline" />
+                    Scorer API unreachable
+                  </span>
+                  <button type="button" className={secondaryButton} onClick={() => void score()}>
+                    <Icon name="refresh" />
+                    Retry
+                  </button>
+                </div>
+                <p className="type-small text-ink-2">
+                  {offline} Your text is still in the box. You can retry, load scored files, or use practice scores, which are
+                  clearly labelled as practice.
+                </p>
+                <button type="button" className={ghostButton} onClick={() => void score(true)}>
+                  Use practice scores instead
+                </button>
+              </div>
+            </Card>
+          )}
+
+          {error && <ErrorPanel title="Can't score this yet" message={error.message} details={error.details} />}
         </div>
-      )}
 
-      {result && (
-        <div ref={resultsRef} className="scroll-mt-14 pt-12">
-          <Results key={`${result.session_id}-${result.scorer.scored_at}`} session={result} onScoreAnother={scoreAnother} />
-        </div>
-      )}
-    </PageContainer>
-  )
-}
-
-/**
- * Coded agent volleys an issue-log row points at: the volleys its "[turn N]" quotes name, plus its span for
- * single-volley rows (Table D and MI Non-Adherent). Table C runs and windows are tagged only through their quotes,
- * so volleys inside the span that are not part of the run (safety node, greetings, fragments) are never tagged.
- */
-function issueVolleys(issue: IssueLogEntry, turnToVolley: Map<number, number>, codedAgent: Set<number>): number[] {
-  const out = new Set<number>()
-  const singleVolley = issue.entry_type === 'TABLE_D' || MOMENT_MEASURES.has(canonicalMeasureId(issue.item))
-  if (singleVolley)
-    for (let t = issue.turn_start; t <= issue.turn_end; t++) {
-      const v = turnToVolley.get(t)
-      if (v !== undefined && codedAgent.has(v)) out.add(v)
-    }
-  for (const q of splitEvidence(issue.evidence)) {
-    const v = q.turn === null ? undefined : turnToVolley.get(q.turn)
-    if (v !== undefined && codedAgent.has(v)) out.add(v)
-  }
-  return [...out]
-}
-
-function Results({ session, onScoreAnother }: { session: ScoredSession; onScoreAnother: () => void }) {
-  const reducedMotion = usePrefersReducedMotion()
-  const [filter, setFilter] = useState<VolleyFilter>('all')
-  const [issueFilter, setIssueFilter] = useState<IssueFilter>('all')
-  const [open, setOpen] = useState<{ volley: number; key: EvidenceKey } | null>(null)
-  const [focusRequest, setFocusRequest] = useState<{ volley: number; nonce: number } | null>(null)
-  const [flashVolley, setFlashVolley] = useState<number | null>(null)
-  const notScoreable = session.scoreability.state === 'not_scoreable'
-  const headingRef = useRef<HTMLHeadingElement>(null)
-
-  // Move focus to the results so screen readers announce them. The page scrolls them into view.
-  useEffect(() => {
-    headingRef.current?.focus({ preventScroll: true })
-  }, [])
-
-  const turnToVolley = useMemo(() => new Map(session.turns.map((t) => [t.turn, t.volley])), [session])
-  const safetyVolleys = useMemo(() => new Set(session.safety_volleys), [session])
-
-  const issuesByVolley = useMemo(() => {
-    const codedAgent = new Set(
-      session.volleys.filter((v) => v.speaker === 'agent' && !v.excluded && !safetyVolleys.has(v.volley)).map((v) => v.volley),
-    )
-    const map = new Map<number, IssueLogEntry[]>()
-    for (const issue of session.issues)
-      for (const v of issueVolleys(issue, turnToVolley, codedAgent)) map.set(v, [...(map.get(v) ?? []), issue])
-    return map
-  }, [session, turnToVolley, safetyVolleys])
-
-  /** Scroll to the volley holding a turn and highlight it, clearing a filter that would hide it. */
-  const focusTurn = useCallback(
-    (turn: number) => {
-      const volleyNumber = turnToVolley.get(turn)
-      const volley = session.volleys.find((v) => v.volley === volleyNumber)
-      if (!volley) return
-      setFilter((f) => (matchesFilter(volley, f, new Set(issuesByVolley.keys())) ? f : 'all'))
-      setFocusRequest({ volley: volley.volley, nonce: Date.now() })
-    },
-    [session, turnToVolley, issuesByVolley],
-  )
-
-  useEffect(() => {
-    if (!focusRequest) return
-    const el = document.getElementById(volleyDomId(focusRequest.volley))
-    if (!el) return
-    el.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' })
-    el.focus({ preventScroll: true })
-    setFlashVolley(focusRequest.volley)
-    const timer = window.setTimeout(() => setFlashVolley(null), 1800)
-    return () => window.clearTimeout(timer)
-  }, [focusRequest, reducedMotion])
-
-  const toggleEvidence = useCallback((volley: number, key: EvidenceKey) => {
-    setOpen((cur) => (cur && cur.volley === volley && cur.key === key ? null : { volley, key }))
-  }, [])
-
-  const showIssues = useCallback(
-    (type: EntryType) => {
-      setIssueFilter(type)
-      document.getElementById('issue-log')?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' })
-    },
-    [reducedMotion],
-  )
-
-  const action = (
-    <button type="button" onClick={onScoreAnother} className={secondaryButton}>
-      Score another
-    </button>
-  )
-
-  return (
-    <TurnNavContext.Provider value={focusTurn}>
-      <div className="space-y-12">
-        <h2 ref={headingRef} id="results-title" tabIndex={-1} className="sr-only">
-          Results for {sessionTopic(session)}
-        </h2>
-        {notScoreable ? (
-          <NotScoreableCard session={session} action={action} />
-        ) : (
-          <>
-            <SessionHeader session={session} action={action} onShowIssues={showIssues} />
-            <Scores session={session} />
-            <IssueLog session={session} filter={issueFilter} onFilter={setIssueFilter} />
-            <ClinicianReview session={session} />
-            {session.table_c && <FlowFlags tableC={session.table_c} />}
-          </>
-        )}
-
-        <section aria-labelledby="conversation-title">
-          <SectionTitle
-            id="conversation-title"
-            hint={
-              notScoreable
-                ? 'The conversation as received. Nothing was coded.'
-                : 'Grouped into volleys. Each coach volley is tagged with what the coach did; click a tag to see why.'
-            }
-          >
-            The conversation
-          </SectionTitle>
-          <Transcript
-            volleys={session.volleys}
-            turns={session.turns}
-            safetyVolleys={safetyVolleys}
-            filter={filter}
-            onFilter={setFilter}
-            issuesByVolley={issuesByVolley}
-            open={open}
-            onToggle={toggleEvidence}
-            flashVolley={flashVolley}
-            showFilters={!notScoreable}
-          />
-        </section>
-
-        {!notScoreable && (
-          <details className="group">
-            <summary className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 font-semibold text-navy-800 ring-1 ring-navy-200 hover:bg-navy-50">
-              <Icon name="chevronDown" className="h-4 w-4 transition group-open:rotate-180 motion-reduce:transition-none" />
-              More detail
-            </summary>
-            <div className="mt-8 space-y-12">
-              <OverallRatings session={session} />
-              <Details session={session} />
+        <div className="space-y-6">
+          <Card className="p-5 sm:p-6">
+            <h2 className="type-h3 text-ink">Load scored files</h2>
+            <div className="mt-4">
+              <DropZone onOpened={goToOpened} />
             </div>
-          </details>
-        )}
+            <p className="mt-3 type-caption text-muted">
+              Real scorer output. Files are read in this browser only and open as a run in Runs.
+            </p>
+          </Card>
+          <LoadErrors errors={runs.loadErrors} openedCount={runs.entries.length} onDismiss={runs.clearLoadErrors} />
+          {progress && <ProgressCard progress={progress} apiUrl={apiUrl} />}
+        </div>
       </div>
-    </TurnNavContext.Provider>
+    </div>
+  )
+}
+
+function ProgressCard({ progress, apiUrl }: { progress: Progress; apiUrl: string }) {
+  const [now, setNow] = useState(Date.now())
+  useEffect(() => {
+    const t = window.setInterval(() => setNow(Date.now()), 1000)
+    return () => window.clearInterval(t)
+  }, [])
+  const seconds = Math.max(0, Math.round((now - progress.started) / 1000))
+  const steps: Array<{ label: string; detail: string }> =
+    progress.mode === 'practice'
+      ? [{ label: 'Scoring with practice rules', detail: 'In this browser' }]
+      : [
+          { label: 'Parse and group into turns', detail: `${progress.volleys} coach turns` },
+          { label: 'Score with the scorer API', detail: `${seconds} s` },
+          { label: 'Open the session', detail: '' },
+        ]
+  const stateOf = (i: number): StepState =>
+    progress.mode === 'practice' ? 'active' : i < progress.step ? 'done' : i === progress.step ? 'active' : 'waiting'
+  const done = steps.filter((_, i) => stateOf(i) === 'done').length
+  return (
+    <Card className="p-5 sm:p-6">
+      <h2 className="type-h3 text-ink">Scoring progress</h2>
+      <ol aria-live="polite" className="mt-4 space-y-3">
+        {steps.map((s, i) => {
+          const state = stateOf(i)
+          return (
+            <li key={s.label} className="flex items-center gap-3">
+              <span
+                aria-hidden="true"
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border ${
+                  state === 'done' ? TONE.meets : state === 'active' ? TONE.info : TONE.notrated
+                }`}
+              >
+                <Icon name={state === 'done' ? 'check' : state === 'active' ? 'refresh' : 'minus'} className="h-3.5 w-3.5" />
+              </span>
+              <span className={`type-small ${state === 'active' ? 'font-semibold text-ink' : 'text-ink-2'}`}>
+                {s.label}
+                <span className="sr-only">: {state === 'done' ? 'done' : state === 'active' ? 'in progress' : 'waiting'}</span>
+              </span>
+              <span className="ml-auto type-caption text-muted tabular-nums">
+                {state === 'done' ? 'Done' : state === 'waiting' ? 'Waiting' : s.detail}
+              </span>
+            </li>
+          )
+        })}
+      </ol>
+      <div
+        aria-hidden="true"
+        className="mt-4 h-1.5 overflow-hidden rounded-full bg-subtle"
+        title={progress.mode === 'api' ? apiUrl : undefined}
+      >
+        <div
+          className="h-full rounded-full bg-chart-line transition-all"
+          style={{ width: `${Math.max(10, ((done + 0.5) / steps.length) * 100)}%` }}
+        />
+      </div>
+      <p className="mt-3 type-caption text-muted">
+        {progress.mode === 'api'
+          ? 'The scorer API sends the whole result at once, so there is no per-volley count. Long calls can take a few minutes.'
+          : 'Practice scores take a moment.'}
+      </p>
+    </Card>
   )
 }

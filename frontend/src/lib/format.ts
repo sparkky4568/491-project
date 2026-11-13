@@ -118,10 +118,14 @@ export function formatObserved(entry: IssueLogEntry, measures: Measure[]): { obs
   }
 }
 
-/** Splits "[turn 4] words || [turns 9-11] more words" into quotes with their first turn. */
+/**
+ * Splits an issue-log evidence cell into quotes. Current scorer output (aven-scorer issue_log.py) holds
+ * verbatim agent text only, one quote per line. Older output prefixed each quote "[turn N]" and joined
+ * them with " || "; that form still parses, and its turn number is kept.
+ */
 export function splitEvidence(evidence: string): Array<{ turn: number | null; text: string }> {
   return evidence
-    .split(' || ')
+    .split(/\r?\n| \|\| /)
     .map((part) => part.trim())
     .filter(Boolean)
     .map((part) => {
@@ -144,7 +148,14 @@ export function issuesToCsv(issues: IssueLogEntry[]): string {
   return `${rows.join('\r\n')}\r\n`
 }
 
-/** issue_log_<run_id>.csv, with characters a file name can't hold replaced. */
-export function issueLogFileName(runId: string): string {
-  return `issue_log_${runId.replace(/[^A-Za-z0-9._-]/g, '_')}.csv`
+/** The issue log as JSONL: one JSON object per line, the same 16 columns in the same order. */
+export function issuesToJsonl(issues: IssueLogEntry[]): string {
+  return issues
+    .map((issue) => `${JSON.stringify(Object.fromEntries(ISSUE_LOG_COLUMNS.map((col) => [col, issue[col]])))}\n`)
+    .join('')
+}
+
+/** issue_log_<run_id>.csv (or .jsonl), with characters a file name can't hold replaced. */
+export function issueLogFileName(runId: string, ext: 'csv' | 'jsonl' = 'csv'): string {
+  return `issue_log_${runId.replace(/[^A-Za-z0-9._-]/g, '_')}.${ext}`
 }

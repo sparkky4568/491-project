@@ -332,7 +332,14 @@ function decideScoreability(transcript: TranscriptIn, agent: Volley[]): Scoreabi
       'Text session: there are no timings, so it cannot meet the 10-minute rule. Overall ratings are not given.',
       'none',
     )
-  if (corpus) return decision('full', `Reference corpus session with at least ${MIN_AGENT_VOLLEYS} coach volleys.`, 'all')
+  if (corpus)
+    return decision(
+      'full',
+      transcript.session_id.startsWith('MOCK-')
+        ? `Invented sample tagged as a corpus session, with at least ${MIN_AGENT_VOLLEYS} coach volleys.`
+        : `Reference corpus session with at least ${MIN_AGENT_VOLLEYS} coach volleys.`,
+      'all',
+    )
 
   const reasons: string[] = []
   const globals: GlobalsLevel = 'relational'
@@ -505,12 +512,14 @@ interface MeasureInputs {
   questions: Record<QuestionSubtype, number>
   talk: Record<ClientTalk, number>
   codedAgent: number
+  /** AnnoMI or CASAA: only these get the 10-volley ratio rule (deliv s4). */
+  corpus: boolean
   globals: GlobalRating[]
   decision: ScoreabilityDecision
   thresholds: ThresholdConfig
 }
 
-function buildMeasures({ counts, questions, talk, codedAgent, globals, decision, thresholds }: MeasureInputs): Measure[] {
+function buildMeasures({ counts, questions, talk, codedAgent, corpus, globals, decision, thresholds }: MeasureInputs): Measure[] {
   if (decision.state === 'not_scoreable') return []
   const outside = decision.state === 'outside_instrument'
   const thresholdFor = (id: string): Threshold => {
@@ -519,8 +528,9 @@ function buildMeasures({ counts, questions, talk, codedAgent, globals, decision,
   }
   const R = counts.SR + counts.CR
   const Q = counts.Q
-  const tooFew = codedAgent < MIN_VOLLEYS_FOR_RATIOS
-  const tooFewNote = `Not reported: fewer than ${MIN_VOLLEYS_FOR_RATIOS} coded coach volleys.`
+  // deliv s4 limits this rule to the corpora (AnnoMI, CASAA); Aven calls use the 5-volley floor only.
+  const tooFew = corpus && codedAgent < MIN_VOLLEYS_FOR_RATIOS
+  const tooFewNote = `Not reported: corpus sessions with fewer than ${MIN_VOLLEYS_FOR_RATIOS} coded coach volleys report counts, not ratios.`
 
   /** A measure compared with a sponsor threshold. `missing` explains a null value. */
   const thresholded = (id: string, label: string, formula: string, value: number | null, n: number, missing = ''): Measure => {
@@ -1107,7 +1117,16 @@ export function demoScore(transcript: TranscriptIn, thresholds: ThresholdConfig)
   for (const v of volleys) if (v.client_talk) talk[v.client_talk]++
 
   const globals = scoreable ? rateGlobals(decision.globals, counts, talk, coded) : []
-  const measures = buildMeasures({ counts, questions, talk, codedAgent: coded.length, globals, decision, thresholds })
+  const measures = buildMeasures({
+    counts,
+    questions,
+    talk,
+    codedAgent: coded.length,
+    corpus: CORPUS_SOURCES.has(transcript.source),
+    globals,
+    decision,
+    thresholds,
+  })
 
   // 5: Table C and Table D. 6: issue log.
   const tableC = computeTableC(transcript, coded)
