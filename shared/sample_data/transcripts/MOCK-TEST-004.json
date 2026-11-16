@@ -1,110 +1,97 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "1.0",
   "session_id": "MOCK-TEST-004",
   "is_mock": true,
   "provenance": "internal_test",
-  "source": "other",
+  "source": "aven_staff_call",
+  "aven_version": "v21",
+  "channel": "voice",
+  "duration_sec": 74,
+  "change_goal": {
+    "text": null,
+    "state": "no_goal_reached"
+  },
   "target_behavior": "managing stress",
-  "aven_version": null,
-  "recorded_at": "2026-10-14",
   "turns": [
     {
       "turn": 1,
-      "speaker": "practitioner",
-      "text": "Hi there, can you hear me okay?",
-      "node": null,
-      "start_sec": 2.0
+      "speaker": "agent",
+      "text": "Welcome. I'm Aven, your health coach. What would you like to be called?",
+      "start_ms": 0,
+      "end_ms": 4686,
+      "node": "Welcome Node"
     },
     {
       "turn": 2,
-      "speaker": "client",
-      "text": "Yep, you're a little quiet, but it's fine.",
-      "node": null,
-      "start_sec": 6.1
+      "speaker": "caller",
+      "text": "Priya. You're a little quiet, but it's fine.",
+      "start_ms": 10191,
+      "end_ms": 13095,
+      "node": "Welcome Node"
     },
     {
       "turn": 3,
-      "speaker": "practitioner",
-      "text": "Let me turn the volume up. Is that better?",
-      "node": null,
-      "start_sec": 10.6
+      "speaker": "agent",
+      "text": "Thanks, Priya. What's been on your mind about stress lately?",
+      "start_ms": 22270,
+      "end_ms": 26230,
+      "node": "engagement_open"
     },
     {
       "turn": 4,
-      "speaker": "client",
-      "text": "Much better, thanks.",
-      "node": null,
-      "start_sec": 15.4
+      "speaker": "caller",
+      "text": "Work, mostly. I've been lying awake running through my to-do list.",
+      "start_ms": 33570,
+      "end_ms": 37926,
+      "node": "engagement_open"
     },
     {
       "turn": 5,
-      "speaker": "practitioner",
-      "text": "Great. What's been on your mind about stress lately?",
-      "node": null,
-      "start_sec": 18.0
+      "speaker": "agent",
+      "text": "Your to-do list follows you to bed.",
+      "start_ms": 39760,
+      "end_ms": 42070,
+      "node": "engagement_open"
     },
     {
       "turn": 6,
-      "speaker": "client",
-      "text": "Work, mostly. I've been lying awake running through my to-do list.",
-      "node": null,
-      "start_sec": 22.8
+      "speaker": "caller",
+      "text": "Every night. I'd really like to be able to switch off.",
+      "start_ms": 53080,
+      "end_ms": 56644,
+      "node": "engagement_open"
     },
     {
       "turn": 7,
-      "speaker": "practitioner",
-      "text": "Your to-do list follows you to bed.",
-      "node": null,
-      "start_sec": 28.5
+      "speaker": "agent",
+      "text": "What has helped you switch off in the past?",
+      "start_ms": 60314,
+      "end_ms": 63152,
+      "node": "engagement_open"
     },
     {
       "turn": 8,
-      "speaker": "client",
-      "text": "Every night. I'd really like to be able to switch off.",
-      "node": null,
-      "start_sec": 32.6
+      "speaker": "caller",
+      "text": "Sorry, I have to go. My train is here.",
+      "start_ms": 70492,
+      "end_ms": 73000,
+      "node": "engagement_open"
+    }
+  ],
+  "events": [
+    {
+      "before_turn": 3,
+      "type": "node_transition",
+      "from": "Welcome Node",
+      "to": "extract_name",
+      "name": null
     },
     {
-      "turn": 9,
-      "speaker": "practitioner",
-      "text": "What has helped you switch off in the past?",
-      "node": null,
-      "start_sec": 38.2
-    },
-    {
-      "turn": 10,
-      "speaker": "client",
-      "text": "Writing things down helped, back when I did it. I stopped when things got busy.",
-      "node": null,
-      "start_sec": 43.1
-    },
-    {
-      "turn": 11,
-      "speaker": "practitioner",
-      "text": "Getting the list out of your head and onto paper gave your mind permission to rest.",
-      "node": null,
-      "start_sec": 50.2
-    },
-    {
-      "turn": 12,
-      "speaker": "client",
-      "text": "Huh, yeah. I could keep a notebook by the bed again.",
-      "node": null,
-      "start_sec": 57.8
-    },
-    {
-      "turn": 13,
-      "speaker": "practitioner",
-      "text": "That's a thoughtful idea, and you came up with it yourself.",
-      "node": null,
-      "start_sec": 63.4
-    },
-    {
-      "turn": 14,
-      "speaker": "client",
-      "text": "I'll try it tonight.",
-      "node": null,
-      "start_sec": 69.0
+      "before_turn": 3,
+      "type": "node_transition",
+      "from": "extract_name",
+      "to": "engagement_open",
+      "name": null
     }
   ]
 }

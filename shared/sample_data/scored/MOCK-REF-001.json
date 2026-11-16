@@ -1,356 +1,677 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "session_id": "MOCK-REF-001",
   "is_mock": true,
   "provenance": "reference_corpus",
   "source": "annomi",
-  "target_behavior": "walking more",
   "aven_version": null,
-  "recorded_at": null,
+  "channel": "voice",
+  "duration_sec": 618,
+  "change_goal": {
+    "text": "walk at lunch with a coworker",
+    "state": "behavior"
+  },
+  "target_behavior": "walking more",
   "scorer": {
-    "run_id": "mock-run-2026-10-20-001",
-    "scored_at": "2026-10-20T18:00:00Z",
-    "coder_prompt_version": "coder-v0.1",
-    "globals_prompt_version": "globals-v0.1",
+    "run_id": "run-mock-2026-11-05",
+    "scored_at": "2026-11-05T15:00:00Z",
+    "prompt_versions": {
+      "globals": "globals-v0.2",
+      "prohibited": "prohibited-v0.2",
+      "volley_coder": "volley-coder-v0.5"
+    },
     "model": "mock-model-v0",
-    "cost_usd": 0.11
+    "cost_usd": 0.12
+  },
+  "scoreability": {
+    "state": "full",
+    "reason": "618 s (10 min 18 s) and a behavioral change goal reached.",
+    "agent_volleys": 11
   },
   "turns": [
     {
       "turn": 1,
-      "speaker": "practitioner",
+      "speaker": "agent",
       "text": "Thanks for coming in. What would you like us to focus on today?",
+      "start_ms": 0,
+      "end_ms": 4158,
       "node": null,
-      "start_sec": 2.0,
+      "volley": 1,
+      "back_channel": false
+    },
+    {
+      "turn": 2,
+      "speaker": "caller",
+      "text": "My doctor keeps telling me I need to move more. I sit at a desk all day, and by the time I get home I'm wiped out.",
+      "start_ms": 24892,
+      "end_ms": 32416,
+      "node": null,
+      "volley": 2,
+      "back_channel": false
+    },
+    {
+      "turn": 3,
+      "speaker": "agent",
+      "text": "You're hearing it from your doctor, and at the same time your days leave you with not much left in the tank.",
+      "start_ms": 60062,
+      "end_ms": 67190,
+      "node": null,
+      "volley": 3,
+      "back_channel": false
+    },
+    {
+      "turn": 4,
+      "speaker": "caller",
+      "text": "Exactly. I know walking would help. I used to walk all the time before this job.",
+      "start_ms": 94836,
+      "end_ms": 100116,
+      "node": null,
+      "volley": 4,
+      "back_channel": false
+    },
+    {
+      "turn": 5,
+      "speaker": "agent",
+      "text": "Walking used to be a regular part of your life. What did you like about it back then?",
+      "start_ms": 113939,
+      "end_ms": 119549,
+      "node": null,
+      "volley": 5,
+      "back_channel": false
+    },
+    {
+      "turn": 6,
+      "speaker": "caller",
+      "text": "It cleared my head. I'd come back from a walk and actually feel like myself again.",
+      "start_ms": 161018,
+      "end_ms": 166430,
+      "node": null,
+      "volley": 6,
+      "back_channel": false
+    },
+    {
+      "turn": 7,
+      "speaker": "agent",
+      "text": "Walking was more than exercise for you. It was how you found your way back to yourself.",
+      "start_ms": 194075,
+      "end_ms": 199817,
+      "node": null,
+      "volley": 7,
+      "back_channel": false
+    },
+    {
+      "turn": 8,
+      "speaker": "caller",
+      "text": "Yeah. I miss that, honestly.",
+      "start_ms": 206729,
+      "end_ms": 208577,
+      "node": null,
+      "volley": 8,
+      "back_channel": false
+    },
+    {
+      "turn": 9,
+      "speaker": "agent",
+      "text": "Part of you really wants that feeling back.",
+      "start_ms": 222400,
+      "end_ms": 225238,
+      "node": null,
+      "volley": 9,
+      "back_channel": false
+    },
+    {
+      "turn": 10,
+      "speaker": "caller",
+      "text": "I do. I just don't see where it fits. My mornings are chaos with the kids.",
+      "start_ms": 259795,
+      "end_ms": 264679,
+      "node": null,
+      "volley": 10,
+      "back_channel": false
+    },
+    {
+      "turn": 11,
+      "speaker": "agent",
+      "text": "You keep a demanding job and a busy family running, which takes real persistence. Where in your week might a walk fit, if anywhere?",
+      "start_ms": 306148,
+      "end_ms": 314794,
+      "node": null,
+      "volley": 11,
+      "back_channel": false
+    },
+    {
+      "turn": 12,
+      "speaker": "caller",
+      "text": "Maybe lunch. We get an hour, and I usually just eat at my desk.",
+      "start_ms": 321705,
+      "end_ms": 325863,
+      "node": null,
+      "volley": 12,
+      "back_channel": false
+    },
+    {
+      "turn": 13,
+      "speaker": "agent",
+      "text": "Lunch is a window that's already there.",
+      "start_ms": 360420,
+      "end_ms": 362994,
+      "node": null,
+      "volley": 13,
+      "back_channel": false
+    },
+    {
+      "turn": 14,
+      "speaker": "caller",
+      "text": "It is. Even twenty minutes would be something.",
+      "start_ms": 397552,
+      "end_ms": 400588,
+      "node": null,
+      "volley": 14,
+      "back_channel": false
+    },
+    {
+      "turn": 15,
+      "speaker": "agent",
+      "text": "Twenty minutes feels doable, and it sounds like it would really matter to you.",
+      "start_ms": 414411,
+      "end_ms": 419559,
+      "node": null,
+      "volley": 15,
+      "back_channel": false
+    },
+    {
+      "turn": 16,
+      "speaker": "caller",
+      "text": "It would. I guess I worry what my coworkers would think if I'm the only one leaving.",
+      "start_ms": 426470,
+      "end_ms": 432014,
+      "node": null,
+      "volley": 16,
+      "back_channel": false
+    },
+    {
+      "turn": 17,
+      "speaker": "agent",
+      "text": "Being the one who walks out feels a bit exposed, and it's completely your call. What might make it easier?",
+      "start_ms": 445837,
+      "end_ms": 452833,
+      "node": null,
+      "volley": 17,
+      "back_channel": false
+    },
+    {
+      "turn": 18,
+      "speaker": "caller",
+      "text": "If I asked Dana to come with me, it wouldn't feel so strange. She's always complaining about sitting too.",
+      "start_ms": 459744,
+      "end_ms": 466674,
+      "node": null,
+      "volley": 18,
+      "back_channel": false
+    },
+    {
+      "turn": 19,
+      "speaker": "agent",
+      "text": "A walking partner would turn it into something you do together instead of something you sneak off to do.",
+      "start_ms": 515055,
+      "end_ms": 521919,
+      "node": null,
+      "volley": 19,
+      "back_channel": false
+    },
+    {
+      "turn": 20,
+      "speaker": "caller",
+      "text": "Right. I think I'll ask her tomorrow.",
+      "start_ms": 542653,
+      "end_ms": 545095,
+      "node": null,
+      "volley": 20,
+      "back_channel": false
+    },
+    {
+      "turn": 21,
+      "speaker": "agent",
+      "text": "You've gone from not seeing where walking fits to a plan to ask Dana tomorrow.",
+      "start_ms": 558918,
+      "end_ms": 564066,
+      "node": null,
+      "volley": 21,
+      "back_channel": false
+    },
+    {
+      "turn": 22,
+      "speaker": "caller",
+      "text": "I'll text myself a reminder at noon so I don't talk myself out of it.",
+      "start_ms": 612446,
+      "end_ms": 617000,
+      "node": null,
+      "volley": 22,
+      "back_channel": false
+    }
+  ],
+  "volleys": [
+    {
+      "volley": 1,
+      "speaker": "agent",
+      "turn_start": 1,
+      "turn_end": 1,
+      "absorbed_turns": [],
+      "text": "Thanks for coming in. What would you like us to focus on today?",
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "Q",
+          "question_subtype": "open",
           "evidence_quote": "What would you like us to focus on today?",
-          "rationale": "Open question that lets the client choose the topic.",
-          "evidence_valid": true
-        },
-        {
-          "code": "SEEK",
-          "evidence_quote": "What would you like us to focus on",
-          "rationale": "Invites the client to set the agenda, sharing control of the session.",
+          "rationale": "Open question that sets the agenda.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 2,
-      "speaker": "client",
+      "volley": 2,
+      "speaker": "caller",
+      "turn_start": 2,
+      "turn_end": 2,
+      "absorbed_turns": [],
       "text": "My doctor keeps telling me I need to move more. I sit at a desk all day, and by the time I get home I'm wiped out.",
-      "node": null,
-      "start_sec": 8.4,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "sustain",
       "client_evidence_quote": "by the time I get home I'm wiped out"
     },
     {
-      "turn": 3,
-      "speaker": "practitioner",
+      "volley": 3,
+      "speaker": "agent",
+      "turn_start": 3,
+      "turn_end": 3,
+      "absorbed_turns": [],
       "text": "You're hearing it from your doctor, and at the same time your days leave you with not much left in the tank.",
-      "node": null,
-      "start_sec": 20.2,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "CR",
-          "evidence_quote": "at the same time your days leave you with not much left in the tank",
-          "rationale": "Joins the doctor's advice with the client's exhaustion, adding meaning beyond the client's words.",
+          "question_subtype": null,
+          "evidence_quote": "your days leave you with not much left in the tank",
+          "rationale": "Double-sided reflection that adds the feeling of being drained.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 4,
-      "speaker": "client",
+      "volley": 4,
+      "speaker": "caller",
+      "turn_start": 4,
+      "turn_end": 4,
+      "absorbed_turns": [],
       "text": "Exactly. I know walking would help. I used to walk all the time before this job.",
-      "node": null,
-      "start_sec": 30.0,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "change",
       "client_evidence_quote": "I know walking would help."
     },
     {
-      "turn": 5,
-      "speaker": "practitioner",
+      "volley": 5,
+      "speaker": "agent",
+      "turn_start": 5,
+      "turn_end": 5,
+      "absorbed_turns": [],
       "text": "Walking used to be a regular part of your life. What did you like about it back then?",
-      "node": null,
-      "start_sec": 37.6,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "SR",
+          "question_subtype": null,
           "evidence_quote": "Walking used to be a regular part of your life.",
-          "rationale": "Restates what the client said with little added meaning.",
+          "rationale": "Restates the caller's history.",
           "evidence_valid": true
         },
         {
           "code": "Q",
+          "question_subtype": "open",
           "evidence_quote": "What did you like about it back then?",
-          "rationale": "Open question that draws out the client's own reasons.",
+          "rationale": "Open question about the good side of walking.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 6,
-      "speaker": "client",
+      "volley": 6,
+      "speaker": "caller",
+      "turn_start": 6,
+      "turn_end": 6,
+      "absorbed_turns": [],
       "text": "It cleared my head. I'd come back from a walk and actually feel like myself again.",
-      "node": null,
-      "start_sec": 45.9,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "change",
-      "client_evidence_quote": "I'd come back from a walk and actually feel like myself again."
+      "client_evidence_quote": "It cleared my head."
     },
     {
-      "turn": 7,
-      "speaker": "practitioner",
+      "volley": 7,
+      "speaker": "agent",
+      "turn_start": 7,
+      "turn_end": 7,
+      "absorbed_turns": [],
       "text": "Walking was more than exercise for you. It was how you found your way back to yourself.",
-      "node": null,
-      "start_sec": 53.5,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "CR",
+          "question_subtype": null,
           "evidence_quote": "It was how you found your way back to yourself.",
-          "rationale": "Reflects the personal meaning walking had, beyond what the client said.",
+          "rationale": "Adds meaning beyond what was said.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 8,
-      "speaker": "client",
+      "volley": 8,
+      "speaker": "caller",
+      "turn_start": 8,
+      "turn_end": 8,
+      "absorbed_turns": [],
       "text": "Yeah. I miss that, honestly.",
-      "node": null,
-      "start_sec": 61.4,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "change",
-      "client_evidence_quote": "I miss that"
+      "client_evidence_quote": "I miss that, honestly."
     },
     {
-      "turn": 9,
-      "speaker": "practitioner",
+      "volley": 9,
+      "speaker": "agent",
+      "turn_start": 9,
+      "turn_end": 9,
+      "absorbed_turns": [],
       "text": "Part of you really wants that feeling back.",
-      "node": null,
-      "start_sec": 64.7,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "CR",
+          "question_subtype": null,
           "evidence_quote": "Part of you really wants that feeling back.",
-          "rationale": "Reflects an unstated desire for change.",
+          "rationale": "Reflects the wish underneath the words.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 10,
-      "speaker": "client",
+      "volley": 10,
+      "speaker": "caller",
+      "turn_start": 10,
+      "turn_end": 10,
+      "absorbed_turns": [],
       "text": "I do. I just don't see where it fits. My mornings are chaos with the kids.",
-      "node": null,
-      "start_sec": 69.2,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "sustain",
       "client_evidence_quote": "I just don't see where it fits."
     },
     {
-      "turn": 11,
-      "speaker": "practitioner",
+      "volley": 11,
+      "speaker": "agent",
+      "turn_start": 11,
+      "turn_end": 11,
+      "absorbed_turns": [],
       "text": "You keep a demanding job and a busy family running, which takes real persistence. Where in your week might a walk fit, if anywhere?",
-      "node": null,
-      "start_sec": 76.8,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "AF",
+          "question_subtype": null,
           "evidence_quote": "which takes real persistence",
-          "rationale": "Names a genuine strength of the client.",
+          "rationale": "Names a strength of the caller.",
           "evidence_valid": true
         },
         {
           "code": "Q",
+          "question_subtype": "open",
           "evidence_quote": "Where in your week might a walk fit, if anywhere?",
-          "rationale": "Open question that leaves room for the client to say no.",
+          "rationale": "Open question that leaves room for no.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 12,
-      "speaker": "client",
+      "volley": 12,
+      "speaker": "caller",
+      "turn_start": 12,
+      "turn_end": 12,
+      "absorbed_turns": [],
       "text": "Maybe lunch. We get an hour, and I usually just eat at my desk.",
-      "node": null,
-      "start_sec": 87.4,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "change",
       "client_evidence_quote": "Maybe lunch."
     },
     {
-      "turn": 13,
-      "speaker": "practitioner",
+      "volley": 13,
+      "speaker": "agent",
+      "turn_start": 13,
+      "turn_end": 13,
+      "absorbed_turns": [],
       "text": "Lunch is a window that's already there.",
-      "node": null,
-      "start_sec": 94.2,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "SR",
+          "question_subtype": null,
           "evidence_quote": "Lunch is a window that's already there.",
-          "rationale": "Simple restatement of the client's idea.",
+          "rationale": "Restates the caller's idea.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 14,
-      "speaker": "client",
+      "volley": 14,
+      "speaker": "caller",
+      "turn_start": 14,
+      "turn_end": 14,
+      "absorbed_turns": [],
       "text": "It is. Even twenty minutes would be something.",
-      "node": null,
-      "start_sec": 98.3,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "change",
       "client_evidence_quote": "Even twenty minutes would be something."
     },
     {
-      "turn": 15,
-      "speaker": "practitioner",
+      "volley": 15,
+      "speaker": "agent",
+      "turn_start": 15,
+      "turn_end": 15,
+      "absorbed_turns": [],
       "text": "Twenty minutes feels doable, and it sounds like it would really matter to you.",
-      "node": null,
-      "start_sec": 102.8,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "CR",
-          "evidence_quote": "Twenty minutes feels doable, and it sounds like it would really matter to you.",
-          "rationale": "Reflects both ability and importance, going beyond the client's words.",
+          "question_subtype": null,
+          "evidence_quote": "it sounds like it would really matter to you",
+          "rationale": "Adds the importance the caller implied.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 16,
-      "speaker": "client",
+      "volley": 16,
+      "speaker": "caller",
+      "turn_start": 16,
+      "turn_end": 16,
+      "absorbed_turns": [],
       "text": "It would. I guess I worry what my coworkers would think if I'm the only one leaving.",
-      "node": null,
-      "start_sec": 109.5,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "sustain",
       "client_evidence_quote": "I worry what my coworkers would think"
     },
     {
-      "turn": 17,
-      "speaker": "practitioner",
+      "volley": 17,
+      "speaker": "agent",
+      "turn_start": 17,
+      "turn_end": 17,
+      "absorbed_turns": [],
       "text": "Being the one who walks out feels a bit exposed, and it's completely your call. What might make it easier?",
-      "node": null,
-      "start_sec": 117.5,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "CR",
+          "question_subtype": null,
           "evidence_quote": "Being the one who walks out feels a bit exposed",
-          "rationale": "Reflects the feeling underneath the coworker concern.",
+          "rationale": "Names the feeling behind the worry.",
           "evidence_valid": true
         },
         {
-          "code": "EMPHASIZE",
+          "code": "EMPH",
+          "question_subtype": null,
           "evidence_quote": "it's completely your call",
-          "rationale": "Explicitly affirms that the choice belongs to the client.",
+          "rationale": "Stresses the caller's choice.",
           "evidence_valid": true
         },
         {
           "code": "Q",
+          "question_subtype": "open",
           "evidence_quote": "What might make it easier?",
-          "rationale": "Open question inviting the client's own solution.",
+          "rationale": "Open question that asks for the caller's ideas.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 18,
-      "speaker": "client",
+      "volley": 18,
+      "speaker": "caller",
+      "turn_start": 18,
+      "turn_end": 18,
+      "absorbed_turns": [],
       "text": "If I asked Dana to come with me, it wouldn't feel so strange. She's always complaining about sitting too.",
-      "node": null,
-      "start_sec": 126.6,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "change",
-      "client_evidence_quote": "If I asked Dana to come with me, it wouldn't feel so strange."
+      "client_evidence_quote": "If I asked Dana to come with me"
     },
     {
-      "turn": 19,
-      "speaker": "practitioner",
+      "volley": 19,
+      "speaker": "agent",
+      "turn_start": 19,
+      "turn_end": 19,
+      "absorbed_turns": [],
       "text": "A walking partner would turn it into something you do together instead of something you sneak off to do.",
-      "node": null,
-      "start_sec": 135.3,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "CR",
-          "evidence_quote": "turn it into something you do together instead of something you sneak off to do",
-          "rationale": "Reframes the client's idea in a way that adds meaning.",
+          "question_subtype": null,
+          "evidence_quote": "A walking partner would turn it into something you do together",
+          "rationale": "Reframes the plan as shared.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 20,
-      "speaker": "client",
+      "volley": 20,
+      "speaker": "caller",
+      "turn_start": 20,
+      "turn_end": 20,
+      "absorbed_turns": [],
       "text": "Right. I think I'll ask her tomorrow.",
-      "node": null,
-      "start_sec": 144.0,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "change",
       "client_evidence_quote": "I think I'll ask her tomorrow."
     },
     {
-      "turn": 21,
-      "speaker": "practitioner",
+      "volley": 21,
+      "speaker": "agent",
+      "turn_start": 21,
+      "turn_end": 21,
+      "absorbed_turns": [],
       "text": "You've gone from not seeing where walking fits to a plan to ask Dana tomorrow.",
-      "node": null,
-      "start_sec": 148.1,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
       "codes": [
         {
           "code": "CR",
+          "question_subtype": null,
           "evidence_quote": "You've gone from not seeing where walking fits to a plan to ask Dana tomorrow.",
-          "rationale": "Summary that links the client's starting point to their plan.",
+          "rationale": "Summary that highlights the shift.",
           "evidence_valid": true
         }
-      ]
+      ],
+      "client_talk": null,
+      "client_evidence_quote": null
     },
     {
-      "turn": 22,
-      "speaker": "client",
+      "volley": 22,
+      "speaker": "caller",
+      "turn_start": 22,
+      "turn_end": 22,
+      "absorbed_turns": [],
       "text": "I'll text myself a reminder at noon so I don't talk myself out of it.",
-      "node": null,
-      "start_sec": 155.2,
+      "nodes": [],
       "excluded": false,
       "exclusion_reason": null,
+      "codes": [],
       "client_talk": "change",
       "client_evidence_quote": "I'll text myself a reminder at noon"
     }
@@ -360,12 +681,17 @@
     "SR": 2,
     "CR": 7,
     "GI": 0,
-    "PERSUADE": 0,
-    "PERSUADE_WP": 0,
     "AF": 1,
-    "SEEK": 1,
-    "EMPHASIZE": 1,
+    "SEEK": 0,
+    "EMPH": 1,
+    "PWP": 0,
+    "PERSUADE": 0,
     "CONFRONT": 0
+  },
+  "question_counts": {
+    "open": 4,
+    "closed": 0,
+    "unknown": 0
   },
   "client_talk_counts": {
     "change": 8,
@@ -375,189 +701,243 @@
   "measures": [
     {
       "id": "pct_complex_reflections",
-      "label": "% Complex Reflections",
+      "label": "Complex reflections",
       "value": 0.7778,
       "n": 9,
       "formula": "CR / (SR + CR)",
       "threshold": {
         "op": ">=",
-        "value": 0.4,
-        "source": "placeholder"
+        "value": 0.5,
+        "source": "Sponsor Deliverables v1.2 s5: % Complex Reflections 50% (from v3.2)"
       },
-      "status": "pass"
+      "status": "meets",
+      "note": null
     },
     {
       "id": "reflection_to_question",
-      "label": "Reflection-to-Question Ratio",
+      "label": "Reflections per question",
       "value": 2.25,
       "n": 13,
       "formula": "(SR + CR) / Q",
+      "threshold": null,
+      "status": "reported",
+      "note": "Reported, no threshold. Table C looks at the flow instead."
+    },
+    {
+      "id": "pct_open_questions",
+      "label": "Open questions",
+      "value": 1.0,
+      "n": 4,
+      "formula": "open Q / all Q",
       "threshold": {
         "op": ">=",
-        "value": 2.0,
-        "source": "placeholder"
+        "value": 0.7,
+        "source": "Sponsor Deliverables v1.2 s5: open-question rate 70% (new; MITI 3.1.1 definition)"
       },
-      "status": "pass"
+      "status": "meets",
+      "note": null
     },
     {
       "id": "total_mia",
-      "label": "Total MI-Adherent",
-      "value": 3,
+      "label": "MI-adherent",
+      "value": 2,
       "n": 11,
-      "formula": "AF + SEEK + EMPHASIZE",
+      "formula": "AF + SEEK + EMPH",
       "threshold": null,
-      "status": "no_threshold"
+      "status": "reported",
+      "note": "Reported, no threshold."
     },
     {
       "id": "total_mina",
-      "label": "Total MI Non-Adherent",
+      "label": "MI non-adherent",
       "value": 0,
       "n": 11,
       "formula": "PERSUADE + CONFRONT",
       "threshold": {
         "op": "==",
         "value": 0,
-        "source": "placeholder"
+        "source": "Sponsor Deliverables v1.2 s5: MI Non-Adherent 0 (from v3.2)"
       },
-      "status": "pass"
+      "status": "meets",
+      "note": null
     },
     {
-      "id": "relational",
-      "label": "Relational",
-      "value": 5.0,
-      "n": 22,
-      "formula": "(partnership + empathy) / 2",
-      "threshold": {
-        "op": ">=",
-        "value": 4.0,
-        "source": "placeholder"
-      },
-      "status": "pass"
+      "id": "caller_change_talk_ratio",
+      "label": "Caller change talk",
+      "value": 0.7273,
+      "n": 11,
+      "formula": "change / (change + sustain)",
+      "threshold": null,
+      "status": "reported",
+      "note": "Reported, no threshold: it depends on the caller as much as on the agent."
     },
     {
       "id": "technical",
-      "label": "Technical",
+      "label": "Technical global",
       "value": 4.5,
-      "n": 22,
-      "formula": "(cultivating_change_talk + softening_sustain_talk) / 2",
+      "n": 11,
+      "formula": "(cultivating change talk + softening sustain talk) / 2",
       "threshold": {
         "op": ">=",
-        "value": 4.0,
-        "source": "placeholder"
+        "value": 4,
+        "source": "Sponsor Deliverables v1.2 s5: technical global 4; can flag a session for review, never passes one"
       },
-      "status": "pass"
+      "status": "meets",
+      "note": "Can flag a session for review; never passes one. Validated on n = 20 only."
+    },
+    {
+      "id": "relational",
+      "label": "Relational global",
+      "value": 5.0,
+      "n": 11,
+      "formula": "(partnership + empathy) / 2",
+      "threshold": {
+        "op": ">=",
+        "value": 4,
+        "source": "Sponsor Deliverables v1.2 s5: relational global 4; can flag a session for review, never passes one"
+      },
+      "status": "meets",
+      "note": "Can flag a session for review; never passes one. Validated on n = 20 only."
     }
   ],
   "globals": [
     {
       "id": "cultivating_change_talk",
       "score": 5,
-      "cited_turns": [
-        5,
-        9,
-        15,
-        21
-      ],
-      "rationale": "Consistently drew out and reinforced the client's own reasons, desire and plan for walking (for example T9 and T21)."
+      "cited_turns": [5, 9, 21],
+      "rationale": "Draws out the caller's own reasons and ends on her plan."
     },
     {
       "id": "softening_sustain_talk",
       "score": 4,
-      "cited_turns": [
-        3,
-        11,
-        17
-      ],
-      "rationale": "Met the time and coworker concerns with reflection and autonomy support instead of arguing, without dwelling on barriers."
+      "cited_turns": [3, 17],
+      "rationale": "Reflects tiredness and worry about coworkers without arguing."
     },
     {
       "id": "partnership",
       "score": 5,
-      "cited_turns": [
-        1,
-        17,
-        21
-      ],
-      "rationale": "Let the client set the focus and generate the solution; the plan to ask a coworker came from the client."
+      "cited_turns": [11, 17],
+      "rationale": "Asks where a walk might fit and leaves the choice with the caller."
     },
     {
       "id": "empathy",
       "score": 5,
-      "cited_turns": [
-        3,
-        7,
-        17
-      ],
-      "rationale": "Complex reflections captured what walking means to the client and the discomfort of leaving the office."
+      "cited_turns": [3, 7, 17],
+      "rationale": "Reflections show a clear grasp of how the caller feels."
     }
   ],
-  "flags": {
-    "longest_reflection_run": {
+  "table_c": {
+    "c1_reflection_run": {
       "length": 2,
-      "turns": [
-        7,
-        9
-      ],
       "cap": 2,
-      "exceeds_cap": false
+      "span": {
+        "start_volley": 7,
+        "end_volley": 9,
+        "turn_start": 7,
+        "turn_end": 9,
+        "nodes": []
+      },
+      "breach": false
     },
-    "windowed_rq": {
-      "window_size": 10,
-      "points": [
+    "c2_windowed_rq": {
+      "window_size": 5,
+      "windows": [
         {
-          "end_turn": 10,
+          "start_volley": 1,
+          "end_volley": 9,
+          "turn_start": 1,
+          "turn_end": 9,
+          "nodes": [],
+          "reflections": 4,
+          "questions": 2,
           "rq": 2.0
         },
         {
-          "end_turn": 11,
+          "start_volley": 3,
+          "end_volley": 11,
+          "turn_start": 3,
+          "turn_end": 11,
+          "nodes": [],
+          "reflections": 4,
+          "questions": 2,
           "rq": 2.0
         },
         {
-          "end_turn": 12,
+          "start_volley": 5,
+          "end_volley": 13,
+          "turn_start": 5,
+          "turn_end": 13,
+          "nodes": [],
+          "reflections": 4,
+          "questions": 2,
           "rq": 2.0
         },
         {
-          "end_turn": 13,
-          "rq": 2.0
-        },
-        {
-          "end_turn": 14,
-          "rq": 2.0
-        },
-        {
-          "end_turn": 15,
+          "start_volley": 7,
+          "end_volley": 15,
+          "turn_start": 7,
+          "turn_end": 15,
+          "nodes": [],
+          "reflections": 4,
+          "questions": 1,
           "rq": 4.0
         },
         {
-          "end_turn": 16,
-          "rq": 4.0
-        },
-        {
-          "end_turn": 17,
+          "start_volley": 9,
+          "end_volley": 17,
+          "turn_start": 9,
+          "turn_end": 17,
+          "nodes": [],
+          "reflections": 4,
+          "questions": 2,
           "rq": 2.0
         },
         {
-          "end_turn": 18,
+          "start_volley": 11,
+          "end_volley": 19,
+          "turn_start": 11,
+          "turn_end": 19,
+          "nodes": [],
+          "reflections": 4,
+          "questions": 2,
           "rq": 2.0
         },
         {
-          "end_turn": 19,
-          "rq": 2.0
-        },
-        {
-          "end_turn": 20,
-          "rq": 2.0
-        },
-        {
-          "end_turn": 21,
-          "rq": 5.0
-        },
-        {
-          "end_turn": 22,
+          "start_volley": 13,
+          "end_volley": 21,
+          "turn_start": 13,
+          "turn_end": 21,
+          "nodes": [],
+          "reflections": 5,
+          "questions": 1,
           "rq": 5.0
         }
-      ]
+      ],
+      "worst_over_following": {
+        "start_volley": 13,
+        "end_volley": 21,
+        "turn_start": 13,
+        "turn_end": 21,
+        "nodes": [],
+        "reflections": 5,
+        "questions": 1,
+        "rq": 5.0
+      },
+      "worst_interrogation": {
+        "start_volley": 1,
+        "end_volley": 9,
+        "turn_start": 1,
+        "turn_end": 9,
+        "nodes": [],
+        "reflections": 4,
+        "questions": 2,
+        "rq": 2.0
+      },
+      "breach_no_questions": false,
+      "breach_no_reflections": false
     }
   },
+  "table_d": [],
+  "safety_volleys": [],
   "issues": []
 }

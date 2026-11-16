@@ -16,6 +16,6 @@ The LLM side of the scorer: prompts, the turn coder, the global ratings pass and
 
 The target shapes are the `codes`, `client_talk` and `globals` fields in [`docs/DATA_CONTRACT.md`](../docs/DATA_CONTRACT.md#scoredsession). The exact hand-off format to `pipeline/` is still to be defined.
 
-The LLM never does the math: no counts, ratios or pass/fail decisions.
+The LLM never does the math: no counts, ratios or threshold comparisons.
 
 Python setup coming from the owner.

@@ -2,14 +2,22 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "validation_report.schema.json",
   "title": "ValidationReport",
-  "description": "Scorer-vs-human agreement report. v0, owned by Validation/QA (Joel) and expected to change. Extra fields are allowed while it settles.",
+  "description": "Scorer-vs-human agreement report. v0.2 (code names follow the scored-session CODES list), owned by Validation/QA (Joel) and expected to change. Extra fields are allowed while it settles.",
   "type": "object",
   "required": [
-    "schema_version", "is_mock", "run_id", "split", "n_sessions", "code_agreement", "measure_agreement",
-    "discriminant", "repeat_run", "contamination_check"
+    "schema_version",
+    "is_mock",
+    "run_id",
+    "split",
+    "n_sessions",
+    "code_agreement",
+    "measure_agreement",
+    "discriminant",
+    "repeat_run",
+    "contamination_check"
   ],
   "properties": {
-    "schema_version": { "const": "0.1" },
+    "schema_version": { "const": "0.2" },
     "is_mock": { "type": "boolean" },
     "run_id": { "type": "string" },
     "generated_at": { "type": "string", "format": "date-time" },
@@ -21,7 +29,7 @@
         "type": "object",
         "required": ["code", "metric", "scorer_vs_human", "human_vs_human", "n"],
         "properties": {
-          "code": { "enum": ["Q", "SR", "CR", "GI", "PERSUADE", "PERSUADE_WP", "AF", "SEEK", "EMPHASIZE", "CONFRONT"] },
+          "code": { "enum": ["Q", "SR", "CR", "GI", "AF", "SEEK", "EMPH", "PWP", "PERSUADE", "CONFRONT"] },
           "metric": { "type": "string", "examples": ["cohen_kappa"] },
           "scorer_vs_human": { "type": ["number", "null"] },
           "human_vs_human": { "type": ["number", "null"], "description": "Ceiling: how well two human coders agree." },

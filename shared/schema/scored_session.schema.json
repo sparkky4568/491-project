@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "scored_session.schema.json",
   "title": "ScoredSession",
-  "description": "What the pipeline writes and the review console reads. All TranscriptIn top-level fields plus scorer output. v0 draft; see docs/DATA_CONTRACT.md.",
+  "description": "What the pipeline writes and the scorer page reads. v0.2, following Sponsor Deliverables v1.2 and Scope Letter Amendment 1: volleys are coded (s4), a session has a scoreability state (s5), measures are compared with the sponsor's fixed thresholds, Table C (s6) and Table D (s7) are reported, and issues are issue-log entries (s10). There is no pass / fail verdict, severity, ranking or recommendation. Every field is always present (null, not missing). See docs/DATA_CONTRACT.md.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -11,84 +11,82 @@
     "is_mock",
     "provenance",
     "source",
-    "target_behavior",
     "aven_version",
-    "recorded_at",
+    "channel",
+    "duration_sec",
+    "change_goal",
+    "target_behavior",
     "scorer",
+    "scoreability",
     "turns",
+    "volleys",
     "counts",
+    "question_counts",
     "client_talk_counts",
     "measures",
     "globals",
-    "flags",
+    "table_c",
+    "table_d",
+    "safety_volleys",
     "issues"
   ],
   "properties": {
     "schema_version": {
-      "const": "0.1"
+      "const": "0.2"
     },
     "session_id": {
       "type": "string",
       "minLength": 1
     },
     "is_mock": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "true on every invented file. The scorer page shows a practice banner when true."
     },
     "provenance": {
-      "$ref": "#/$defs/provenance"
+      "enum": ["real", "simulated", "reference_corpus", "internal_test"]
     },
     "source": {
-      "enum": [
-        "aven",
-        "annomi",
-        "casaa",
-        "other"
-      ]
-    },
-    "target_behavior": {
-      "type": "string"
+      "enum": ["aven_staff_call", "annomi", "casaa", "other"]
     },
     "aven_version": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
-    "recorded_at": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "format": "date"
+    "channel": {
+      "enum": ["voice", "text"]
+    },
+    "duration_sec": {
+      "type": ["number", "null"],
+      "minimum": 0
+    },
+    "change_goal": {
+      "$ref": "transcript_in.schema.json#/$defs/change_goal"
+    },
+    "target_behavior": {
+      "type": ["string", "null"]
     },
     "scorer": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "run_id",
-        "scored_at",
-        "coder_prompt_version",
-        "globals_prompt_version",
-        "model",
-        "cost_usd"
-      ],
+      "required": ["run_id", "scored_at", "prompt_versions", "model", "cost_usd"],
       "properties": {
         "run_id": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "scored_at": {
           "type": "string",
           "format": "date-time"
         },
-        "coder_prompt_version": {
-          "type": "string"
-        },
-        "globals_prompt_version": {
-          "type": "string"
+        "prompt_versions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Prompt name to version, e.g. volley_coder: volley-coder-v0.5, globals: globals-v0.2, prohibited: prohibited-v0.2."
         },
         "model": {
           "type": "string",
-          "description": "Exact pinned model id."
+          "description": "The exact pinned model id."
         },
         "cost_usd": {
           "type": "number",
@@ -96,86 +94,125 @@
         }
       }
     },
+    "scoreability": {
+      "description": "deliv s5.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "reason", "agent_volleys"],
+      "properties": {
+        "state": {
+          "enum": ["full", "counts_only", "outside_instrument", "not_scoreable"]
+        },
+        "reason": {
+          "type": "string",
+          "description": "Plain-English reason for the state."
+        },
+        "agent_volleys": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Agent volleys, not counting safety_response volleys. Under 5 is not_scoreable."
+        }
+      }
+    },
     "turns": {
       "type": "array",
       "minItems": 1,
       "items": {
-        "oneOf": [
-          {
-            "$ref": "#/$defs/practitioner_turn"
-          },
-          {
-            "$ref": "#/$defs/client_turn"
-          }
-        ]
+        "$ref": "#/$defs/turn"
+      }
+    },
+    "volleys": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/volley"
       }
     },
     "counts": {
-      "description": "Code counts over non-excluded practitioner turns. Computed by the pipeline, not the LLM.",
+      "description": "Each code counted over coded (non-excluded) agent volleys; at most once per volley.",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "Q",
-        "SR",
-        "CR",
-        "GI",
-        "PERSUADE",
-        "PERSUADE_WP",
-        "AF",
-        "SEEK",
-        "EMPHASIZE",
-        "CONFRONT"
-      ],
+      "required": ["Q", "SR", "CR", "GI", "AF", "SEEK", "EMPH", "PWP", "PERSUADE", "CONFRONT"],
       "properties": {
         "Q": {
-          "$ref": "#/$defs/count"
+          "type": "integer",
+          "minimum": 0
         },
         "SR": {
-          "$ref": "#/$defs/count"
+          "type": "integer",
+          "minimum": 0
         },
         "CR": {
-          "$ref": "#/$defs/count"
+          "type": "integer",
+          "minimum": 0
         },
         "GI": {
-          "$ref": "#/$defs/count"
-        },
-        "PERSUADE": {
-          "$ref": "#/$defs/count"
-        },
-        "PERSUADE_WP": {
-          "$ref": "#/$defs/count"
+          "type": "integer",
+          "minimum": 0
         },
         "AF": {
-          "$ref": "#/$defs/count"
+          "type": "integer",
+          "minimum": 0
         },
         "SEEK": {
-          "$ref": "#/$defs/count"
+          "type": "integer",
+          "minimum": 0
         },
-        "EMPHASIZE": {
-          "$ref": "#/$defs/count"
+        "EMPH": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "PWP": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "PERSUADE": {
+          "type": "integer",
+          "minimum": 0
         },
         "CONFRONT": {
-          "$ref": "#/$defs/count"
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "question_counts": {
+      "description": "Q codes by subtype.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["open", "closed", "unknown"],
+      "properties": {
+        "open": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "closed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unknown": {
+          "type": "integer",
+          "minimum": 0
         }
       }
     },
     "client_talk_counts": {
+      "description": "Coded (non-excluded) caller volleys.",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "change",
-        "sustain",
-        "neutral"
-      ],
+      "required": ["change", "sustain", "neutral"],
       "properties": {
         "change": {
-          "$ref": "#/$defs/count"
+          "type": "integer",
+          "minimum": 0
         },
         "sustain": {
-          "$ref": "#/$defs/count"
+          "type": "integer",
+          "minimum": 0
         },
         "neutral": {
-          "$ref": "#/$defs/count"
+          "type": "integer",
+          "minimum": 0
         }
       }
     },
@@ -183,307 +220,227 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/measure"
-      }
+      },
+      "description": "[] on not_scoreable sessions."
     },
     "globals": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/global_rating"
+        "$ref": "#/$defs/global"
+      },
+      "description": "Four on full sessions; partnership and empathy only on counts_only; [] on text calls, outside_instrument and not_scoreable."
+    },
+    "table_c": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/table_c"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "null on not_scoreable sessions."
+    },
+    "table_d": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/table_d_hit"
       }
     },
-    "flags": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "longest_reflection_run",
-        "windowed_rq"
-      ],
-      "properties": {
-        "longest_reflection_run": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "length",
-            "turns",
-            "cap",
-            "exceeds_cap"
-          ],
-          "properties": {
-            "length": {
-              "type": "integer",
-              "minimum": 0
-            },
-            "turns": {
-              "type": "array",
-              "items": {
-                "type": "integer",
-                "minimum": 1
-              }
-            },
-            "cap": {
-              "type": "integer",
-              "minimum": 0
-            },
-            "exceeds_cap": {
-              "type": "boolean",
-              "description": "Computed by the pipeline so the console never compares numbers itself."
-            }
-          }
-        },
-        "windowed_rq": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "window_size",
-            "points"
-          ],
-          "properties": {
-            "window_size": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "points": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "required": [
-                  "end_turn",
-                  "rq"
-                ],
-                "properties": {
-                  "end_turn": {
-                    "type": "integer",
-                    "minimum": 1
-                  },
-                  "rq": {
-                    "type": [
-                      "number",
-                      "null"
-                    ],
-                    "description": "null when the window has no questions."
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+    "safety_volleys": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "description": "Agent volleys spoken in safety_response: excluded from every count, the globals, Table C and Table D (deliv s4)."
     },
     "issues": {
       "type": "array",
       "items": {
         "$ref": "issue.schema.json"
-      }
+      },
+      "description": "This session's issue-log entries; [] on not_scoreable sessions."
     }
   },
   "$defs": {
-    "provenance": {
-      "enum": [
-        "real",
-        "simulated",
-        "reference_corpus",
-        "internal_test"
-      ]
-    },
-    "code": {
-      "enum": [
-        "Q",
-        "SR",
-        "CR",
-        "GI",
-        "PERSUADE",
-        "PERSUADE_WP",
-        "AF",
-        "SEEK",
-        "EMPHASIZE",
-        "CONFRONT"
-      ]
-    },
-    "count": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "turn_number": {
-      "type": "integer",
-      "minimum": 1
-    },
-    "turn_text": {
-      "type": "string"
-    },
-    "turn_node": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "turn_start_sec": {
-      "type": [
-        "number",
-        "null"
-      ],
-      "minimum": 0
-    },
-    "turn_excluded": {
-      "type": "boolean"
-    },
-    "turn_exclusion_reason": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "practitioner_turn": {
+    "turn": {
+      "description": "A raw turn as transcribed, with the volley it belongs to.",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "turn",
-        "speaker",
-        "text",
-        "node",
-        "start_sec",
-        "excluded",
-        "exclusion_reason",
-        "codes"
-      ],
+      "required": ["turn", "speaker", "text", "start_ms", "end_ms", "node", "volley", "back_channel"],
       "properties": {
         "turn": {
-          "$ref": "#/$defs/turn_number"
+          "type": "integer",
+          "minimum": 1
         },
         "speaker": {
-          "const": "practitioner"
+          "enum": ["agent", "caller"]
         },
         "text": {
-          "$ref": "#/$defs/turn_text"
+          "type": "string"
+        },
+        "start_ms": {
+          "type": ["number", "null"],
+          "minimum": 0
+        },
+        "end_ms": {
+          "type": ["number", "null"],
+          "minimum": 0
         },
         "node": {
-          "$ref": "#/$defs/turn_node"
+          "type": ["string", "null"]
         },
-        "start_sec": {
-          "$ref": "#/$defs/turn_start_sec"
+        "volley": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The volley this turn belongs to."
         },
-        "excluded": {
-          "$ref": "#/$defs/turn_excluded"
-        },
-        "exclusion_reason": {
-          "$ref": "#/$defs/turn_exclusion_reason"
-        },
-        "codes": {
-          "description": "Zero, one or several MITI 4.2.1 behavior codes. Excluded turns may keep their Stage 1 codes; Stage 2 ignores them.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "code",
-              "evidence_quote",
-              "rationale",
-              "evidence_valid"
-            ],
-            "properties": {
-              "code": {
-                "$ref": "#/$defs/code"
-              },
-              "evidence_quote": {
-                "type": "string",
-                "description": "Exact words copied from the turn text."
-              },
-              "rationale": {
-                "type": "string"
-              },
-              "evidence_valid": {
-                "type": "boolean",
-                "description": "false when the quote was not found verbatim in the turn text."
-              }
-            }
-          }
+        "back_channel": {
+          "type": "boolean",
+          "description": "A caller back-channel folded into the surrounding agent volley (deliv s4). Shown, never coded."
         }
       }
     },
-    "client_turn": {
+    "code": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "question_subtype", "evidence_quote", "rationale", "evidence_valid"],
+      "properties": {
+        "code": {
+          "enum": ["Q", "SR", "CR", "GI", "AF", "SEEK", "EMPH", "PWP", "PERSUADE", "CONFRONT"]
+        },
+        "question_subtype": {
+          "enum": ["open", "closed", "unknown", null],
+          "description": "Set for Q only; null for every other code."
+        },
+        "evidence_quote": {
+          "type": "string",
+          "description": "Must be an exact substring of the volley text."
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "evidence_valid": {
+          "type": "boolean",
+          "description": "false when the quote is not found verbatim in the volley. Checked by the pipeline, not the model."
+        }
+      }
+    },
+    "volley": {
+      "description": "Consecutive agent turns, and agent turns split only by a caller back-channel, are one agent volley (deliv s4).",
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "turn",
+        "volley",
         "speaker",
+        "turn_start",
+        "turn_end",
+        "absorbed_turns",
         "text",
-        "node",
-        "start_sec",
+        "nodes",
         "excluded",
         "exclusion_reason",
+        "codes",
         "client_talk",
         "client_evidence_quote"
       ],
       "properties": {
-        "turn": {
-          "$ref": "#/$defs/turn_number"
+        "volley": {
+          "type": "integer",
+          "minimum": 1
         },
         "speaker": {
-          "const": "client"
+          "enum": ["agent", "caller"]
+        },
+        "turn_start": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "turn_end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "absorbed_turns": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": "Caller back-channel turns inside this agent volley."
         },
         "text": {
-          "$ref": "#/$defs/turn_text"
+          "type": "string",
+          "description": "The volley's own turns joined with a space; absorbed back-channels are not in it."
         },
-        "node": {
-          "$ref": "#/$defs/turn_node"
-        },
-        "start_sec": {
-          "$ref": "#/$defs/turn_start_sec"
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Every node live during the volley, first-seen order; [] for corpora."
         },
         "excluded": {
-          "$ref": "#/$defs/turn_excluded"
+          "type": "boolean"
         },
         "exclusion_reason": {
-          "$ref": "#/$defs/turn_exclusion_reason"
+          "type": ["string", "null"]
+        },
+        "codes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/code"
+          },
+          "description": "Agent volleys; [] for caller volleys, excluded volleys and not_scoreable sessions."
         },
         "client_talk": {
-          "enum": [
-            "change",
-            "sustain",
-            "neutral"
-          ]
+          "enum": ["change", "sustain", "neutral", null],
+          "description": "Caller volleys; null for agent volleys and excluded volleys."
         },
         "client_evidence_quote": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "description": "Verbatim words from the turn; may be null for neutral talk."
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "threshold": {
+      "description": "Copied from shared/config/thresholds.json at scoring time.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "value", "source"],
+      "properties": {
+        "op": {
+          "enum": [">=", "<=", "==", ">", "<"]
+        },
+        "value": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
         }
       }
     },
     "measure": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "label",
-        "value",
-        "n",
-        "formula",
-        "threshold",
-        "status"
-      ],
+      "required": ["id", "label", "value", "n", "formula", "threshold", "status", "note"],
       "properties": {
         "id": {
           "enum": [
             "pct_complex_reflections",
             "reflection_to_question",
+            "pct_open_questions",
             "total_mia",
             "total_mina",
-            "relational",
-            "technical"
+            "caller_change_talk_ratio",
+            "technical",
+            "relational"
           ]
         },
         "label": {
           "type": "string"
         },
         "value": {
-          "type": [
-            "number",
-            "null"
-          ],
-          "description": "null when status is insufficient_data."
+          "type": ["number", "null"]
         },
         "n": {
           "type": "integer",
@@ -495,64 +452,30 @@
         "threshold": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/$defs/threshold"
             },
             {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "op",
-                "value",
-                "source"
-              ],
-              "properties": {
-                "op": {
-                  "enum": [
-                    ">=",
-                    "<=",
-                    "==",
-                    ">",
-                    "<"
-                  ]
-                },
-                "value": {
-                  "type": "number"
-                },
-                "source": {
-                  "type": "string",
-                  "description": "\"placeholder\" until the sponsor confirms thresholds."
-                }
-              }
+              "type": "null"
             }
-          ]
+          ],
+          "description": "null when the sponsor set no threshold."
         },
         "status": {
-          "enum": [
-            "pass",
-            "fail",
-            "no_threshold",
-            "insufficient_data"
-          ]
+          "enum": ["meets", "below", "reported", "insufficient_data", "not_rated"],
+          "description": "meets / below: compared with a sponsor threshold. reported: no threshold. insufficient_data: too little to compute. not_rated: not rated for this scoreability state."
+        },
+        "note": {
+          "type": ["string", "null"]
         }
       }
     },
-    "global_rating": {
+    "global": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "score",
-        "cited_turns",
-        "rationale"
-      ],
+      "required": ["id", "score", "cited_turns", "rationale"],
       "properties": {
         "id": {
-          "enum": [
-            "cultivating_change_talk",
-            "softening_sustain_talk",
-            "partnership",
-            "empathy"
-          ]
+          "enum": ["cultivating_change_talk", "softening_sustain_talk", "partnership", "empathy"]
         },
         "score": {
           "type": "integer",
@@ -568,6 +491,214 @@
         },
         "rationale": {
           "type": "string"
+        }
+      }
+    },
+    "volley_span": {
+      "description": "A span of agent volleys used by Table C.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start_volley", "end_volley", "turn_start", "turn_end", "nodes"],
+      "properties": {
+        "start_volley": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "end_volley": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "turn_start": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "turn_end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "rq_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start_volley", "end_volley", "turn_start", "turn_end", "nodes", "reflections", "questions", "rq"],
+      "properties": {
+        "start_volley": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "end_volley": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "turn_start": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "turn_end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reflections": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "questions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rq": {
+          "type": ["number", "null"],
+          "description": "null when the window has no questions."
+        }
+      }
+    },
+    "table_c": {
+      "description": "deliv s6. Computed by code from the volley codes; no model judgment.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["c1_reflection_run", "c2_windowed_rq"],
+      "properties": {
+        "c1_reflection_run": {
+          "description": "C1: longest run of reflective agent volleys with no question.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["length", "cap", "span", "breach"],
+          "properties": {
+            "length": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cap": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "span": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/volley_span"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "null when the session has no reflections."
+            },
+            "breach": {
+              "type": "boolean",
+              "description": "true when length is 3 or more (cap 2)."
+            }
+          }
+        },
+        "c2_windowed_rq": {
+          "description": "C2: R:Q over a rolling window of agent volleys.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "window_size",
+            "windows",
+            "worst_over_following",
+            "worst_interrogation",
+            "breach_no_questions",
+            "breach_no_reflections"
+          ],
+          "properties": {
+            "window_size": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "windows": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/rq_window"
+              },
+              "description": "Every rolling window of coded agent volleys; fewer than window_size gives one window."
+            },
+            "worst_over_following": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/rq_window"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Highest R:Q; a window with no questions counts as highest."
+            },
+            "worst_interrogation": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/rq_window"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Lowest R:Q; a window with no reflections counts as lowest."
+            },
+            "breach_no_questions": {
+              "type": "boolean"
+            },
+            "breach_no_reflections": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "table_d_hit": {
+      "description": "One Table D hit (deliv s7). Every hit is also an issue-log entry.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "volley", "turn_start", "turn_end", "node", "evidence_quote", "rationale", "clinician_review"],
+      "properties": {
+        "code": {
+          "enum": [
+            "D1_clinical_advice",
+            "D2_health_prescription",
+            "D3_fabrication",
+            "D4_identity",
+            "D5_professional_advice",
+            "D6_promises",
+            "D7_privacy"
+          ]
+        },
+        "volley": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "turn_start": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "turn_end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "node": {
+          "type": ["string", "null"]
+        },
+        "evidence_quote": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "clinician_review": {
+          "type": "boolean",
+          "description": "D1 and D7 always; D3 when the invented fact is clinical."
         }
       }
     }

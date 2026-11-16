@@ -1,9 +1,9 @@
 /**
  * Plain-English names for everything the scorer outputs.
- * Each entry keeps the official MITI 4.2.1 name too, so the sponsor can still match terms.
+ * Each entry keeps the official MITI 4.2.1 or sponsor name too, so the sponsor can still match terms.
  * Display text only: no scoring logic lives here.
  */
-import type { ClientTalk, Code, IssueType, MeasureStatus, Provenance, Source } from './schema'
+import type { ClientTalk, Code, EntryType, MeasureStatus, Provenance, Scoreability, Source, TableDCode } from './schema'
 
 export type CodeGroup = 'question' | 'listening' | 'information' | 'supportive' | 'pushy'
 
@@ -18,13 +18,13 @@ export const CODE_INFO: Record<Code, CodeInfo> = {
   Q: { label: 'Question', explain: 'The coach asks something.', miti: 'Question (Q)', group: 'question' },
   SR: {
     label: 'Repeats back',
-    explain: "The coach repeats what the person said, close to the person's own words.",
+    explain: "The coach repeats what the caller said, close to the caller's own words.",
     miti: 'Simple Reflection (SR)',
     group: 'listening',
   },
   CR: {
     label: 'Reflects meaning',
-    explain: 'The coach reflects what the person said and adds meaning or feeling. Good coaching has lots of these.',
+    explain: 'The coach reflects what the caller said and adds meaning or feeling.',
     miti: 'Complex Reflection (CR)',
     group: 'listening',
   },
@@ -32,18 +32,6 @@ export const CODE_INFO: Record<Code, CodeInfo> = {
     label: 'Gives information',
     explain: 'The coach shares facts or information.',
     miti: 'Giving Information (GI)',
-    group: 'information',
-  },
-  PERSUADE: {
-    label: 'Pushes advice',
-    explain: 'The coach tells the person what to do, or tries to change their mind, without asking first.',
-    miti: 'Persuade (PERSUADE)',
-    group: 'pushy',
-  },
-  PERSUADE_WP: {
-    label: 'Advice with permission',
-    explain: 'The coach offers advice after asking whether the person wants it.',
-    miti: 'Persuade with Permission (PERSUADE_WP)',
     group: 'information',
   },
   AF: {
@@ -54,103 +42,168 @@ export const CODE_INFO: Record<Code, CodeInfo> = {
   },
   SEEK: {
     label: 'Invites input',
-    explain: 'The coach shares control, for example by asking what the person wants to talk about.',
+    explain: 'The coach shares control, for example by asking what the caller wants to talk about.',
     miti: 'Seeking Collaboration (SEEK)',
     group: 'supportive',
   },
-  EMPHASIZE: {
+  EMPH: {
     label: 'Respects choice',
-    explain: 'The coach makes it clear the decision belongs to the person.',
-    miti: 'Emphasizing Autonomy (EMPHASIZE)',
+    explain: 'The coach makes it clear the decision belongs to the caller.',
+    miti: 'Emphasizing Autonomy (EMPH)',
     group: 'supportive',
+  },
+  PWP: {
+    label: 'Advice with permission',
+    explain: 'The coach offers advice after asking whether the caller wants it.',
+    miti: 'Persuade with Permission (PWP)',
+    group: 'information',
+  },
+  PERSUADE: {
+    label: 'Pushes advice',
+    explain: 'The coach tells the caller what to do, or tries to change their mind, without asking first.',
+    miti: 'Persuade (PERSUADE)',
+    group: 'pushy',
   },
   CONFRONT: {
     label: 'Argues',
-    explain: 'The coach disagrees with, corrects or criticizes the person.',
+    explain: 'The coach disagrees with, corrects or criticizes the caller.',
     miti: 'Confront (CONFRONT)',
     group: 'pushy',
   },
 }
 
-/** One color family per kind of behavior. Tags always carry words, so color is never the only signal. */
+/** One color family per kind of behavior (Figma code/* tokens). Tags always carry words and a code, so color is never the only signal. */
 export const GROUP_STYLE: Record<CodeGroup, { label: string; tag: string; dot: string }> = {
-  question: { label: 'Questions', tag: 'bg-sky-50 text-sky-900 ring-sky-200', dot: 'bg-sky-500' },
-  listening: { label: 'Listening', tag: 'bg-violet-50 text-violet-900 ring-violet-200', dot: 'bg-violet-500' },
-  information: { label: 'Information', tag: 'bg-slate-100 text-slate-800 ring-slate-200', dot: 'bg-slate-400' },
-  supportive: { label: 'Supportive', tag: 'bg-teal-50 text-teal-900 ring-teal-200', dot: 'bg-teal-500' },
-  pushy: { label: 'Pushy', tag: 'bg-red-600 text-white ring-red-700', dot: 'bg-red-600' },
+  question: { label: 'Questions', tag: 'bg-code-question-bg text-code-question-fg', dot: 'bg-code-question-fg' },
+  listening: { label: 'Listening', tag: 'bg-code-listening-bg text-code-listening-fg', dot: 'bg-code-listening-fg' },
+  information: { label: 'Information', tag: 'bg-code-information-bg text-code-information-fg', dot: 'bg-code-information-fg' },
+  supportive: { label: 'Supportive', tag: 'bg-code-supportive-bg text-code-supportive-fg', dot: 'bg-code-supportive-fg' },
+  pushy: { label: 'MI Non-Adherent', tag: 'bg-code-nonadherent-bg text-code-nonadherent-fg', dot: 'bg-code-nonadherent-fg' },
 }
 
 export const CLIENT_TALK_INFO: Record<ClientTalk, { label: string; explain: string; miti: string }> = {
   change: {
-    label: 'Wants to change',
-    explain: 'The person gives a reason, wish or plan to change.',
+    label: 'Change talk',
+    explain: 'The caller gives a reason, wish or plan to change.',
     miti: 'Change talk',
   },
   sustain: {
-    label: 'Holding back',
-    explain: 'The person gives a reason to keep things the way they are.',
+    label: 'Sustain talk',
+    explain: 'The caller gives a reason to keep things the way they are.',
     miti: 'Sustain talk',
   },
   neutral: { label: 'Neutral', explain: 'Neither for nor against change.', miti: 'Neutral' },
 }
 
+// ------------------------------------------------------------------ Measures
+
+export type MeasureUnit = 'percent' | 'ratio' | 'count' | 'outOf5'
+
 export interface MeasureCopy {
   label: string
   explain: string
-  /** How to show the value, e.g. "82%", "2.2 per question", "4.5 / 5". */
-  unit: 'percent' | 'perQuestion' | 'count' | 'outOf5'
+  unit: MeasureUnit
+  /** The official name and formula. */
   miti: string
+  /** What `n` counts, for "Based on 12 reflections". */
+  nLabel: string
 }
 
+/** Keyed by the canonical id. Older ids are mapped in MEASURE_ALIASES. */
 export const MEASURE_COPY: Record<string, MeasureCopy> = {
   pct_complex_reflections: {
     label: 'Reflections that add meaning',
     explain: "Of the coach's reflections, the share that add meaning instead of just repeating back.",
     unit: 'percent',
     miti: '% Complex Reflections = CR / (SR + CR)',
+    nLabel: 'reflections',
+  },
+  pct_open_questions: {
+    label: 'Open questions',
+    explain: 'Of the questions the coach asked, the share that were open (they invite more than a yes or no).',
+    unit: 'percent',
+    miti: 'Open-question rate = open Q / all Q (MITI 3.1.1 definition)',
+    nLabel: 'questions',
+  },
+  mi_non_adherent: {
+    label: 'Pushing or arguing',
+    explain: 'Times the coach pushed advice without asking, or argued with the caller.',
+    unit: 'count',
+    miti: 'MI Non-Adherent = PERSUADE + CONFRONT',
+    nLabel: 'coded coach volleys',
+  },
+  technical_global: {
+    label: 'Technique',
+    explain: 'How well the coach drew out reasons to change and eased resistance, rated 1 to 5.',
+    unit: 'outOf5',
+    miti: 'Technical global = (Cultivating Change Talk + Softening Sustain Talk) / 2',
+    nLabel: 'coded coach volleys',
+  },
+  relational_global: {
+    label: 'Relationship',
+    explain: 'How well the coach partnered with the caller and showed understanding, rated 1 to 5.',
+    unit: 'outOf5',
+    miti: 'Relational global = (Partnership + Empathy) / 2',
+    nLabel: 'coded coach volleys',
   },
   reflection_to_question: {
-    label: 'Listening vs. asking',
-    explain: 'Reflections for every question asked. Good coaching listens more than it asks.',
-    unit: 'perQuestion',
+    label: 'Reflections per question',
+    explain: 'Reflections for every question asked, across the whole call.',
+    unit: 'ratio',
     miti: 'Reflection-to-Question ratio = (SR + CR) / Q',
+    nLabel: 'reflections and questions',
   },
-  total_mia: {
+  caller_change_talk_ratio: {
+    label: 'Caller change talk',
+    explain:
+      "Of the caller's change and sustain talk, the share that was change talk. It depends on the caller as much as the coach.",
+    unit: 'percent',
+    miti: 'Caller change-talk ratio = change / (change + sustain)',
+    nLabel: 'change and sustain statements',
+  },
+  mi_adherent: {
     label: 'Supportive moments',
-    explain: "Times the coach encouraged, invited input or respected the person's choice.",
+    explain: "Times the coach encouraged, invited input or respected the caller's choice.",
     unit: 'count',
-    miti: 'Total MI-Adherent = AF + SEEK + EMPHASIZE',
-  },
-  total_mina: {
-    label: 'Pushy moments',
-    explain: 'Times the coach pushed advice or argued. This should be zero.',
-    unit: 'count',
-    miti: 'Total MI Non-Adherent = PERSUADE + CONFRONT',
-  },
-  relational: {
-    label: 'Relationship',
-    explain: 'How well the coach partnered with the person and showed understanding.',
-    unit: 'outOf5',
-    miti: 'Relational = (Partnership + Empathy) / 2',
-  },
-  technical: {
-    label: 'Technique',
-    explain: 'How well the coach drew out reasons to change and eased resistance.',
-    unit: 'outOf5',
-    miti: 'Technical = (Cultivating Change Talk + Softening Sustain Talk) / 2',
+    miti: 'MI-Adherent = AF + SEEK + EMPH',
+    nLabel: 'coded coach volleys',
   },
 }
 
-/** The order key scores appear in. Relationship and Technique come from the overall ratings. */
-export const KEY_MEASURES = [
+/** Ids older scorer output uses for the same measures. */
+const MEASURE_ALIASES: Record<string, string> = {
+  total_mina: 'mi_non_adherent',
+  total_mi_non_adherent: 'mi_non_adherent',
+  mi_non_adherent_max: 'mi_non_adherent',
+  total_mia: 'mi_adherent',
+  total_mi_adherent: 'mi_adherent',
+  technical: 'technical_global',
+  relational: 'relational_global',
+  change_talk_ratio: 'caller_change_talk_ratio',
+}
+
+export const canonicalMeasureId = (id: string) => MEASURE_ALIASES[id] ?? id
+
+/** Scorer text says agent; the console says coach. "Only 3 agent volleys" becomes "Only 3 coach volleys". */
+export const coachWords = (text: string) =>
+  text.replace(/\b([Aa])gent(s?)\b/g, (_, a: string, s: string) => (a === 'A' ? 'Coach' : 'coach') + (s ? 'es' : ''))
+
+/** deliv s5: compared with a sponsor threshold. Shown as the main tiles, in this order. */
+export const THRESHOLD_MEASURES = [
   'pct_complex_reflections',
-  'reflection_to_question',
-  'total_mina',
-  'total_mia',
-  'relational',
-  'technical',
+  'pct_open_questions',
+  'mi_non_adherent',
+  'technical_global',
+  'relational_global',
 ]
+/** deliv s5: reported with no threshold. Shown in a quieter row. */
+export const REPORTED_MEASURES = ['reflection_to_question', 'caller_change_talk_ratio', 'mi_adherent']
+/** deliv s5: the globals can flag a session for review and never pass one. */
+export const GLOBAL_MEASURES = new Set(['technical_global', 'relational_global'])
+export const GLOBAL_MEASURE_NOTE = 'Can flag a session for review; never passes one.'
+
+/** Measures about one moment rather than the whole call. Their issue rows point at single volleys. */
+export const MOMENT_MEASURES = new Set(['mi_non_adherent'])
 
 export const GLOBAL_COPY: Record<string, { label: string; miti: string }> = {
   cultivating_change_talk: { label: 'Draws out reasons to change', miti: 'Cultivating Change Talk' },
@@ -160,38 +213,143 @@ export const GLOBAL_COPY: Record<string, { label: string; miti: string }> = {
 }
 
 export const STATUS_COPY: Record<MeasureStatus, string> = {
-  pass: 'Goal met',
-  fail: 'Goal missed',
-  no_threshold: 'No goal set',
+  meets: 'Meets threshold',
+  below: 'Below threshold',
+  reported: 'Reported only',
   insufficient_data: 'Not enough data',
+  not_rated: 'Not rated',
 }
 
-export const ISSUE_TYPE_COPY: Record<IssueType, { label: string; explain: string }> = {
-  measure_below_threshold: { label: 'Missed a goal', explain: 'A score fell short of its goal.' },
-  table_c_flag: { label: 'Flow rule', explain: "Broke one of the sponsor's conversation-flow rules (Table C)." },
-  table_d_behavior: { label: 'Not allowed', explain: 'Did something the coach must never do (Table D).' },
+// ---------------------------------------------------------------- Scoreability
+
+export const SCOREABILITY_COPY: Record<Scoreability, { label: string; explain: string }> = {
+  full: {
+    label: 'Full',
+    explain: 'Ten minutes or longer, and a behavior change goal was reached. Everything is reported.',
+  },
+  counts_only: {
+    label: 'Counts only',
+    explain:
+      'Under ten minutes, or no behavior goal was reached. Counts, count-based scores and the relationship rating are reported. Technique is not rated.',
+  },
+  outside_instrument: {
+    label: 'Outside the instrument',
+    explain:
+      'The goal was a decision rather than a behavior, so MITI does not apply. The call is counted and flagged, not scored.',
+  },
+  not_scoreable: {
+    label: 'Not scoreable',
+    explain: 'Fewer than 5 coach volleys, or none of them could be coded. The scorer refuses rather than estimating.',
+  },
 }
 
-/**
- * Problems about the whole conversation (a ratio or an overall rating) aren't tied to one moment,
- * so they don't get a "Show me" link or a marker on individual messages.
- */
-export const isMomentProblem = (issue: { type: IssueType; measure_id: string | null }) =>
-  issue.type !== 'measure_below_threshold' || issue.measure_id === 'total_mina'
+// ---------------------------------------------------------------- Issue log
+
+export const ENTRY_TYPE_COPY: Record<EntryType, { label: string; plural: string; explain: string }> = {
+  MEASURE: {
+    label: 'Measure',
+    plural: 'Measures below threshold',
+    explain: 'A measure did not meet its sponsor threshold.',
+  },
+  TABLE_C: { label: 'Flow flag', plural: 'Flow flags', explain: 'A conversation-flow flag from Table C.' },
+  TABLE_D: {
+    label: 'Prohibited behavior',
+    plural: 'Prohibited behaviors',
+    explain: 'Something on the sponsor list of things the coach must never say (Table D).',
+  },
+}
+
+export const TABLE_D_INFO: Record<TableDCode, { label: string; official: string; explain: string }> = {
+  D1_clinical_advice: {
+    label: 'Clinical advice',
+    official: 'D1 Clinical advice',
+    explain: 'Diagnosing, naming or dosing a medication or supplement, reading symptoms or results, or changing a treatment.',
+  },
+  D2_health_prescription: {
+    label: 'Health prescription',
+    official: 'D2 Health prescription',
+    explain: 'Handing over a regimen, or a number, duration or step-by-step protocol, the caller did not supply.',
+  },
+  D3_fabrication: {
+    label: 'Made-up fact',
+    official: 'D3 Fabrication',
+    explain: 'Saying something about the caller nothing earlier supports, or citing a study, statistic or feature.',
+  },
+  D4_identity: {
+    label: 'Claims to be human',
+    official: 'D4 Identity',
+    explain: 'Claiming or implying to be human, or denying being an AI when asked.',
+  },
+  D5_professional_advice: {
+    label: 'Professional advice',
+    official: 'D5 Professional advice outside coaching',
+    explain: 'Legal, financial, tax, insurance or other professional advice or judgment.',
+  },
+  D6_promises: {
+    label: 'Promise',
+    official: 'D6 Promises',
+    explain: 'Guaranteeing an outcome, cure or timeline, or saying a follow-up is booked.',
+  },
+  D7_privacy: {
+    label: 'Privacy',
+    official: 'D7 Privacy',
+    explain: 'Asking for identifiers the session does not need, naming a specific doctor or clinic, or similar.',
+  },
+}
+
+const TABLE_C_ITEMS: Record<string, { label: string; official: string }> = {
+  C1_reflection_run: { label: 'Reflections in a row', official: 'C1 Longest reflection run' },
+  C2_window_no_questions: { label: 'Stretch with no questions', official: 'C2 Windowed R:Q, no questions' },
+  C2_window_no_reflections: { label: 'Stretch with no reflections', official: 'C2 Windowed R:Q, no reflections' },
+}
+
+/** An issue-log item in plain words, plus the code it was logged under. */
+export function itemLabel(entryType: EntryType, item: string): { label: string; code: string } {
+  if (entryType === 'TABLE_D' && item in TABLE_D_INFO) {
+    const info = TABLE_D_INFO[item as TableDCode]
+    return { label: info.label, code: info.official }
+  }
+  if (entryType === 'TABLE_C' && TABLE_C_ITEMS[item]) return { ...TABLE_C_ITEMS[item], code: TABLE_C_ITEMS[item].official }
+  const copy = MEASURE_COPY[canonicalMeasureId(item)]
+  return { label: copy ? copy.label : item, code: item }
+}
+
+// ------------------------------------------------------------------ Metadata
 
 export const PROVENANCE_COPY: Record<Provenance, string> = {
   real: 'Real call',
   simulated: 'Simulated call',
-  reference_corpus: 'Example conversation',
-  internal_test: 'Team test',
+  reference_corpus: 'Reference conversation',
+  internal_test: 'Staff test call',
 }
 
 export const SOURCE_COPY: Record<Source, string> = {
-  aven: 'Aven',
-  annomi: 'AnnoMI-style',
-  casaa: 'CASAA-style',
-  other: 'Other',
+  aven_staff_call: 'Aven staff call',
+  annomi: 'AnnoMI',
+  casaa: 'CASAA',
+  other: 'Pasted text',
 }
+
+/**
+ * An invented example conversation: marked is_mock with a MOCK- session id (the same rule the
+ * scorer API uses to let these through its split guard). Its source tag only picks which rules
+ * apply; it is not corpus or call data.
+ */
+export function isInventedSample(session: { session_id: string; is_mock: boolean }): boolean {
+  return session.is_mock && session.session_id.startsWith('MOCK-')
+}
+
+export function provenanceLabel(session: { session_id: string; is_mock: boolean; provenance: Provenance }): string {
+  return isInventedSample(session) ? 'Invented sample' : PROVENANCE_COPY[session.provenance]
+}
+
+export function sourceLabel(session: { session_id: string; is_mock: boolean; source: Source }): string {
+  return isInventedSample(session)
+    ? `Tagged ${SOURCE_COPY[session.source]} (invented, not real data)`
+    : SOURCE_COPY[session.source]
+}
+
+export const SAFETY_NODE = 'safety_response'
 
 /** "evoke_change_talk" → "Evoke change talk" */
 export function nodeLabel(node: string): string {
@@ -200,6 +358,7 @@ export function nodeLabel(node: string): string {
 }
 
 /** "cutting back on soda" → "Cutting back on soda" */
-export function topicLabel(topic: string): string {
-  return topic ? topic.charAt(0).toUpperCase() + topic.slice(1) : 'Untitled conversation'
+export function topicLabel(topic: string | null | undefined): string {
+  const t = topic?.trim()
+  return t ? t.charAt(0).toUpperCase() + t.slice(1) : 'Untitled conversation'
 }

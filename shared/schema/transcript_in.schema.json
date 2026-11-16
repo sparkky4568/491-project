@@ -2,35 +2,85 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "transcript_in.schema.json",
   "title": "TranscriptIn",
-  "description": "What the pipeline ingests. v0 draft; will adapt to the sponsor's canonical transcript format. See docs/DATA_CONTRACT.md.",
+  "description": "What the pipeline ingests: the sponsor's canonical transcript schema 1.0 (Sponsor Deliverables v1.2 s8), plus our optional is_mock. Turns are raw; the scorer builds volleys. See docs/DATA_CONTRACT.md.",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "schema_version", "session_id", "is_mock", "provenance", "source", "target_behavior",
-    "aven_version", "recorded_at", "turns"
+    "schema_version",
+    "session_id",
+    "provenance",
+    "source",
+    "aven_version",
+    "channel",
+    "duration_sec",
+    "change_goal",
+    "target_behavior",
+    "turns",
+    "events"
   ],
   "properties": {
-    "schema_version": { "const": "0.1" },
-    "session_id": { "type": "string", "minLength": 1 },
-    "is_mock": { "type": "boolean", "description": "true for every invented file. The console shows a MOCK banner when true." },
-    "provenance": { "enum": ["real", "simulated", "reference_corpus", "internal_test"] },
-    "source": { "enum": ["aven", "annomi", "casaa", "other"] },
-    "target_behavior": { "type": "string" },
-    "aven_version": { "type": ["string", "null"], "description": "e.g. V17; null for corpus data." },
-    "recorded_at": { "type": ["string", "null"], "format": "date" },
-    "turns": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/turn" } }
+    "schema_version": { "const": "1.0" },
+    "session_id": { "type": "string", "minLength": 1, "description": "Neutral number, shuffled; never a persona id." },
+    "is_mock": {
+      "type": "boolean",
+      "description": "Team field, not in the sponsor schema. true on every invented file; read as false when missing."
+    },
+    "provenance": {
+      "enum": ["real", "simulated", "reference_corpus", "internal_test"],
+      "description": "Staff calls on Aven are internal_test. Simulated conversations are never used (Amendment 1 s4)."
+    },
+    "source": {
+      "enum": ["aven_staff_call", "annomi", "casaa", "other"],
+      "description": "deliv s8 names the first three; other is ours, for text pasted into the scorer page."
+    },
+    "aven_version": { "type": ["string", "null"], "description": "Agent and flow version, e.g. v21; null for corpora." },
+    "channel": { "enum": ["voice", "text"] },
+    "duration_sec": { "type": ["number", "null"], "minimum": 0, "description": "Call length; null for text." },
+    "change_goal": { "$ref": "#/$defs/change_goal" },
+    "target_behavior": {
+      "type": ["string", "null"],
+      "description": "For corpora, the topic column; for Aven, the same as the goal or the focus area."
+    },
+    "turns": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/turn" } },
+    "events": { "type": "array", "items": { "$ref": "#/$defs/event" } }
   },
   "$defs": {
+    "change_goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "state"],
+      "properties": {
+        "text": { "type": ["string", "null"], "description": "The designated goal as a behavior." },
+        "state": { "enum": ["behavior", "no_goal_reached", "decision"] }
+      }
+    },
     "turn": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["turn", "speaker", "text", "node", "start_sec"],
+      "required": ["turn", "speaker", "text", "start_ms", "end_ms", "node"],
       "properties": {
-        "turn": { "type": "integer", "minimum": 1 },
-        "speaker": { "enum": ["practitioner", "client"] },
-        "text": { "type": "string" },
-        "node": { "type": ["string", "null"], "description": "Aven conversation-flow node; null for corpus data." },
-        "start_sec": { "type": ["number", "null"], "minimum": 0 }
+        "turn": { "type": "integer", "minimum": 1, "description": "1, 2, 3 ... in order, both speakers." },
+        "speaker": { "enum": ["agent", "caller"] },
+        "text": { "type": "string", "description": "Exactly as transcribed, nothing cleaned." },
+        "start_ms": { "type": ["number", "null"], "minimum": 0, "description": "From Retell's word timings; null for text." },
+        "end_ms": { "type": ["number", "null"], "minimum": 0 },
+        "node": {
+          "type": ["string", "null"],
+          "description": "The Aven node active during the turn (deliv s9); null for corpora."
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["before_turn", "type"],
+      "description": "Node transitions and tool calls, tied to the turn before which they happened. Metadata, never coded. Our files always write from, to and name (null when unused); the sponsor's may omit them.",
+      "properties": {
+        "before_turn": { "type": "integer", "minimum": 1 },
+        "type": { "enum": ["node_transition", "tool_call"] },
+        "from": { "type": ["string", "null"] },
+        "to": { "type": ["string", "null"] },
+        "name": { "type": ["string", "null"], "description": "Tool name, for tool_call events." }
       }
     }
   }
